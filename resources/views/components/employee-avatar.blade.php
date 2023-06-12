@@ -1,1 +1,0 @@
-<img src="{{ $photo ? asset($photo) : asset('assets/avatar_placeholder.png') }}" />
