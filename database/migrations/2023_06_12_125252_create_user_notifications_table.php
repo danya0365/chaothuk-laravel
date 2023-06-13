@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Enums\NotificationType;
 
 return new class extends Migration
 {
@@ -15,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('title')->nullable();
             $table->string('message')->nullable();
-            $table->enum('notification_type', NotificationType::getValues());
+            $table->string('notification_type', 100);
             $table->integer('review_id')->unsigned()->index();
             $table->integer('author_id')->unsigned()->index();
             $table->timestamps();

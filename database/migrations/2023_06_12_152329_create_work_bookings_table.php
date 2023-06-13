@@ -3,6 +3,8 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Enums\BookingStatus;
+use App\Enums\ConfirmStatus;
 
 return new class extends Migration
 {
@@ -17,9 +19,9 @@ return new class extends Migration
             $table->string('mobile_phone')->nullable();
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
-            $table->enum('booking_status', BookingStatus::getValues())->default(BookingStatus::Default());
-            $table->enum('customer_confirm_status', ConfirmStatus::getValues())->default(ConfirmStatus::Default());
-            $table->enum('worker_confirm_status', ConfirmStatus::getValues())->default(ConfirmStatus::Default());
+            $table->enum('booking_status', BookingStatus::getValues())->default(BookingStatus::WaitingToConfirm());
+            $table->enum('customer_confirm_status', ConfirmStatus::getValues())->default(ConfirmStatus::WaitingToConfirm());
+            $table->enum('worker_confirm_status', ConfirmStatus::getValues())->default(ConfirmStatus::WaitingToConfirm());
             $table->integer('author_id')->unsigned()->index();
             $table->integer('work_id')->unsigned()->index();
             $table->timestamps();
