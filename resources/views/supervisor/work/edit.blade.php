@@ -8,7 +8,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="mb-4">
                 <h1 class="text-3xl font-bold">
-                    Create New Work
+                    Update Work
                 </h1>
                 <div class="flex justify-end mt-5">
                     <a class="px-2 py-1 rounded-md bg-sky-500 text-sky-100 hover:bg-sky-600" href="{{ route('supervisor.works.index') }}">
@@ -33,62 +33,63 @@
 
                         <div class="w-full px-6 py-4 bg-white rounded shadow-md ring-1 ring-gray-900/10">
 
-                            <form action="{{ route('supervisor.works.store') }}" method="POST">
+                            <form action="{{ route('supervisor.works.update', $work->id) }}" method="POST">
+                                {{ method_field('PATCH') }}
                                 @csrf
 
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700" for="code">Code</label>
-                                    <input type="text" name="code" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Code">
+                                    <input value="{{ $work->code }}" type="text" name="code" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Code">
                                 </div>
 
                                 <div class="mt-4">
                                     <label class="block text-sm font-bold text-gray-700" for="title">Title</label>
-                                    <input type="text" name="title" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Title">
+                                    <input value="{{ $work->title }}" type="text" name="title" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Title">
                                 </div>
 
                                 <div class="mt-4">
                                     <label class="block text-sm font-bold text-gray-700" for="description">Description</label>
-                                    <textarea class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" name="description" placeholder="Description"></textarea>
+                                    <textarea class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" name="description" placeholder="Description">{{ $work->description }}</textarea>
                                 </div>
 
                                 <div class="mt-4">
                                     <label class="block text-sm font-bold text-gray-700" for="details">Details (ใส่ , เพื่อแยกข้อความ)</label>
-                                    <textarea class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" name="details" placeholder="Details"></textarea>
+                                    <textarea class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" name="details" placeholder="Details">{{ implode(", ", $work->details) }}</textarea>
                                 </div>
 
                                 <div class="mt-4">
                                     <label class="block text-sm font-bold text-gray-700" for="province_id">Province Id</label>
-                                    <input type="text" name="province_id" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Province Id">
+                                    <input value="{{ $work->province_id }}" type="text" name="province_id" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Province Id">
                                 </div>
 
                                 <div class="mt-4">
                                     <label class="block text-sm font-bold text-gray-700" for="work_type_id">Work Type Id</label>
-                                    <input type="text" name="work_type_id" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Province Id">
+                                    <input value="{{ $work->work_type_id }}" type="text" name="work_type_id" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Province Id">
                                 </div>
 
                                 <div class="mt-4">
                                     <label class="block text-sm font-bold text-gray-700" for="author_id">Author Id</label>
-                                    <input type="text" name="author_id" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Author Id">
+                                    <input value="{{ $work->province_id }}" type="text" name="author_id" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Author Id">
                                 </div>
 
                                 <div class="mt-4">
                                     <label class="block text-sm font-bold text-gray-700" for="primary_image">Primary Image</label>
-                                    <textarea class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" name="primary_image" placeholder="URL รูป"></textarea>
+                                    <textarea class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" name="primary_image" placeholder="URL รูป">{{ $work->primary_image }}</textarea>
                                 </div>
 
                                 <div class="mt-4">
                                     <label class="block text-sm font-bold text-gray-700" for="images">Gallery Images (ใส่ , เพื่อแยกรูป)</label>
-                                    <textarea class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" name="images" placeholder="URL รูปขั้นด้วย ,"></textarea>
+                                    <textarea class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" name="images" placeholder="URL รูปขั้นด้วย ,">{{ implode(", ", $work->images) }}</textarea>
                                 </div>
 
                                 <div class="mt-4">
                                     <label class="block text-sm font-bold text-gray-700" for="price">Price</label>
-                                    <input type="text" name="price" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Price">
+                                    <input value="{{ $work->price }}" type="text" name="price" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Price">
                                 </div>
 
                                 <div class="mt-4">
                                     <label class="block text-sm font-bold text-gray-700" for="display_priority">Display Priority</label>
-                                    <input type="text" name="display_priority" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="ใส่ตัวเลข 0-99999">
+                                    <input value="{{ $work->display_priority }}" type="text" name="display_priority" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="ใส่ตัวเลข 0-99999">
                                 </div>
 
                                 <div class="flex items-center justify-start mt-4 gap-x-2">
