@@ -38,10 +38,10 @@ class Work extends Model
     'code' => 'required',
     'title' => 'required',
     'description' => 'required',
-    'details' => 'required',
     'province_id' => 'required',
     'work_type_id' => 'required',
     'author_id' => 'required',
+    'price' => 'required',
   ];
 
   /**

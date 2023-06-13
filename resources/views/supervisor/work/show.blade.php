@@ -80,7 +80,7 @@
                         <dt class="text-sm font-medium leading-6 text-gray-900">Gallery Images</dt>
                         <dd class="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                           <ul role="list" class="divide-y divide-gray-100 rounded-md border border-gray-200">
-                            @forelse ( ($work->images ?? []) as $imageUrl )
+                            @forelse ( ($work->images && count($work->images) ? $work->images : []) as $imageUrl )
                             <li class="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
                                 <div class="flex w-0 flex-1 items-center">
                                   <svg class="h-5 w-5 flex-shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

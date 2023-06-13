@@ -44,7 +44,9 @@ class WorkController extends Controller
 
         $post = $request->all();
         $post["details"] = explode(',', $post["details"]);
+        $post["details"] = array_map('trim', $post["details"]);
         $post["images"] = explode(',', $post["images"]);
+        $post["images"] = array_map('trim', $post["images"]);
         $work = Work::create($post);
 
         return redirect()->route('supervisor.works.index')
@@ -90,7 +92,9 @@ class WorkController extends Controller
 
         $post = $request->all();
         $post["details"] = explode(',', $post["details"]);
+        $post["details"] = array_map('trim', $post["details"]);
         $post["images"] = explode(',', $post["images"]);
+        $post["images"] = array_map('trim', $post["images"]);
         $work->update($post);
 
         return redirect()->route('supervisor.works.index')

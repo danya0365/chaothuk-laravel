@@ -25,5 +25,7 @@ Route::group(['middleware' => 'cors'], function () {
         Route::get('/me', function (Request $request) {
             return $request->user();
         });
+
+        Route::post('works', [WorkController::class, 'createWork']);
     });
 });
