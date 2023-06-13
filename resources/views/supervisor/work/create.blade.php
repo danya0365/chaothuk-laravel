@@ -41,7 +41,7 @@
                                     <input type="text" name="code" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Code">
                                 </div>
 
-                                <div>
+                                <div class="mt-4">
                                     <label class="block text-sm font-bold text-gray-700" for="title">Title</label>
                                     <input type="text" name="title" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Title">
                                 </div>

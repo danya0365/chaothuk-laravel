@@ -42,7 +42,9 @@ class WorkController extends Controller
     {
         request()->validate(Work::$rules);
 
-        $work = Work::create($request->all());
+        $post = $request->all();
+        $post["details"] = explode(', ', $post["details"]);
+        $work = Work::create($post);
 
         return redirect()->route('supervisor.works.index')
             ->with('success', 'Work created successfully.');
@@ -85,7 +87,9 @@ class WorkController extends Controller
     {
         request()->validate(Work::$rules);
 
-        $work->update($request->all());
+        $post = $request->all();
+        $post["details"] = explode(', ', $post["details"]);
+        $work->update($post);
 
         return redirect()->route('supervisor.works.index')
             ->with('success', 'Work updated successfully');

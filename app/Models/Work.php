@@ -43,6 +43,16 @@ class Work extends Model
     'author_id' => 'required',
   ];
 
+  /**
+   * The attributes that should be cast.
+   *
+   * @var array<string, string>
+   */
+  protected $casts = [
+    'details' => 'array',
+    'images' => 'array',
+  ];
+
   protected $perPage = 20;
 
   /**
