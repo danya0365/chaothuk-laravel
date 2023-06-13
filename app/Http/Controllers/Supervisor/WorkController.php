@@ -43,8 +43,8 @@ class WorkController extends Controller
         request()->validate(Work::$rules);
 
         $post = $request->all();
-        $post["details"] = explode(', ', $post["details"]);
-        $post["images"] = explode(', ', $post["images"]);
+        $post["details"] = explode(',', $post["details"]);
+        $post["images"] = explode(',', $post["images"]);
         $work = Work::create($post);
 
         return redirect()->route('supervisor.works.index')
@@ -89,8 +89,8 @@ class WorkController extends Controller
         request()->validate(Work::$rules);
 
         $post = $request->all();
-        $post["details"] = explode(', ', $post["details"]);
-        $post["images"] = explode(', ', $post["images"]);
+        $post["details"] = explode(',', $post["details"]);
+        $post["images"] = explode(',', $post["images"]);
         $work->update($post);
 
         return redirect()->route('supervisor.works.index')

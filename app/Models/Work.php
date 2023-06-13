@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class Work
@@ -61,4 +62,19 @@ class Work extends Model
    * @var array
    */
   protected $fillable = ['code', 'title', 'description', 'details', 'primary_image', 'images', 'price', 'avg_review_rating', 'display_priority', 'work_status', 'province_id', 'work_type_id', 'author_id'];
+
+  public function author(): BelongsTo
+  {
+    return $this->belongsTo(User::class, 'author_id');
+  }
+
+  public function province(): BelongsTo
+  {
+    return $this->belongsTo(Province::class, 'province_id');
+  }
+
+  public function workType(): BelongsTo
+  {
+    return $this->belongsTo(WorkType::class, 'work_type_id');
+  }
 }

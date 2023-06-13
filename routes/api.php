@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\WorkController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,9 +16,14 @@ use App\Http\Controllers\Api\AuthController;
 |
 */
 
-Route::post('/auth/register', [AuthController::class, 'createUser']);
-Route::post('/auth/login', [AuthController::class, 'loginUser']);
+Route::group(['middleware' => 'cors'], function () {
+    Route::post('/auth/register', [AuthController::class, 'createUser']);
+    Route::post('/auth/login', [AuthController::class, 'loginUser']);
+    Route::get('works', [WorkController::class, 'getWorks']);
 
-Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
-    return $request->user();
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::get('/me', function (Request $request) {
+            return $request->user();
+        });
+    });
 });
