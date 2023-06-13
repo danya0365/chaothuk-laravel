@@ -7,6 +7,9 @@ use App\Http\Controllers\RecruitBookingController;
 use App\Http\Controllers\RecruitController;
 use App\Http\Controllers\ReplyController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\Supervisor\DashboardController;
+use App\Http\Controllers\Supervisor\WorkController as SupervisorWorkController;
+use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkBookingController;
 use App\Http\Controllers\WorkController;
@@ -45,6 +48,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::group(['prefix' => 'supervisor', 'middleware' => ['auth', 'supervisor']], function () {
+    Route::get('/', [SupervisorController::class, 'index'])->name('supervisor');
+
+    Route::group(['prefix' => 'dashboard'], function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('supervisor.dashboard');
+    });
+
+    Route::group(['prefix' => 'work'], function () {
+        Route::get('/', [SupervisorWorkController::class, 'index'])->name('supervisor.work');
+    });
 });
 
 require __DIR__ . '/auth.php';
