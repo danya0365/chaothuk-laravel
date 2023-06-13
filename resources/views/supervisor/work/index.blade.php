@@ -16,7 +16,7 @@
                     <div class="inline-block min-w-full overflow-hidden align-middle border-b border-gray-200 shadow sm:rounded-lg">
 
                         @if ($message = Session::get('success'))
-                            <div class="p-3 rounded bg-green-500 text-green-100 mb-4 m-3">
+                            <div class="p-4 rounded bg-green-500 text-green-100 mb-4">
                                 <span>{{ $message }}</span>
                             </div>
                         @endif
