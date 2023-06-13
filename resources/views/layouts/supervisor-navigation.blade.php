@@ -15,10 +15,10 @@
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
                         {{ __('Home') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('supervisor')" :active="request()->routeIs('supervisor')">
+                    <x-nav-link :href="route('supervisor.index')" :active="request()->routeIs('supervisor.index')">
                         {{ __('Supervisor') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('supervisor.work')" :active="request()->routeIs('supervisor.work')">
+                    <x-nav-link :href="route('supervisor.works.index')" :active="request()->routeIs('supervisor.works.index')">
                         {{ __('Work') }}
                     </x-nav-link>
                 </div>
@@ -76,10 +76,10 @@
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
                 {{ __('Home') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('supervisor')" :active="request()->routeIs('supervisor')">
+            <x-responsive-nav-link :href="route('supervisor.index')" :active="request()->routeIs('supervisor.index')">
                 {{ __('Supervisor') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('supervisor.work')" :active="request()->routeIs('supervisor.work')">
+            <x-responsive-nav-link :href="route('supervisor.works.index')" :active="request()->routeIs('supervisor.works.index')">
                 {{ __('Work') }}
             </x-responsive-nav-link>
         </div>

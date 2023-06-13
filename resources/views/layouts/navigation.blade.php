@@ -19,7 +19,7 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('supervisor')" :active="request()->routeIs('supervisor')">
+                    <x-nav-link :href="route('supervisor.index')" :active="request()->routeIs('supervisor.index')">
                         {{ __('Supervisor') }}
                     </x-nav-link>
                     @endauth
@@ -111,7 +111,7 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('supervisor')" :active="request()->routeIs('supervisor')">
+            <x-responsive-nav-link :href="route('supervisor.index')" :active="request()->routeIs('supervisor.index')">
                 {{ __('Supervisor') }}
             </x-responsive-nav-link>
             @endauth
