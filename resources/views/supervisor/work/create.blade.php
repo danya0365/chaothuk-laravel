@@ -37,7 +37,7 @@
                                 @csrf
 
                                 <div>
-                                    <label class="block text-sm font-bold text-gray-700" for="title">Code</label>
+                                    <label class="block text-sm font-bold text-gray-700" for="code">Code</label>
                                     <input type="text" name="code" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Code">
                                 </div>
 
@@ -47,28 +47,48 @@
                                 </div>
 
                                 <div class="mt-4">
-                                    <label class="block text-sm font-bold text-gray-700" for="title">Description:</label>
+                                    <label class="block text-sm font-bold text-gray-700" for="description">Description</label>
                                     <textarea class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" name="description" placeholder="Description"></textarea>
                                 </div>
 
                                 <div class="mt-4">
-                                    <label class="block text-sm font-bold text-gray-700" for="title">Details:</label>
+                                    <label class="block text-sm font-bold text-gray-700" for="details">Details (ใส่ , เพื่อแยกข้อความ)</label>
                                     <textarea class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" name="details" placeholder="Details"></textarea>
                                 </div>
 
                                 <div class="mt-4">
-                                    <label class="block text-sm font-bold text-gray-700" for="title">Province Id</label>
+                                    <label class="block text-sm font-bold text-gray-700" for="province_id">Province Id</label>
                                     <input type="text" name="province_id" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Province Id">
                                 </div>
 
                                 <div class="mt-4">
-                                    <label class="block text-sm font-bold text-gray-700" for="title">Work Type Id</label>
+                                    <label class="block text-sm font-bold text-gray-700" for="work_type_id">Work Type Id</label>
                                     <input type="text" name="work_type_id" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Province Id">
                                 </div>
 
                                 <div class="mt-4">
-                                    <label class="block text-sm font-bold text-gray-700" for="title">Author Id</label>
+                                    <label class="block text-sm font-bold text-gray-700" for="author_id">Author Id</label>
                                     <input type="text" name="author_id" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Author Id">
+                                </div>
+
+                                <div class="mt-4">
+                                    <label class="block text-sm font-bold text-gray-700" for="primary_image">Primary Image</label>
+                                    <textarea class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" name="primary_image" placeholder="URL รูป"></textarea>
+                                </div>
+
+                                <div class="mt-4">
+                                    <label class="block text-sm font-bold text-gray-700" for="images">Gallery Images (ใส่ , เพื่อแยกรูป)</label>
+                                    <textarea class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" name="images" placeholder="URL รูปขั้นด้วย ,"></textarea>
+                                </div>
+
+                                <div class="mt-4">
+                                    <label class="block text-sm font-bold text-gray-700" for="price">Price</label>
+                                    <input type="text" name="price" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Price">
+                                </div>
+
+                                <div class="mt-4">
+                                    <label class="block text-sm font-bold text-gray-700" for="display_priority">Display Priority</label>
+                                    <input type="text" name="display_priority" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="ใส่ตัวเลข 0-99999">
                                 </div>
 
                                 <div class="flex items-center justify-start mt-4 gap-x-2">
