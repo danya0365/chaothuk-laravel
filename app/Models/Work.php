@@ -31,30 +31,24 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Work extends Model
 {
-    use SoftDeletes;
+  use SoftDeletes;
 
-    static $rules = [
-		'code' => 'required',
-		'title' => 'required',
-		'description' => 'required',
-		'details' => 'required',
-		'avg_review_rating' => 'required',
-		'display_priority' => 'required',
-		'work_status' => 'required',
-		'province_id' => 'required',
-		'work_type_id' => 'required',
-		'author_id' => 'required',
-    ];
+  static $rules = [
+    'code' => 'required',
+    'title' => 'required',
+    'description' => 'required',
+    'details' => 'required',
+    'province_id' => 'required',
+    'work_type_id' => 'required',
+    'author_id' => 'required',
+  ];
 
-    protected $perPage = 20;
+  protected $perPage = 20;
 
-    /**
-     * Attributes that should be mass-assignable.
-     *
-     * @var array
-     */
-    protected $fillable = ['code','title','description','details','primary_image','images','price','avg_review_rating','display_priority','work_status','province_id','work_type_id','author_id'];
-
-
-
+  /**
+   * Attributes that should be mass-assignable.
+   *
+   * @var array
+   */
+  protected $fillable = ['code', 'title', 'description', 'details', 'primary_image', 'images', 'price', 'avg_review_rating', 'display_priority', 'work_status', 'province_id', 'work_type_id', 'author_id'];
 }
