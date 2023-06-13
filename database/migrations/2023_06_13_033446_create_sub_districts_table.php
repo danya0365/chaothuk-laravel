@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('sub_districts', function (Blueprint $table) {
             $table->id();
+            $table->string('zip_code');
+            $table->string('name_th');
+            $table->string('name_en');
+            $table->integer('district_id')->unsigned()->index();
             $table->timestamps();
         });
     }

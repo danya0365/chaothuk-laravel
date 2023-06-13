@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('districts', function (Blueprint $table) {
             $table->id();
+            $table->string('code');
+            $table->string('name_th');
+            $table->string('name_en');
+            $table->integer('province_id')->unsigned()->index();
+
             $table->timestamps();
         });
     }
