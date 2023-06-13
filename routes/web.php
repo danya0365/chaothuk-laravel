@@ -53,10 +53,6 @@ Route::middleware('auth')->group(function () {
 Route::group(['prefix' => 'supervisor', 'middleware' => ['auth', 'supervisor']], function () {
     Route::get('/', [SupervisorController::class, 'index'])->name('supervisor');
 
-    Route::group(['prefix' => 'dashboard'], function () {
-        Route::get('/', [DashboardController::class, 'index'])->name('supervisor.dashboard');
-    });
-
     Route::group(['prefix' => 'work'], function () {
         Route::get('/', [SupervisorWorkController::class, 'index'])->name('supervisor.work');
     });

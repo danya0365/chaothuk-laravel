@@ -15,8 +15,8 @@
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
                         {{ __('Home') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('supervisor.dashboard')" :active="request()->routeIs('supervisor.dashboard')">
-                        {{ __('Dashboard') }}
+                    <x-nav-link :href="route('supervisor')" :active="request()->routeIs('supervisor')">
+                        {{ __('Supervisor') }}
                     </x-nav-link>
                     <x-nav-link :href="route('supervisor.work')" :active="request()->routeIs('supervisor.work')">
                         {{ __('Work') }}
@@ -76,8 +76,8 @@
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
                 {{ __('Home') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('supervisor.dashboard')" :active="request()->routeIs('supervisor.dashboard')">
-                {{ __('Dashboard') }}
+            <x-responsive-nav-link :href="route('supervisor')" :active="request()->routeIs('supervisor')">
+                {{ __('Supervisor') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('supervisor.work')" :active="request()->routeIs('supervisor.work')">
                 {{ __('Work') }}
