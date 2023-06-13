@@ -24,8 +24,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return redirect('login');
-});
+    return view('home');
+})->name('home');
 
 Route::resource('users', UserController::class);
 Route::resource('geographies', GeographyController::class);
