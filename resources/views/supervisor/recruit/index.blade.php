@@ -25,7 +25,7 @@
                             <thead class="bg-gray-50 text-gray-600 font-medium border-b">
                                 <tr>
                                     <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">No</th>
-                                    <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">Code</th>
+                                    <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">Budget</th>
                                     <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">Title</th>
                                     <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50" width="180px">Action</th>
                                 </tr>
@@ -34,7 +34,7 @@
                                 @forelse ($recruits as $recruit)
                                 <tr>
                                     <td class="px-6 whitespace-no-wrap border-b border-gray-200">{{ ++$i }}</td>
-                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">{{ $recruit->code }}</td>
+                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">{{ number_format($recruit->budget) }}</td>
                                     <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">{{ $recruit->title }}</td>
                                     <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
                                         <form action="{{ route('supervisor.recruits.destroy', $recruit->id) }}" method="POST">

@@ -1,6 +1,6 @@
 <x-supervisor-layout>
     <x-slot name="header">
-        @include('supervisor.work.header')
+        @include('supervisor.recruit.header')
     </x-slot>
 
     <div class="py-12">
@@ -8,10 +8,10 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="mb-4">
                 <h1 class="text-3xl font-bold">
-                    Create New Work
+                    Create New Recruit
                 </h1>
                 <div class="flex justify-end mt-5">
-                    <a class="px-2 py-1 rounded-md bg-sky-500 text-sky-100 hover:bg-sky-600" href="{{ route('supervisor.works.index') }}">
+                    <a class="px-2 py-1 rounded-md bg-sky-500 text-sky-100 hover:bg-sky-600" href="{{ route('supervisor.recruits.index') }}">
                         < Back</a>
                 </div>
             </div>
@@ -33,14 +33,9 @@
 
                         <div class="w-full px-6 py-4 bg-white rounded shadow-md ring-1 ring-gray-900/10">
 
-                            <form action="{{ route('supervisor.works.store') }}" method="POST">
+                            <form action="{{ route('supervisor.recruits.store') }}" method="POST">
                                 @csrf
-
-                                <div>
-                                    <label class="block text-sm font-bold text-gray-700" for="code">Code</label>
-                                    <input type="text" name="code" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Code">
-                                </div>
-
+                                
                                 <div class="mt-4">
                                     <label class="block text-sm font-bold text-gray-700" for="title">Title</label>
                                     <input type="text" name="title" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Title">
@@ -52,23 +47,18 @@
                                 </div>
 
                                 <div class="mt-4">
-                                    <label class="block text-sm font-bold text-gray-700" for="details">Details (ใส่ , เพื่อแยกข้อความ)</label>
-                                    <textarea class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" name="details" placeholder="Details"></textarea>
-                                </div>
-
-                                <div class="mt-4">
                                     <label class="block text-sm font-bold text-gray-700" for="province_id">Province Id</label>
-                                    <input type="text" name="province_id" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Province Id">
+                                    <input type="number" name="province_id" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Province Id">
                                 </div>
 
                                 <div class="mt-4">
                                     <label class="block text-sm font-bold text-gray-700" for="work_type_id">Work Type Id</label>
-                                    <input type="text" name="work_type_id" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Province Id">
+                                    <input type="number" name="work_type_id" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Province Id">
                                 </div>
 
                                 <div class="mt-4">
                                     <label class="block text-sm font-bold text-gray-700" for="author_id">Author Id</label>
-                                    <input type="text" name="author_id" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Author Id">
+                                    <input type="number" name="author_id" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Author Id">
                                 </div>
 
                                 <div class="mt-4">
@@ -82,13 +72,13 @@
                                 </div>
 
                                 <div class="mt-4">
-                                    <label class="block text-sm font-bold text-gray-700" for="price">Price</label>
-                                    <input type="text" name="price" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Price">
+                                    <label class="block text-sm font-bold text-gray-700" for="budget">Budget</label>
+                                    <input type="number" name="budget" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="ใส่จำนวนบาท">
                                 </div>
 
                                 <div class="mt-4">
                                     <label class="block text-sm font-bold text-gray-700" for="display_priority">Display Priority</label>
-                                    <input type="text" name="display_priority" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="ใส่ตัวเลข 0-99999">
+                                    <input type="number" name="display_priority" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="ใส่ตัวเลข 0-99999">
                                 </div>
 
                                 <div class="flex items-center justify-start mt-4 gap-x-2">
