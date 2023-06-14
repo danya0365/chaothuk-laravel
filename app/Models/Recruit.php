@@ -31,7 +31,6 @@ class Recruit extends Model
   use SoftDeletes;
 
   static $rules = [
-    'code' => 'required',
     'title' => 'required',
     'description' => 'required',
     'province_id' => 'required',
