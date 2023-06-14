@@ -30,6 +30,7 @@ Route::group(['middleware' => 'cors'], function () {
 
         Route::get('me', [MeController::class, 'getMe']);
         Route::post('me', [MeController::class, 'updateMe']);
+        Route::post('me/password', [MeController::class, 'updatePassword']);
         Route::post('works', [WorkController::class, 'createWork']);
         Route::post('recruits', [RecruitController::class, 'createRecruit']);
     });

@@ -66,4 +66,42 @@ class MeController extends Controller
             ], 500);
         }
     }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updatePassword(Request $request)
+    {
+        $post = $request->all();
+
+        $validatedRequest = Validator::make($post, [
+            'password' => 'required|between:6,30',
+        ]);
+
+        if ($validatedRequest->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'validation error',
+                'errors' => $validatedRequest->errors()
+            ], 401);
+        }
+
+        try {
+            $user = User::find($request->user()->id);
+            $post['password'] = Hash::make(trim($post['password']));
+            $user->update($post);
+            return response()->json([
+                'status' => true,
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
 }
