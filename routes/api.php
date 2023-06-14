@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\RecruitController;
 use App\Http\Controllers\Api\WorkController;
@@ -26,10 +27,9 @@ Route::group(['middleware' => 'cors'], function () {
     Route::get('provinces', [ProvinceController::class, 'getProvinces']);
 
     Route::group(['middleware' => 'auth:sanctum'], function () {
-        Route::get('/me', function (Request $request) {
-            return $request->user();
-        });
 
+        Route::get('me', [MeController::class, 'getMe']);
+        Route::post('me', [MeController::class, 'updateMe']);
         Route::post('works', [WorkController::class, 'createWork']);
         Route::post('recruits', [RecruitController::class, 'createRecruit']);
     });
