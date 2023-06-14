@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Supervisor;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -43,6 +44,7 @@ class UserController extends Controller
         request()->validate(User::$rules);
 
         $post = $request->all();
+        $post['password'] = Hash::make($post['password']);
         $user = User::create($post);
 
         return redirect()->route('supervisor.users.index')
@@ -87,6 +89,11 @@ class UserController extends Controller
         request()->validate(User::$rules);
 
         $post = $request->all();
+        if (trim($post['password'])) {
+            $post['password'] = Hash::make(trim($post['password']));
+        } else {
+            unset($post['password']);
+        }
         $user->update($post);
 
         return redirect()->route('supervisor.users.index')
