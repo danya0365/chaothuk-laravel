@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Supervisor\RecruitController;
 use App\Http\Controllers\Supervisor\UserController;
 use App\Http\Controllers\Supervisor\WorkController;
 use App\Http\Controllers\SupervisorController;
@@ -40,6 +41,7 @@ Route::group(['prefix' => 'supervisor', 'as' => 'supervisor.', 'middleware' => [
     // });
     Route::resource('works', WorkController::class);
     Route::resource('users', UserController::class);
+    Route::resource('recruits', RecruitController::class);
 });
 
 require __DIR__ . '/auth.php';

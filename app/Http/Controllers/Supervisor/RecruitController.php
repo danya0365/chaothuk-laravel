@@ -1,14 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Supervisor;
 
+use App\Http\Controllers\Controller;
 use App\Models\Recruit;
 use Illuminate\Http\Request;
 
-/**
- * Class RecruitController
- * @package App\Http\Controllers
- */
 class RecruitController extends Controller
 {
     /**
@@ -20,7 +17,7 @@ class RecruitController extends Controller
     {
         $recruits = Recruit::paginate();
 
-        return view('recruit.index', compact('recruits'))
+        return view('supervisor.recruit.index', compact('recruits'))
             ->with('i', (request()->input('page', 1) - 1) * $recruits->perPage());
     }
 
@@ -32,7 +29,7 @@ class RecruitController extends Controller
     public function create()
     {
         $recruit = new Recruit();
-        return view('recruit.create', compact('recruit'));
+        return view('supervisor.recruit.create', compact('recruit'));
     }
 
     /**
@@ -45,9 +42,12 @@ class RecruitController extends Controller
     {
         request()->validate(Recruit::$rules);
 
-        $recruit = Recruit::create($request->all());
+        $post = $request->all();
+        $post["images"] = explode(',', $post["images"]);
+        $post["images"] = array_map('trim', $post["images"]);
+        $recruit = Recruit::create($post);
 
-        return redirect()->route('recruits.index')
+        return redirect()->route('supervisor.recruits.index')
             ->with('success', 'Recruit created successfully.');
     }
 
@@ -61,7 +61,7 @@ class RecruitController extends Controller
     {
         $recruit = Recruit::find($id);
 
-        return view('recruit.show', compact('recruit'));
+        return view('supervisor.recruit.show', compact('recruit'));
     }
 
     /**
@@ -74,7 +74,7 @@ class RecruitController extends Controller
     {
         $recruit = Recruit::find($id);
 
-        return view('recruit.edit', compact('recruit'));
+        return view('supervisor.recruit.edit', compact('recruit'));
     }
 
     /**
@@ -88,9 +88,12 @@ class RecruitController extends Controller
     {
         request()->validate(Recruit::$rules);
 
-        $recruit->update($request->all());
+        $post = $request->all();
+        $post["images"] = explode(',', $post["images"]);
+        $post["images"] = array_map('trim', $post["images"]);
+        $recruit->update($post);
 
-        return redirect()->route('recruits.index')
+        return redirect()->route('supervisor.recruits.index')
             ->with('success', 'Recruit updated successfully');
     }
 
@@ -103,7 +106,7 @@ class RecruitController extends Controller
     {
         $recruit = Recruit::find($id)->delete();
 
-        return redirect()->route('recruits.index')
+        return redirect()->route('supervisor.recruits.index')
             ->with('success', 'Recruit deleted successfully');
     }
 }
