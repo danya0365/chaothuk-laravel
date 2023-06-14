@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -45,4 +46,14 @@ class User extends Authenticatable
         'name' => 'required',
         'email' => 'required',
     ];
+
+    public function permission(): BelongsTo
+    {
+        return $this->belongsTo(UserPermission::class, 'id');
+    }
+
+    public function isCanAccessSupervisor(): Bool
+    {
+        return $this->permission()->get()->first()->is_can_access_supervisor;
+    }
 }

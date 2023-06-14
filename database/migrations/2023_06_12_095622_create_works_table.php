@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('title');
             $table->longText('description');
-            $table->longText('details');
+            $table->longText('details')->nullable();
             $table->string('primary_image')->nullable();
             $table->longText('images')->nullable();
             $table->float('price')->nullable();
