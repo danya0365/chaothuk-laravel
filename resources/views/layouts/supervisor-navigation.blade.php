@@ -13,16 +13,19 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
-                        {{ __('Home') }}
+                        {{ __('หน้าแรก') }}
                     </x-nav-link>
                     <x-nav-link :href="route('supervisor.index')" :active="request()->routeIs('supervisor.index')">
-                        {{ __('Supervisor') }}
+                        {{ __('ผู้บริหารสูงสุด') }}
                     </x-nav-link>
                     <x-nav-link :href="route('supervisor.works.index')" :active="request()->routeIs('supervisor.works.index')">
-                        {{ __('Work') }}
+                        {{ __('รับงาน') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('supervisor.recruits.index')" :active="request()->routeIs('supervisor.recruits.index')">
+                        {{ __('หางาน') }}
                     </x-nav-link>
                     <x-nav-link :href="route('supervisor.users.index')" :active="request()->routeIs('supervisor.users.index')">
-                        {{ __('User') }}
+                        {{ __('ไอดีล็อกอิน') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -77,16 +80,19 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
-                {{ __('Home') }}
+                {{ __('หน้าแรก') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('supervisor.index')" :active="request()->routeIs('supervisor.index')">
-                {{ __('Supervisor') }}
+                {{ __('ผู้บริหารสูงสุด') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('supervisor.works.index')" :active="request()->routeIs('supervisor.works.index')">
-                {{ __('Work') }}
+                {{ __('รับงาน') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('supervisor.recruits.index')" :active="request()->routeIs('supervisor.recruits.index')">
+                {{ __('หางาน') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('supervisor.users.index')" :active="request()->routeIs('supervisor.users.index')">
-                {{ __('User') }}
+                {{ __('ไอดีล็อกอิน') }}
             </x-responsive-nav-link>
         </div>
 
