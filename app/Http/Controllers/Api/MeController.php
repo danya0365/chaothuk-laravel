@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -103,5 +104,19 @@ class MeController extends Controller
                 'message' => $th->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Get User Notification
+     * @param Request $request
+     * @return User 
+     */
+    public function getUserNotifications(Request $request)
+    {
+        $data = UserNotification::paginate($request->all());
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+        ], 200);
     }
 }
