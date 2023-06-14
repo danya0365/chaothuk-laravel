@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Supervisor;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
-/**
- * Class UserController
- * @package App\Http\Controllers
- */
 class UserController extends Controller
 {
     /**
@@ -20,7 +18,7 @@ class UserController extends Controller
     {
         $users = User::paginate();
 
-        return view('user.index', compact('users'))
+        return view('supervisor.user.index', compact('users'))
             ->with('i', (request()->input('page', 1) - 1) * $users->perPage());
     }
 
@@ -32,7 +30,7 @@ class UserController extends Controller
     public function create()
     {
         $user = new User();
-        return view('user.create', compact('user'));
+        return view('supervisor.user.create', compact('user'));
     }
 
     /**
@@ -45,9 +43,11 @@ class UserController extends Controller
     {
         request()->validate(User::$rules);
 
-        $user = User::create($request->all());
+        $post = $request->all();
+        $post['password'] = Hash::make($post['password']);
+        $user = User::create($post);
 
-        return redirect()->route('users.index')
+        return redirect()->route('supervisor.users.index')
             ->with('success', 'User created successfully.');
     }
 
@@ -61,7 +61,7 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
-        return view('user.show', compact('user'));
+        return view('supervisor.user.show', compact('user'));
     }
 
     /**
@@ -74,7 +74,7 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
-        return view('user.edit', compact('user'));
+        return view('supervisor.user.edit', compact('user'));
     }
 
     /**
@@ -88,9 +88,15 @@ class UserController extends Controller
     {
         request()->validate(User::$rules);
 
-        $user->update($request->all());
+        $post = $request->all();
+        if (trim($post['password'])) {
+            $post['password'] = Hash::make(trim($post['password']));
+        } else {
+            unset($post['password']);
+        }
+        $user->update($post);
 
-        return redirect()->route('users.index')
+        return redirect()->route('supervisor.users.index')
             ->with('success', 'User updated successfully');
     }
 
@@ -103,7 +109,7 @@ class UserController extends Controller
     {
         $user = User::find($id)->delete();
 
-        return redirect()->route('users.index')
+        return redirect()->route('supervisor.users.index')
             ->with('success', 'User deleted successfully');
     }
 }

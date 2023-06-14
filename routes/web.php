@@ -1,16 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\GeographyController;
-use App\Http\Controllers\ProvinceController;
-use App\Http\Controllers\RecruitBookingController;
-use App\Http\Controllers\RecruitController;
-use App\Http\Controllers\ReplyController;
-use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\Supervisor\UserController;
 use App\Http\Controllers\Supervisor\WorkController;
 use App\Http\Controllers\SupervisorController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\WorkBookingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,6 +39,7 @@ Route::group(['prefix' => 'supervisor', 'as' => 'supervisor.', 'middleware' => [
     //     Route::resource('posts', PostController::class);
     // });
     Route::resource('works', WorkController::class);
+    Route::resource('users', UserController::class);
 });
 
 require __DIR__ . '/auth.php';

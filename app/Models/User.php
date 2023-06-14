@@ -56,4 +56,21 @@ class User extends Authenticatable
     {
         return $this->permission()->get()->first()->is_can_access_supervisor;
     }
+
+    public function getFullName(): string
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function getAvatar($size = 64): string
+    {
+        $fullName = trim($this->getFullName());
+        $name = $fullName ? $fullName : $this->name;
+        return $this->profile_image ?? "https://ui-avatars.com/api/?name={$name}&background=0D8ABC&color=fff&size={$size}";
+    }
+
+    public function getCoverImage($size = "1200x600"): string
+    {
+        return $this->profile_image ?? "https://placehold.co/{$size}?text=Cover+Photo";
+    }
 }

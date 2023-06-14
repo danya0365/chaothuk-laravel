@@ -21,6 +21,9 @@
                     <x-nav-link :href="route('supervisor.works.index')" :active="request()->routeIs('supervisor.works.index')">
                         {{ __('Work') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('supervisor.users.index')" :active="request()->routeIs('supervisor.users.index')">
+                        {{ __('User') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -81,6 +84,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('supervisor.works.index')" :active="request()->routeIs('supervisor.works.index')">
                 {{ __('Work') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('supervisor.users.index')" :active="request()->routeIs('supervisor.users.index')">
+                {{ __('User') }}
             </x-responsive-nav-link>
         </div>
 
