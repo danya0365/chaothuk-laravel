@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserNotification;
+use App\Models\WorkLike;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -113,7 +114,25 @@ class MeController extends Controller
      */
     public function getUserNotifications(Request $request)
     {
-        $data = UserNotification::paginate($request->all());
+        $data = UserNotification::where('author_id', $request->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate($request->all());
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+        ], 200);
+    }
+
+    /**
+     * Get Like Work
+     * @param Request $request
+     * @return User 
+     */
+    public function getLikeWork(Request $request)
+    {
+        $data = WorkLike::with('work')->has('work')->where('author_id', $request->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate($request->all());
         return response()->json([
             'status' => true,
             'data' => $data,

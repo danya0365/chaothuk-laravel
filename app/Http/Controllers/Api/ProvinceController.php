@@ -16,7 +16,7 @@ class ProvinceController extends Controller
      */
     public function getProvinces(Request $request)
     {
-        $data = Province::all();
+        $data = Province::orderBy('id', 'asc')->get();
         return response()->json([
             'status' => true,
             'data' => $data,

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -20,21 +21,23 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class WorkType extends Model
 {
-    use SoftDeletes;
+  use SoftDeletes;
 
-    static $rules = [
-		'title' => 'required',
-    ];
+  static $rules = [
+    'title' => 'required',
+  ];
 
-    protected $perPage = 20;
+  protected $perPage = 20;
 
-    /**
-     * Attributes that should be mass-assignable.
-     *
-     * @var array
-     */
-    protected $fillable = ['title','image'];
+  /**
+   * Attributes that should be mass-assignable.
+   *
+   * @var array
+   */
+  protected $fillable = ['title', 'image'];
 
-
-
+  public function workType(): HasMany
+  {
+    return $this->hasMany(Work::class, 'work_type_id');
+  }
 }

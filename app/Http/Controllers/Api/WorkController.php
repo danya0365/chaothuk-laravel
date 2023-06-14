@@ -16,7 +16,7 @@ class WorkController extends Controller
      */
     public function getWorks(Request $request)
     {
-        $data = Work::with(['author', 'province', 'workType'])->paginate(request()->all());
+        $data = Work::with(['author', 'province', 'workType'])->orderBy('created_at', 'desc')->paginate(request()->all());
         return response()->json([
             'status' => true,
             'data' => $data,

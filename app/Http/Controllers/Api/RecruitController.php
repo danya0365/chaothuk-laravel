@@ -16,7 +16,7 @@ class RecruitController extends Controller
      */
     public function getRecruits(Request $request)
     {
-        $data = Recruit::with(['author', 'province', 'workType'])->paginate(request()->all());
+        $data = Recruit::with(['author', 'province', 'workType'])->orderBy('created_at', 'desc')->paginate(request()->all());
         return response()->json([
             'status' => true,
             'data' => $data,
