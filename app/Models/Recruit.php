@@ -72,4 +72,9 @@ class Recruit extends Model
   {
     return $this->belongsTo(WorkType::class, 'work_type_id');
   }
+
+  public function notifications()
+  {
+    return $this->morphMany(UserNotification::class, 'notificationable');
+  }
 }

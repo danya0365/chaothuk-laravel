@@ -45,4 +45,9 @@ class UserNotification extends Model
   {
     return $this->belongsTo(User::class, 'user_id');
   }
+
+  public function notificationable()
+  {
+    return $this->morphTo();
+  }
 }

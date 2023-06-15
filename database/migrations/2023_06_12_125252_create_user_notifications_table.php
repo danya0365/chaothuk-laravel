@@ -14,10 +14,10 @@ return new class extends Migration
     {
         Schema::create('user_notifications', function (Blueprint $table) {
             $table->id();
+            $table->morphs('notificationable');
             $table->string('title')->nullable();
             $table->string('message')->nullable();
             $table->string('notification_type', 100);
-            $table->integer('review_id')->unsigned()->index();
             $table->integer('author_id')->unsigned()->index();
             $table->timestamps();
             $table->softDeletes();

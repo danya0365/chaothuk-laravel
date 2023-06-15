@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('author_id')->unsigned()->index();
             $table->timestamps();
             $table->softDeletes();
+            $table->unique(['reply_id', 'author_id']);
         });
     }
 

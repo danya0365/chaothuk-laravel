@@ -27,25 +27,27 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class WorkBooking extends Model
 {
-    use SoftDeletes;
+  use SoftDeletes;
 
-    static $rules = [
-		'booking_status' => 'required',
-		'customer_confirm_status' => 'required',
-		'worker_confirm_status' => 'required',
-		'author_id' => 'required',
-		'work_id' => 'required',
-    ];
+  static $rules = [
+    'booking_status' => 'required',
+    'customer_confirm_status' => 'required',
+    'worker_confirm_status' => 'required',
+    'author_id' => 'required',
+    'work_id' => 'required',
+  ];
 
-    protected $perPage = 20;
+  protected $perPage = 20;
 
-    /**
-     * Attributes that should be mass-assignable.
-     *
-     * @var array
-     */
-    protected $fillable = ['customer_message','mobile_phone','latitude','longitude','booking_status','customer_confirm_status','worker_confirm_status','author_id','work_id'];
+  /**
+   * Attributes that should be mass-assignable.
+   *
+   * @var array
+   */
+  protected $fillable = ['customer_message', 'mobile_phone', 'latitude', 'longitude', 'booking_status', 'customer_confirm_status', 'worker_confirm_status', 'author_id', 'work_id'];
 
-
-
+  public function notifications()
+  {
+    return $this->morphMany(UserNotification::class, 'notificationable');
+  }
 }

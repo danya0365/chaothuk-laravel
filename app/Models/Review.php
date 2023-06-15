@@ -23,23 +23,25 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Review extends Model
 {
-    use SoftDeletes;
+  use SoftDeletes;
 
-    static $rules = [
-		'rating' => 'required',
-		'author_id' => 'required',
-		'work_id' => 'required',
-    ];
+  static $rules = [
+    'rating' => 'required',
+    'author_id' => 'required',
+    'work_id' => 'required',
+  ];
 
-    protected $perPage = 20;
+  protected $perPage = 20;
 
-    /**
-     * Attributes that should be mass-assignable.
-     *
-     * @var array
-     */
-    protected $fillable = ['title','message','rating','author_id','work_id'];
+  /**
+   * Attributes that should be mass-assignable.
+   *
+   * @var array
+   */
+  protected $fillable = ['title', 'message', 'rating', 'author_id', 'work_id'];
 
-
-
+  public function notifications()
+  {
+    return $this->morphMany(UserNotification::class, 'notificationable');
+  }
 }

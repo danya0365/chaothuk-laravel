@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\MeController;
+use App\Http\Controllers\Api\UploadController;
 use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\RecruitController;
 use App\Http\Controllers\Api\WorkController;
@@ -35,6 +36,8 @@ Route::group(['middleware' => 'cors'], function () {
         Route::get('me/work-likes', [MeController::class, 'getLikeWork']);
         Route::post('/auth/logout', [AuthController::class, 'logoutUser']);
         Route::post('works', [WorkController::class, 'createWork']);
+        Route::post('works/{workId}/likes', [WorkController::class, 'createWorkLike']);
         Route::post('recruits', [RecruitController::class, 'createRecruit']);
+        Route::post('upload/photo', [UploadController::class, 'uploadPhoto']);
     });
 });
