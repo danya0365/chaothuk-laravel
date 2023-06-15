@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\UploadController;
 use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\RecruitController;
 use App\Http\Controllers\Api\WorkController;
+use App\Http\Controllers\Api\WorkTypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,7 @@ Route::group(['middleware' => 'cors'], function () {
     Route::post('/auth/register', [AuthController::class, 'createUser']);
     Route::post('/auth/login', [AuthController::class, 'loginUser']);
     Route::get('works', [WorkController::class, 'getWorks']);
+    Route::get('work-types', [WorkTypeController::class, 'getWorkTypes']);
     Route::get('recruits', [RecruitController::class, 'getRecruits']);
     Route::get('provinces', [ProvinceController::class, 'getProvinces']);
 
