@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\WorkTypeCollection;
 use App\Models\WorkType;
 use Illuminate\Http\Request;
 
@@ -18,7 +19,7 @@ class WorkTypeController extends Controller
         $data = WorkType::orderBy('title', 'asc')->get();
         return response()->json([
             'status' => true,
-            'data' => $data,
+            'data' => new WorkTypeCollection($data),
         ], 200);
     }
 }
