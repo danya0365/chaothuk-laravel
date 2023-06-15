@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('code');
             $table->string('name_th');
             $table->string('name_en');
+            $table->string('image')->nullable();
             $table->integer('geography_id')->unsigned()->index();
             $table->timestamps();
         });
