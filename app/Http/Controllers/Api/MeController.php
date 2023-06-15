@@ -116,7 +116,7 @@ class MeController extends Controller
     {
         $data = UserNotification::where('author_id', $request->user()->id)
             ->orderBy('created_at', 'desc')
-            ->paginate($request->all());
+            ->limitOffset(request()->all())->get();
         return response()->json([
             'status' => true,
             'data' => $data,
@@ -132,7 +132,7 @@ class MeController extends Controller
     {
         $data = WorkLike::with('work')->has('work')->where('author_id', $request->user()->id)
             ->orderBy('created_at', 'desc')
-            ->paginate($request->all());
+            ->limitOffset(request()->all())->get();
         return response()->json([
             'status' => true,
             'data' => $data,

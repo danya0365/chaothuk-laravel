@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Scopes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,7 +25,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class UserNotification extends Model
 {
-  use SoftDeletes;
+  use SoftDeletes, Scopes;
 
   static $rules = [
     'notification_type' => 'required',
