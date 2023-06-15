@@ -27,6 +27,9 @@
                     <x-nav-link :href="route('supervisor.users.index')" :active="request()->routeIs('supervisor.users.index')">
                         {{ __('ไอดีล็อกอิน') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('supervisor.work-types.index')" :active="request()->routeIs('supervisor.work-types.index')">
+                        {{ __('ประเภทงาน') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -93,6 +96,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('supervisor.users.index')" :active="request()->routeIs('supervisor.users.index')">
                 {{ __('ไอดีล็อกอิน') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('supervisor.work-types.index')" :active="request()->routeIs('supervisor.work-types.index')">
+                {{ __('ประเภทงาน') }}
             </x-responsive-nav-link>
         </div>
 
