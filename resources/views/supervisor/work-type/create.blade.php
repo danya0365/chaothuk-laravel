@@ -36,13 +36,15 @@
                             <form action="{{ route('supervisor.work-types.store') }}" method="POST">
                                 @csrf
 
-                                <div class="mt-4">
-                                    <label class="block text-sm font-bold text-gray-700" for="title">Title</label>
-                                    <input type="text" name="title" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Title">
-                                </div>
+                                <div class="flex flex-col space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-bold text-gray-700" for="title">Title</label>
+                                        <input type="text" name="title" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Title">
+                                    </div>
 
-                                <div class="flex items-center justify-start mt-4 gap-x-2">
-                                    <button type="submit" class="px-6 py-2 text-sm font-semibold rounded-md shadow-md text-green-100 bg-green-500 hover:bg-green-700 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300">Submit</button>
+                                    <div class="flex items-center justify-start mt-4 gap-x-2">
+                                        <button type="submit" class="px-6 py-2 text-sm font-semibold rounded-md shadow-md text-green-100 bg-green-500 hover:bg-green-700 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300">Submit</button>
+                                    </div>
                                 </div>
 
                             </form>
