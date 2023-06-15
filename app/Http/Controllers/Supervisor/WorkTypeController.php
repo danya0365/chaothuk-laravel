@@ -43,10 +43,6 @@ class WorkTypeController extends Controller
         request()->validate(WorkType::$rules);
 
         $post = $request->all();
-        $post["details"] = explode(',', $post["details"]);
-        $post["details"] = array_map('trim', $post["details"]);
-        $post["images"] = explode(',', $post["images"]);
-        $post["images"] = array_map('trim', $post["images"]);
         $workType = WorkType::create($post);
 
         return redirect()->route('supervisor.work-types.index')
@@ -91,10 +87,6 @@ class WorkTypeController extends Controller
         request()->validate(WorkType::$rules);
 
         $post = $request->all();
-        $post["details"] = explode(',', $post["details"]);
-        $post["details"] = array_map('trim', $post["details"]);
-        $post["images"] = explode(',', $post["images"]);
-        $post["images"] = array_map('trim', $post["images"]);
         $workType->update($post);
 
         return redirect()->route('supervisor.work-types.index')
