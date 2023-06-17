@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserNotification;
+use App\Models\Work;
 use App\Models\WorkLike;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -114,12 +115,38 @@ class MeController extends Controller
      */
     public function getUserNotifications(Request $request)
     {
-        $data = UserNotification::where('author_id', $request->user()->id)
+        $data = $request->user()->notifications()
+            ->with('notificationable')
             ->orderBy('created_at', 'desc')
             ->limitOffset(request()->all())->get();
+
+        // Transform the comments into the desired response format
+        $dataList = $data->map(function ($notification) {
+
+            $notificationable =  $notification->notificationable;
+            if ($notificationable instanceof Work) {
+                $notificationable = [
+                    'id' => $notificationable->id,
+                    'title' => $notificationable->title,
+                    'primary_image' => $notificationable->primary_image,
+                ];
+            }
+
+            $commentData = [
+                'id' => $notification->id,
+                'title' => $notification->title,
+                'message' => $notification->message,
+                'created_at' => $notification->created_at,
+                'notification_type' => $notification->notification_type,
+                'notificationable' => $notificationable,
+            ];
+
+            return $commentData;
+        });
+
         return response()->json([
             'status' => true,
-            'data' => $data,
+            'data' => $dataList,
         ], 200);
     }
 
@@ -130,9 +157,10 @@ class MeController extends Controller
      */
     public function getLikeWork(Request $request)
     {
-        $data = WorkLike::with('work')->has('work')->where('author_id', $request->user()->id)
+        $data = $request->user()->likedWorks()
             ->orderBy('created_at', 'desc')
             ->limitOffset(request()->all())->get();
+
         return response()->json([
             'status' => true,
             'data' => $data,
