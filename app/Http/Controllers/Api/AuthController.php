@@ -25,14 +25,16 @@ class AuthController extends Controller
                 [
                     'name' => 'required',
                     'email' => 'required|email|unique:users,email',
-                    'password' => 'required'
+                    'password' => 'required',
+                    'first_name' => 'required',
+                    'last_name' => 'required',
                 ]
             );
 
             if ($validateUser->fails()) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'validation error',
+                    'message' => implode(",", $validateUser->messages()->all()),
                     'errors' => $validateUser->errors()
                 ], 401);
             }
@@ -40,7 +42,9 @@ class AuthController extends Controller
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make($request->password)
+                'password' => Hash::make($request->password),
+                'first_name' => $request->first_name,
+                'last_name' => $request->email,
             ]);
 
             return response()->json([
@@ -75,16 +79,16 @@ class AuthController extends Controller
             if ($validateUser->fails()) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'validation error',
+                    'message' => implode(",", $validateUser->messages()->all()),
                     'errors' => $validateUser->errors()
-                ], 401);
+                ], 200);
             }
 
             if (!Auth::attempt($request->only(['email', 'password']))) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Email & Password does not match with our record.',
-                ], 401);
+                ], 200);
             }
 
             $user = User::where('email', $request->email)->first();

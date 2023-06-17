@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('user_notifications', function (Blueprint $table) {
             $table->id();
-            $table->morphs('notificationable');
+            $table->morphs('notificationable', 'notificationable_morpf_key');
             $table->string('title')->nullable();
             $table->string('message')->nullable();
             $table->string('notification_type', 100);

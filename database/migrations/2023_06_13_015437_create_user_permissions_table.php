@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('user_permissions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('user_id')->unique();
+            $table->unsignedBigInteger('user_id')->unique();
             $table->boolean('is_can_create_recruit')->default(0);
             $table->boolean('is_can_create_work')->default(0);
             $table->boolean('is_can_review_work')->default(0);

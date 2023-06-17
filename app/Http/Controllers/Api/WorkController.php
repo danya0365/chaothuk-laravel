@@ -28,6 +28,22 @@ class WorkController extends Controller
     }
 
     /**
+     * Get Top Hit Works
+     * @param Request $request
+     * @return User 
+     */
+    public function getTopHits(Request $request)
+    {
+        $data = Work::with(['author', 'province', 'workType'])
+            ->orderBy('display_priority', 'desc')
+            ->limitOffset(request()->all())->get();
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+        ], 200);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request

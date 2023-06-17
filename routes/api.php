@@ -25,6 +25,8 @@ Route::group(['middleware' => 'cors'], function () {
     Route::post('/auth/register', [AuthController::class, 'createUser']);
     Route::post('/auth/login', [AuthController::class, 'loginUser']);
     Route::get('works', [WorkController::class, 'getWorks']);
+    Route::get('works/top-hits', [WorkController::class, 'getTopHits'])->name('works/top-hits');
+
     Route::get('work-types', [WorkTypeController::class, 'getWorkTypes']);
     Route::get('recruits', [RecruitController::class, 'getRecruits']);
     Route::get('provinces', [ProvinceController::class, 'getProvinces']);
