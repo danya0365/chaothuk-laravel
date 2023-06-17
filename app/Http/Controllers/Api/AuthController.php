@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\UserPermission;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -46,6 +47,15 @@ class AuthController extends Controller
                 'first_name' => $request->first_name,
                 'last_name' => $request->email,
             ]);
+
+            $userPermission = new UserPermission();
+            $userPermission->is_can_create_recruit = 1;
+            $userPermission->is_can_create_work = 1;
+            $userPermission->is_can_review_work = 1;
+            $userPermission->is_can_reply_review = 1;
+            $userPermission->is_can_access_supervisor = 0;
+            $userPermission->is_can_access_admin = 0;
+            $user->permission()->save($userPermission);
 
             return response()->json([
                 'status' => true,
