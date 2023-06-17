@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserLikeWorkCollection;
 use App\Http\Resources\UserNotificationCollection;
 use App\Models\User;
 use App\Models\UserNotification;
@@ -135,12 +136,16 @@ class MeController extends Controller
     public function getLikeWork(Request $request)
     {
         $data = $request->user()->likedWorks()
+            ->with('author')
+            ->with('province')
+            ->with('workType')
+            ->with('author')
             ->orderBy('created_at', 'desc')
             ->limitOffset(request()->all())->get();
 
         return response()->json([
             'status' => true,
-            'data' => $data,
+            'data' => new UserLikeWorkCollection($data),
         ], 200);
     }
 }

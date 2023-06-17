@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\NotificationType;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TopHitWorkCollection;
+use App\Http\Resources\WorkCollection;
 use App\Models\UserNotification;
 use App\Models\Work;
 use App\Models\WorkLike;
@@ -24,7 +26,7 @@ class WorkController extends Controller
             ->limitOffset(request()->all())->get();
         return response()->json([
             'status' => true,
-            'data' => $data,
+            'data' => new WorkCollection($data),
         ], 200);
     }
 
@@ -40,7 +42,7 @@ class WorkController extends Controller
             ->limitOffset(request()->all())->get();
         return response()->json([
             'status' => true,
-            'data' => $data,
+            'data' => new TopHitWorkCollection($data),
         ], 200);
     }
 
