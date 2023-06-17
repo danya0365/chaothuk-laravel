@@ -16,10 +16,13 @@ return new class extends Migration
             $table->string('title')->nullable()->index();
             $table->string('message')->nullable()->index();
             $table->tinyInteger('rating')->default(0);
-            $table->integer('author_id')->unsigned()->index();
-            $table->integer('work_id')->unsigned()->index();
+            $table->unsignedBigInteger('author_id')->index();
+            $table->unsignedBigInteger('work_id')->index();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('author_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('work_id')->references('id')->on('works')->onDelete('cascade');
         });
     }
 

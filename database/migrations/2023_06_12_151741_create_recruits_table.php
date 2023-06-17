@@ -21,11 +21,15 @@ return new class extends Migration
             $table->float('budget')->nullable();
             $table->integer('display_priority')->default(0);
             $table->enum('recruit_status', RecruitStatus::getValues())->default(RecruitStatus::Standby());
-            $table->integer('province_id')->unsigned()->index();
-            $table->integer('work_type_id')->unsigned()->index();
-            $table->integer('author_id')->unsigned()->index();
+            $table->unsignedBigInteger('province_id')->index();
+            $table->unsignedBigInteger('work_type_id')->index();
+            $table->unsignedBigInteger('author_id')->index();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('province_id')->references('id')->on('provinces')->onDelete('cascade');
+            $table->foreign('work_type_id')->references('id')->on('work_types')->onDelete('cascade');
+            $table->foreign('author_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

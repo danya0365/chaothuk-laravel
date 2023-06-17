@@ -15,10 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('title')->nullable();
             $table->string('message')->nullable();
-            $table->integer('review_id')->unsigned()->index();
-            $table->integer('author_id')->unsigned()->index();
+            $table->unsignedBigInteger('review_id')->index();
+            $table->unsignedBigInteger('author_id')->index();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('author_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('review_id')->references('id')->on('reviews')->onDelete('cascade');
         });
     }
 

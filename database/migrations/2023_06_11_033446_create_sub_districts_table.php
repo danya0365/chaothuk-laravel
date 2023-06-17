@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('districts', function (Blueprint $table) {
+        Schema::create('sub_districts', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
+            $table->string('zip_code');
             $table->string('name_th');
             $table->string('name_en');
-            $table->integer('province_id')->unsigned()->index();
-
+            $table->unsignedBigInteger('district_id')->index();
             $table->timestamps();
+            $table->foreign('district_id')->references('id')->on('districts')->onDelete('cascade');
         });
     }
 
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('districts');
+        Schema::dropIfExists('sub_districts');
     }
 };
