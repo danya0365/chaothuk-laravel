@@ -14,6 +14,23 @@ class WorkResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        //return parent::toArray($request);
+        return [
+            'id'   => $this->id,
+            'code' => $this->code,
+            'title' => $this->title,
+            'description' => $this->description,
+            'details' => $this->details,
+            'primary_image' => $this->primary_image,
+            'images' => $this->images,
+            'price' => $this->price,
+            'avg_review_rating' => $this->avg_review_rating,
+            'display_priority' => $this->display_priority,
+            'work_status' => $this->work_status,
+            'created_at' => $this->created_at,
+            'author' => $this->author,
+            'province' => new ProvinceResource($this->province),
+            'work_type' => new WorkTypeResource($this->workType)
+        ];
     }
 }

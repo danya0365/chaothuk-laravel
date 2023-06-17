@@ -16,11 +16,7 @@ class ProvinceCollection extends ResourceCollection
     {
         return [
             'list' => $this->collection->map(function ($province) {
-                return [
-                    'id'   => $province->id,
-                    'title' => $province->name_th,
-                    'photo' => $province->getImage()
-                ];
+                return new ProvinceResource($province);
             })
         ];
     }
