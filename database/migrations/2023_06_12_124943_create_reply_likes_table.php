@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('reply_likes', function (Blueprint $table) {
             $table->id();
-            $table->integer('reply_id')->unsigned()->index();
-            $table->integer('author_id')->unsigned()->index();
+            $table->unsignedBigInteger('reply_id')->index();
+            $table->unsignedBigInteger('author_id')->index();
             $table->timestamps();
             $table->softDeletes();
+            $table->unique(['reply_id', 'author_id']);
+
+            $table->foreign('author_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('reply_id')->references('id')->on('replies')->onDelete('cascade');
         });
     }
 

@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('review_likes', function (Blueprint $table) {
             $table->id();
-            $table->integer('review_id')->unsigned()->index();
-            $table->integer('author_id')->unsigned()->index();
+            $table->unsignedBigInteger('review_id')->index();
+            $table->unsignedBigInteger('author_id')->index();
             $table->timestamps();
             $table->softDeletes();
+            $table->unique(['review_id', 'author_id']);
+
+            $table->foreign('author_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('review_id')->references('id')->on('reviews')->onDelete('cascade');
         });
     }
 

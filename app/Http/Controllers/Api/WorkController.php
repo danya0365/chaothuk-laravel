@@ -2,8 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\NotificationType;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TopHitWorkCollection;
+use App\Http\Resources\WorkCollection;
+use App\Http\Resources\WorkResource;
+use App\Models\UserNotification;
 use App\Models\Work;
+use App\Models\WorkLike;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -16,10 +23,64 @@ class WorkController extends Controller
      */
     public function getWorks(Request $request)
     {
-        $data = Work::with(['author', 'province', 'workType'])->paginate(request()->all());
+        $query = Work::with(['author', 'province', 'workType']);
+
+        $keyword = trim($request->get('keyword'));
+        if ($keyword) {
+            $query->where(function ($query) use ($keyword) {
+                $query->where('title', 'LIKE', "%{$keyword}%")
+                    ->orWhere('description', 'LIKE',  "%{$keyword}%");
+            });
+        }
+
+        $provinceId = trim($request->get('province_id'));
+        if ($provinceId) {
+            $query->where(function ($query) use ($provinceId) {
+                $query->where('province_id', $provinceId);
+            });
+        }
+
+        $dateFilter = trim($request->get('date'));
+        if ($dateFilter) {
+            $dateCarbon = Carbon::createFromFormat('Y-m-d',  $dateFilter);
+            $query->whereDate('created_at', '=', $dateCarbon);
+        }
+
+        $data = $query->orderBy('created_at', 'desc')
+            ->limitOffset(request()->all())->get();
         return response()->json([
             'status' => true,
-            'data' => $data,
+            'data' => new WorkCollection($data),
+        ], 200);
+    }
+
+    /**
+     * Get Work Detail
+     * @param Request $request
+     * @return User 
+     */
+    public function getWork(Request $request, $workId)
+    {
+        $data = Work::with(['author', 'province', 'workType'])->find($workId);
+        return response()->json([
+            'status' => true,
+            'data' => new WorkResource($data),
+        ], 200);
+    }
+
+    /**
+     * Get Top Hit Works
+     * @param Request $request
+     * @return User 
+     */
+    public function getTopHits(Request $request)
+    {
+        $data = Work::with(['author', 'province', 'workType'])
+            ->orderBy('display_priority', 'desc')
+            ->limitOffset(request()->all())->get();
+        return response()->json([
+            'status' => true,
+            'data' => new TopHitWorkCollection($data),
         ], 200);
     }
 
@@ -40,7 +101,7 @@ class WorkController extends Controller
         if ($validatedRequest->fails()) {
             return response()->json([
                 'status' => false,
-                'message' => 'validation error',
+                'message' => implode(",", $validatedRequest->messages()->all()),
                 'errors' => $validatedRequest->errors()
             ], 401);
         }
@@ -55,6 +116,63 @@ class WorkController extends Controller
             return response()->json([
                 'status' => true,
                 'data' => $work,
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function createWorkLike(Request $request, Int $workId)
+    {
+        $post = [];
+        // TODO: validate if user can like the work
+        $post['author_id'] = $request->user()->id;
+        $post['work_id'] = $workId;
+
+        $validatedRequest = Validator::make($post,  [
+            'work_id' => 'required|exists:works,id'
+        ]);
+
+        if ($validatedRequest->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => implode(",", $validatedRequest->messages()->all()),
+                'errors' => $validatedRequest->errors()
+            ], 401);
+        }
+
+        try {
+
+            $user = $request->user();
+            $work = Work::with('author')->find($post['work_id']);
+
+            if ($user->likedWorks()->get()->contains($work)) {
+                // User has already liked the work
+                // Add your logic here
+            } else {
+                $user->likedWorks()->attach($work->id);
+
+                $userNotification = new UserNotification();
+                $userNotification->title = "กดชื่นชมงานของคุณ";
+                $userNotification->message = "กดชื่นชมงานของคุณ";
+                $userNotification->notification_type = NotificationType::WorkLike();
+                $userNotification->notificationable()->associate($work);
+                $work->author->notifications()->save($userNotification);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'success',
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([

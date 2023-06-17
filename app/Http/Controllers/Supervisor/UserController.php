@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Supervisor;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserPermission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -46,6 +47,15 @@ class UserController extends Controller
         $post = $request->all();
         $post['password'] = Hash::make($post['password']);
         $user = User::create($post);
+
+        $userPermission = new UserPermission();
+        $userPermission->is_can_create_recruit = 1;
+        $userPermission->is_can_create_work = 1;
+        $userPermission->is_can_review_work = 1;
+        $userPermission->is_can_reply_review = 1;
+        $userPermission->is_can_access_supervisor = 0;
+        $userPermission->is_can_access_admin = 0;
+        $user->permission()->save($userPermission);
 
         return redirect()->route('supervisor.users.index')
             ->with('success', 'User created successfully.');

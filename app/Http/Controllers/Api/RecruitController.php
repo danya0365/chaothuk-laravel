@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\RecruitCollection;
 use App\Models\Recruit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,10 +17,12 @@ class RecruitController extends Controller
      */
     public function getRecruits(Request $request)
     {
-        $data = Recruit::with(['author', 'province', 'workType'])->paginate(request()->all());
+        $data = Recruit::with(['author', 'province', 'workType'])
+            ->orderBy('created_at', 'desc')
+            ->limitOffset(request()->all())->get();
         return response()->json([
             'status' => true,
-            'data' => $data,
+            'data' => new RecruitCollection($data),
         ], 200);
     }
 

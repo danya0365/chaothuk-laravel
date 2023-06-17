@@ -3,8 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -47,9 +47,9 @@ class User extends Authenticatable
         'email' => 'required',
     ];
 
-    public function permission(): BelongsTo
+    public function permission(): HasOne
     {
-        return $this->belongsTo(UserPermission::class, 'id');
+        return $this->hasOne(UserPermission::class, 'user_id');
     }
 
     public function isCanAccessSupervisor(): Bool
@@ -72,5 +72,20 @@ class User extends Authenticatable
     public function getCoverImage($size = "1200x600"): string
     {
         return $this->profile_image ?? "https://placehold.co/{$size}?text=Cover+Photo";
+    }
+
+    public function likedWorks()
+    {
+        return $this->belongsToMany(Work::class, 'work_likes', 'author_id', 'work_id')->withTimestamps();
+    }
+
+    public function works()
+    {
+        return $this->hasMany(Work::class, 'author_id');
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(UserNotification::class, 'author_id');
     }
 }

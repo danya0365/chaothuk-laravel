@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('user_permissions', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id')->unique();
             $table->boolean('is_can_create_recruit')->default(0);
             $table->boolean('is_can_create_work')->default(0);
             $table->boolean('is_can_review_work')->default(0);
@@ -20,6 +21,8 @@ return new class extends Migration
             $table->boolean('is_can_access_supervisor')->default(0);
             $table->boolean('is_can_access_admin')->default(0);
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

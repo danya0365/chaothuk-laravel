@@ -102,7 +102,7 @@ services:
     phpmyadmin:
         image: "phpmyadmin:latest"
         ports:
-            - 8081:80
+            - 8088:80
         environment:
             MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
         links:

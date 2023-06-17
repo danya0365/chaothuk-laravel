@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\UserPermission;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -25,14 +26,16 @@ class AuthController extends Controller
                 [
                     'name' => 'required',
                     'email' => 'required|email|unique:users,email',
-                    'password' => 'required'
+                    'password' => 'required',
+                    'first_name' => 'required',
+                    'last_name' => 'required',
                 ]
             );
 
             if ($validateUser->fails()) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'validation error',
+                    'message' => implode(",", $validateUser->messages()->all()),
                     'errors' => $validateUser->errors()
                 ], 401);
             }
@@ -40,13 +43,28 @@ class AuthController extends Controller
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make($request->password)
+                'password' => Hash::make($request->password),
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
             ]);
+
+            $userPermission = new UserPermission();
+            $userPermission->is_can_create_recruit = 1;
+            $userPermission->is_can_create_work = 1;
+            $userPermission->is_can_review_work = 1;
+            $userPermission->is_can_reply_review = 1;
+            $userPermission->is_can_access_supervisor = 0;
+            $userPermission->is_can_access_admin = 0;
+            $user->permission()->save($userPermission);
 
             return response()->json([
                 'status' => true,
                 'message' => 'User Created Successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
+                'data' => [
+                    'user' => $user,
+                    'token' => $user->createToken("API TOKEN")->plainTextToken,
+                    'permission' => $user->permission()->get()
+                ]
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -75,16 +93,16 @@ class AuthController extends Controller
             if ($validateUser->fails()) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'validation error',
+                    'message' => implode(",", $validateUser->messages()->all()),
                     'errors' => $validateUser->errors()
-                ], 401);
+                ], 200);
             }
 
             if (!Auth::attempt($request->only(['email', 'password']))) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Email & Password does not match with our record.',
-                ], 401);
+                ], 200);
             }
 
             $user = User::where('email', $request->email)->first();
@@ -92,7 +110,35 @@ class AuthController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'User Logged In Successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
+                'data' => [
+                    'user' => $user,
+                    'token' => $user->createToken("API TOKEN")->plainTextToken,
+                    'permission' => $user->permission()->get()
+                ]
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+
+    /**
+     * Logout The User
+     * @param Request $request
+     * @return User
+     */
+    public function logoutUser(Request $request)
+    {
+        try {
+            $user = $request->user();
+            $user->tokens()->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'User Logged Out Successfully',
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([

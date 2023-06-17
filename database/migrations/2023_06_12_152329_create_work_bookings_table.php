@@ -22,10 +22,13 @@ return new class extends Migration
             $table->enum('booking_status', BookingStatus::getValues())->default(BookingStatus::WaitingToConfirm());
             $table->enum('customer_confirm_status', ConfirmStatus::getValues())->default(ConfirmStatus::WaitingToConfirm());
             $table->enum('worker_confirm_status', ConfirmStatus::getValues())->default(ConfirmStatus::WaitingToConfirm());
-            $table->integer('author_id')->unsigned()->index();
-            $table->integer('work_id')->unsigned()->index();
+            $table->unsignedBigInteger('author_id')->index();
+            $table->unsignedBigInteger('work_id')->index();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('author_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('work_id')->references('id')->on('works')->onDelete('cascade');
         });
     }
 

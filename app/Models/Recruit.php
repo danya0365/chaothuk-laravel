@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Scopes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -29,7 +30,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Recruit extends Model
 {
-  use SoftDeletes;
+  use SoftDeletes, Scopes;
 
   static $rules = [
     'title' => 'required',
@@ -71,5 +72,10 @@ class Recruit extends Model
   public function workType(): BelongsTo
   {
     return $this->belongsTo(WorkType::class, 'work_type_id');
+  }
+
+  public function notifications()
+  {
+    return $this->morphMany(UserNotification::class, 'notificationable');
   }
 }

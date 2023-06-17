@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Traits\Scopes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class WorkLike
@@ -20,22 +22,29 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class WorkLike extends Model
 {
-    use SoftDeletes;
+  use SoftDeletes, Scopes;
 
-    static $rules = [
-		'work_id' => 'required',
-		'author_id' => 'required',
-    ];
+  static $rules = [
+    'work_id' => 'required',
+    'author_id' => 'required',
+  ];
 
-    protected $perPage = 20;
+  protected $perPage = 20;
 
-    /**
-     * Attributes that should be mass-assignable.
-     *
-     * @var array
-     */
-    protected $fillable = ['work_id','author_id'];
+  /**
+   * Attributes that should be mass-assignable.
+   *
+   * @var array
+   */
+  protected $fillable = ['work_id', 'author_id'];
 
+  public function work(): BelongsTo
+  {
+    return $this->belongsTo(Work::class, 'work_id');
+  }
 
-
+  public function author(): BelongsTo
+  {
+    return $this->belongsTo(User::class, 'user_id');
+  }
 }

@@ -14,13 +14,15 @@ return new class extends Migration
     {
         Schema::create('user_notifications', function (Blueprint $table) {
             $table->id();
+            $table->morphs('notificationable', 'notificationable_morpf_key');
             $table->string('title')->nullable();
             $table->string('message')->nullable();
             $table->string('notification_type', 100);
-            $table->integer('review_id')->unsigned()->index();
-            $table->integer('author_id')->unsigned()->index();
+            $table->unsignedBigInteger('author_id')->unsigned()->index();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('author_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
