@@ -84,4 +84,9 @@ class Work extends Model
   {
     return $this->morphMany(UserNotification::class, 'notificationable');
   }
+
+  public function userLikes()
+  {
+    return $this->belongsToMany(User::class, 'work_likes', 'work_id', 'user_id');
+  }
 }

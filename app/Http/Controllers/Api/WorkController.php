@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\NotificationType;
 use App\Http\Controllers\Controller;
 use App\Models\UserNotification;
 use App\Models\Work;
@@ -60,7 +61,7 @@ class WorkController extends Controller
         if ($validatedRequest->fails()) {
             return response()->json([
                 'status' => false,
-                'message' => 'validation error',
+                'message' => implode(",", $validatedRequest->messages()->all()),
                 'errors' => $validatedRequest->errors()
             ], 401);
         }
@@ -105,20 +106,33 @@ class WorkController extends Controller
         if ($validatedRequest->fails()) {
             return response()->json([
                 'status' => false,
-                'message' => 'validation error',
+                'message' => implode(",", $validatedRequest->messages()->all()),
                 'errors' => $validatedRequest->errors()
             ], 401);
         }
 
         try {
 
-            $workLike = WorkLike::create($post);
-            $work = Work::find($post['work_id']);
+            $user = $request->user();
+            $work = Work::with('author')->find($post['work_id']);
 
-            UserNotification::create(['']);
+            if ($user->likedWorks()->get()->contains($work)) {
+                // User has already liked the work
+                // Add your logic here
+            } else {
+                $user->likedWorks()->attach($work->id);
+
+                $userNotification = new UserNotification();
+                $userNotification->title = "กดชื่นชมงานของคุณ";
+                $userNotification->message = "กดชื่นชมงานของคุณ";
+                $userNotification->notification_type = NotificationType::WorkLike();
+                $userNotification->notificationable()->associate($work);
+                $work->author->notifications()->save($userNotification);
+            }
+
             return response()->json([
                 'status' => true,
-                'data' => $workLike,
+                'message' => 'success',
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([

@@ -73,4 +73,19 @@ class User extends Authenticatable
     {
         return $this->profile_image ?? "https://placehold.co/{$size}?text=Cover+Photo";
     }
+
+    public function likedWorks()
+    {
+        return $this->belongsToMany(Work::class, 'work_likes', 'author_id', 'work_id')->withTimestamps();
+    }
+
+    public function works()
+    {
+        return $this->hasMany(Work::class, 'author_id');
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(UserNotification::class, 'author_id');
+    }
 }
