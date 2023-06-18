@@ -40,6 +40,7 @@ Route::group(['middleware' => 'cors'], function () {
         Route::post('me', [MeController::class, 'updateMe']);
         Route::post('me/password', [MeController::class, 'updatePassword']);
         Route::get('me/notifications', [MeController::class, 'getUserNotifications']);
+        Route::get('me/works', [MeController::class, 'getWorks']);
         Route::get('me/work-likes', [MeController::class, 'getLikeWork']);
         Route::get('me/work-likes/work/{workId}', [MeController::class, 'getIsLikeWork']);
         Route::post('/auth/logout', [AuthController::class, 'logoutUser']);

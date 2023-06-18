@@ -10,7 +10,6 @@ use App\Http\Resources\WorkCollection;
 use App\Http\Resources\WorkResource;
 use App\Models\UserNotification;
 use App\Models\Work;
-use App\Models\WorkLike;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;

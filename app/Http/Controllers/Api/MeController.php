@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\UserNotification;
 use App\Models\Work;
 use App\Models\WorkLike;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -162,6 +163,45 @@ class MeController extends Controller
         return response()->json([
             'status' => true,
             'data' => count($data) ? true : false,
+        ], 200);
+    }
+
+    /**
+     * Get Your Works
+     * @param Request $request
+     * @return User 
+     */
+    public function getWorks(Request $request)
+    {
+        //$query = Work::with(['author', 'province', 'workType']);
+        $query = $request->user()->works();
+
+        $keyword = trim($request->get('keyword'));
+        if ($keyword) {
+            $query->where(function ($query) use ($keyword) {
+                $query->where('title', 'LIKE', "%{$keyword}%")
+                    ->orWhere('description', 'LIKE',  "%{$keyword}%");
+            });
+        }
+
+        $provinceId = trim($request->get('province_id'));
+        if ($provinceId) {
+            $query->where(function ($query) use ($provinceId) {
+                $query->where('province_id', $provinceId);
+            });
+        }
+
+        $dateFilter = trim($request->get('date'));
+        if ($dateFilter) {
+            $dateCarbon = Carbon::createFromFormat('Y-m-d',  $dateFilter);
+            $query->whereDate('created_at', '=', $dateCarbon);
+        }
+
+        $data = $query->orderBy('created_at', 'desc')
+            ->limitOffset(request()->all())->get();
+        return response()->json([
+            'status' => true,
+            'data' => new WorkCollection($data),
         ], 200);
     }
 }
