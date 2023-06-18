@@ -87,6 +87,6 @@ class Work extends Model
 
   public function userLikes()
   {
-    return $this->belongsToMany(User::class, 'work_likes', 'work_id', 'user_id');
+    return $this->belongsToMany(User::class, 'work_likes', 'work_id', 'author_id');
   }
 }

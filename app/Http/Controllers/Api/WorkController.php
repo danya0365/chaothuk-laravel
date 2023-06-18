@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Enums\NotificationType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TopHitWorkCollection;
+use App\Http\Resources\UserCollection;
 use App\Http\Resources\WorkCollection;
 use App\Http\Resources\WorkResource;
 use App\Models\UserNotification;
@@ -66,6 +67,40 @@ class WorkController extends Controller
         return response()->json([
             'status' => true,
             'data' => new WorkResource($data),
+        ], 200);
+    }
+
+    /**
+     * Get Work Like
+     * @param Request $request
+     * @return User 
+     */
+    public function getWorkLikes(Request $request, $workId)
+    {
+        $data = Work::find($workId)->userLikes()
+            ->orderBy('created_at', 'desc')
+            ->limitOffset(request()->all())->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => new UserCollection($data),
+        ], 200);
+    }
+
+    /**
+     * Get Work Like Count
+     * @param Request $request
+     * @return User 
+     */
+    public function getWorkLikeCount(Request $request, $workId)
+    {
+        $count = Work::find($workId)->userLikes()
+            ->orderBy('created_at', 'desc')
+            ->count();
+
+        return response()->json([
+            'status' => true,
+            'data' => $count,
         ], 200);
     }
 

@@ -27,6 +27,8 @@ Route::group(['middleware' => 'cors'], function () {
     Route::get('works', [WorkController::class, 'getWorks']);
     Route::get('works/top-hits', [WorkController::class, 'getTopHits'])->name('works/top-hits');
     Route::get('works/{workId}', [WorkController::class, 'getWork']);
+    Route::get('works/{workId}/likes', [WorkController::class, 'getWorkLikes']);
+    Route::get('works/{workId}/likes/count', [WorkController::class, 'getWorkLikeCount']);
 
     Route::get('work-types', [WorkTypeController::class, 'getWorkTypes']);
     Route::get('recruits', [RecruitController::class, 'getRecruits']);
