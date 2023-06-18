@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserLikeWorkCollection;
 use App\Http\Resources\UserNotificationCollection;
+use App\Http\Resources\WorkCollection;
 use App\Models\User;
 use App\Models\UserNotification;
 use App\Models\Work;
@@ -139,13 +140,28 @@ class MeController extends Controller
             ->with('author')
             ->with('province')
             ->with('workType')
-            ->with('author')
             ->orderBy('created_at', 'desc')
             ->limitOffset(request()->all())->get();
 
         return response()->json([
             'status' => true,
-            'data' => new UserLikeWorkCollection($data),
+            'data' => new WorkCollection($data),
+        ], 200);
+    }
+
+    /**
+     * Get Is Like Work
+     * @param Request $request
+     * @return User 
+     */
+    public function getIsLikeWork(Request $request, $workId)
+    {
+        $data = $request->user()->likedWorks()
+            ->where('works.id', $workId)->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => count($data) ? true : false,
         ], 200);
     }
 }

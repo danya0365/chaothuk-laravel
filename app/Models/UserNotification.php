@@ -40,7 +40,17 @@ class UserNotification extends Model
    *
    * @var array
    */
-  protected $fillable = ['title', 'message', 'notification_type', 'review_id', 'author_id'];
+  protected $fillable = ['title', 'message', 'notification_type', 'review_id', 'is_read', 'author_id'];
+
+  /**
+   * The attributes that should be cast.
+   *
+   * @var array<string, string>
+   */
+  protected $casts = [
+    'details' => 'array',
+    'is_read' => 'boolean',
+  ];
 
   public function author(): BelongsTo
   {

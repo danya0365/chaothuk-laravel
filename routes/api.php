@@ -39,6 +39,7 @@ Route::group(['middleware' => 'cors'], function () {
         Route::post('me/password', [MeController::class, 'updatePassword']);
         Route::get('me/notifications', [MeController::class, 'getUserNotifications']);
         Route::get('me/work-likes', [MeController::class, 'getLikeWork']);
+        Route::get('me/work-likes/work/{workId}', [MeController::class, 'getIsLikeWork']);
         Route::post('/auth/logout', [AuthController::class, 'logoutUser']);
         Route::post('works', [WorkController::class, 'createWork']);
         Route::post('works/{workId}/likes', [WorkController::class, 'createWorkLike']);

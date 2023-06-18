@@ -16,8 +16,9 @@ return new class extends Migration
             $table->id();
             $table->morphs('notificationable', 'notificationable_morpf_key');
             $table->string('title')->nullable();
-            $table->string('message')->nullable();
+            $table->longText('details')->nullable();
             $table->string('notification_type', 100);
+            $table->boolean('is_read')->default(false);
             $table->unsignedBigInteger('author_id')->unsigned()->index();
             $table->timestamps();
             $table->softDeletes();

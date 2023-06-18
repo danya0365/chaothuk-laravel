@@ -13,6 +13,7 @@ use App\Models\WorkLike;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\Builder;
 
 class WorkController extends Controller
 {
@@ -157,17 +158,31 @@ class WorkController extends Controller
             $work = Work::with('author')->find($post['work_id']);
 
             if ($user->likedWorks()->get()->contains($work)) {
-                // User has already liked the work
-                // Add your logic here
+                $user->likedWorks()->detach($work->id);
             } else {
                 $user->likedWorks()->attach($work->id);
 
-                $userNotification = new UserNotification();
-                $userNotification->title = "กดชื่นชมงานของคุณ";
-                $userNotification->message = "กดชื่นชมงานของคุณ";
-                $userNotification->notification_type = NotificationType::WorkLike();
-                $userNotification->notificationable()->associate($work);
-                $work->author->notifications()->save($userNotification);
+                $userNotification = UserNotification::whereHasMorph(
+                    'notificationable',
+                    [Work::class],
+                    function (Builder $query) use ($work) {
+                        $query->where('id', $work->id);
+                    }
+                )->first();
+                if ($userNotification) {
+                    $details = $userNotification->details;
+                    $details['count'] = $details['count'] + 1;
+                    $userNotification->details = $details;
+                    $userNotification->is_read = false;
+                    $userNotification->save();
+                } else {
+                    $userNotification = new UserNotification();
+                    $userNotification->title = "มีคนชื่นชอบงานของคุณ";
+                    $userNotification->details = ['count' => 1];
+                    $userNotification->notification_type = NotificationType::WorkLike();
+                    $userNotification->notificationable()->associate($work);
+                    $work->author->notifications()->save($userNotification);
+                }
             }
 
             return response()->json([
