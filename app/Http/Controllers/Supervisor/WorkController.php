@@ -43,10 +43,19 @@ class WorkController extends Controller
         request()->validate(Work::$rules);
 
         $post = $request->all();
-        $post["details"] = explode(',', $post["details"]);
-        $post["details"] = array_map('trim', $post["details"]);
-        $post["images"] = explode(',', $post["images"]);
-        $post["images"] = array_map('trim', $post["images"]);
+        if (isset($post["details"]) && trim($post["details"]) != "") {
+            $post["details"] = explode(',', $post["details"]);
+            $post["details"] = array_map('trim', $post["details"]);
+        } else {
+            $post["details"] = [];
+        }
+
+        if (isset($post["images"]) && trim($post["images"]) != "") {
+            $post["images"] = explode(',', $post["images"]);
+            $post["images"] = array_map('trim', $post["images"]);
+        } else {
+            $post["images"] = [];
+        }
         $work = Work::create($post);
 
         return redirect()->route('supervisor.works.index')
@@ -91,10 +100,19 @@ class WorkController extends Controller
         request()->validate(Work::$rules);
 
         $post = $request->all();
-        $post["details"] = explode(',', $post["details"]);
-        $post["details"] = array_map('trim', $post["details"]);
-        $post["images"] = explode(',', $post["images"]);
-        $post["images"] = array_map('trim', $post["images"]);
+        if (isset($post["details"]) && trim($post["details"]) != "") {
+            $post["details"] = explode(',', $post["details"]);
+            $post["details"] = array_map('trim', $post["details"]);
+        } else {
+            $post["details"] = [];
+        }
+
+        if (isset($post["images"]) && trim($post["images"]) != "") {
+            $post["images"] = explode(',', $post["images"]);
+            $post["images"] = array_map('trim', $post["images"]);
+        } else {
+            $post["images"] = [];
+        }
         $work->update($post);
 
         return redirect()->route('supervisor.works.index')

@@ -30,7 +30,6 @@ class UserNotificationCollection extends ResourceCollection
                 $commentData = [
                     'id' => $notification->id,
                     'title' => $notification->title,
-                    'message' => $notification->message,
                     'created_at' => $notification->created_at,
                     'notification_type' => $notification->notification_type,
                     'notificationable' => $notificationable,

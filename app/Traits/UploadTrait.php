@@ -9,19 +9,19 @@ use Illuminate\Support\Str;
 
 trait UploadTrait
 {
-    public function uploadPhoto(Request $request, $uploadName = 'photo')
+    public function uploadImage(Request $request, $uploadName = 'image')
     {
         $validatedRequest = Validator::make(
             $request->all(),
             [
-                $uploadName => 'required|image|max:2048',
+                $uploadName => 'required|image|max:10048',
             ]
         );
 
         if ($validatedRequest->fails()) {
             return [
                 'status' => false,
-                'message' => 'validation error',
+                'message' => implode(",", $validatedRequest->messages()->all()),
                 'errors' => $validatedRequest->errors()
             ];
         }
@@ -29,8 +29,8 @@ trait UploadTrait
         if (!$request->hasFile($uploadName) || !$request->file($uploadName)->isValid()) {
             return [
                 'status' => false,
-                'message' => 'validation error',
-                'errors' => 'file not found'
+                'message' => 'Image file is invalid',
+                'errors' => ['Image file is invalid']
             ];
         }
 
@@ -78,19 +78,19 @@ trait UploadTrait
         }
     }
 
-    public function uploadAvatar(Request $request, $uploadName = 'photo')
+    public function uploadAvatar(Request $request, $uploadName = 'avatar')
     {
         $validatedRequest = Validator::make(
             $request->all(),
             [
-                $uploadName => 'required|image|max:2048',
+                $uploadName => 'required|image|max:10048',
             ]
         );
 
         if ($validatedRequest->fails()) {
             return [
                 'status' => false,
-                'message' => 'validation error',
+                'message' => implode(",", $validatedRequest->messages()->all()),
                 'errors' => $validatedRequest->errors()
             ];
         }
@@ -98,8 +98,8 @@ trait UploadTrait
         if (!$request->hasFile($uploadName) || !$request->file($uploadName)->isValid()) {
             return [
                 'status' => false,
-                'message' => 'validation error',
-                'errors' => 'file not found'
+                'message' => 'Image file is invalid',
+                'errors' => ['Image file is invalid']
             ];
         }
 

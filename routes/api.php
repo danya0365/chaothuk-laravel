@@ -27,6 +27,8 @@ Route::group(['middleware' => 'cors'], function () {
     Route::get('works', [WorkController::class, 'getWorks']);
     Route::get('works/top-hits', [WorkController::class, 'getTopHits'])->name('works/top-hits');
     Route::get('works/{workId}', [WorkController::class, 'getWork']);
+    Route::get('works/{workId}/likes', [WorkController::class, 'getWorkLikes']);
+    Route::get('works/{workId}/likes/count', [WorkController::class, 'getWorkLikeCount']);
 
     Route::get('work-types', [WorkTypeController::class, 'getWorkTypes']);
     Route::get('recruits', [RecruitController::class, 'getRecruits']);
@@ -38,12 +40,14 @@ Route::group(['middleware' => 'cors'], function () {
         Route::post('me', [MeController::class, 'updateMe']);
         Route::post('me/password', [MeController::class, 'updatePassword']);
         Route::get('me/notifications', [MeController::class, 'getUserNotifications']);
+        Route::get('me/works', [MeController::class, 'getWorks']);
         Route::get('me/work-likes', [MeController::class, 'getLikeWork']);
+        Route::get('me/work-likes/work/{workId}', [MeController::class, 'getIsLikeWork']);
         Route::post('/auth/logout', [AuthController::class, 'logoutUser']);
         Route::post('works', [WorkController::class, 'createWork']);
         Route::post('works/{workId}/likes', [WorkController::class, 'createWorkLike']);
         Route::post('recruits', [RecruitController::class, 'createRecruit']);
-        Route::post('upload/photo', [UploadController::class, 'doUploadPhoto']);
+        Route::post('upload/image', [UploadController::class, 'doUploadImage']);
         Route::post('upload/avatar', [UploadController::class, 'doUploadAvatar']);
     });
 });

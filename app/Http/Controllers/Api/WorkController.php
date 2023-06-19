@@ -5,14 +5,15 @@ namespace App\Http\Controllers\Api;
 use App\Enums\NotificationType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TopHitWorkCollection;
+use App\Http\Resources\UserCollection;
 use App\Http\Resources\WorkCollection;
 use App\Http\Resources\WorkResource;
 use App\Models\UserNotification;
 use App\Models\Work;
-use App\Models\WorkLike;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\Builder;
 
 class WorkController extends Controller
 {
@@ -69,6 +70,40 @@ class WorkController extends Controller
     }
 
     /**
+     * Get Work Like
+     * @param Request $request
+     * @return User 
+     */
+    public function getWorkLikes(Request $request, $workId)
+    {
+        $data = Work::find($workId)->userLikes()
+            ->orderBy('created_at', 'desc')
+            ->limitOffset(request()->all())->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => new UserCollection($data),
+        ], 200);
+    }
+
+    /**
+     * Get Work Like Count
+     * @param Request $request
+     * @return User 
+     */
+    public function getWorkLikeCount(Request $request, $workId)
+    {
+        $count = Work::find($workId)->userLikes()
+            ->orderBy('created_at', 'desc')
+            ->count();
+
+        return response()->json([
+            'status' => true,
+            'data' => $count,
+        ], 200);
+    }
+
+    /**
      * Get Top Hit Works
      * @param Request $request
      * @return User 
@@ -96,7 +131,9 @@ class WorkController extends Controller
         // TODO: validate if user can create new work
         $post['author_id'] = $request->user()->id;
 
-        $validatedRequest = Validator::make($post,  Work::$rules);
+        $validatedRequest = Validator::make($post,  Work::$rules, [
+            'code.unique' => trans('validation.work_code_unique')
+        ]);
 
         if ($validatedRequest->fails()) {
             return response()->json([
@@ -106,10 +143,19 @@ class WorkController extends Controller
             ], 401);
         }
 
-        $post["details"] = explode(',', $post["details"]);
-        $post["details"] = array_map('trim', $post["details"]);
-        $post["images"] = explode(',', $post["images"]);
-        $post["images"] = array_map('trim', $post["images"]);
+        if (isset($post["details"]) && trim($post["details"]) != "") {
+            $post["details"] = explode(',', $post["details"]);
+            $post["details"] = array_map('trim', $post["details"]);
+        } else {
+            $post["details"] = [];
+        }
+
+        if (isset($post["images"]) && trim($post["images"]) != "") {
+            $post["images"] = explode(',', $post["images"]);
+            $post["images"] = array_map('trim', $post["images"]);
+        } else {
+            $post["images"] = [];
+        }
 
         try {
             $work = Work::create($post);
@@ -157,17 +203,31 @@ class WorkController extends Controller
             $work = Work::with('author')->find($post['work_id']);
 
             if ($user->likedWorks()->get()->contains($work)) {
-                // User has already liked the work
-                // Add your logic here
+                $user->likedWorks()->detach($work->id);
             } else {
                 $user->likedWorks()->attach($work->id);
 
-                $userNotification = new UserNotification();
-                $userNotification->title = "กดชื่นชมงานของคุณ";
-                $userNotification->message = "กดชื่นชมงานของคุณ";
-                $userNotification->notification_type = NotificationType::WorkLike();
-                $userNotification->notificationable()->associate($work);
-                $work->author->notifications()->save($userNotification);
+                $userNotification = UserNotification::whereHasMorph(
+                    'notificationable',
+                    [Work::class],
+                    function (Builder $query) use ($work) {
+                        $query->where('id', $work->id);
+                    }
+                )->first();
+                if ($userNotification) {
+                    $details = $userNotification->details;
+                    $details['count'] = $details['count'] + 1;
+                    $userNotification->details = $details;
+                    $userNotification->is_read = false;
+                    $userNotification->save();
+                } else {
+                    $userNotification = new UserNotification();
+                    $userNotification->title = "มีคนชื่นชอบงานของคุณ";
+                    $userNotification->details = ['count' => 1];
+                    $userNotification->notification_type = NotificationType::WorkLike();
+                    $userNotification->notificationable()->associate($work);
+                    $work->author->notifications()->save($userNotification);
+                }
             }
 
             return response()->json([
