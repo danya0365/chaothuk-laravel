@@ -37,7 +37,7 @@ class Work extends Model
   use SoftDeletes, Scopes;
 
   static $rules = [
-    'code' => 'required',
+    'code' => 'required|unique:works',
     'title' => 'required',
     'description' => 'required',
     'province_id' => 'required',

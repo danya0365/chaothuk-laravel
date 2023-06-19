@@ -131,7 +131,9 @@ class WorkController extends Controller
         // TODO: validate if user can create new work
         $post['author_id'] = $request->user()->id;
 
-        $validatedRequest = Validator::make($post,  Work::$rules);
+        $validatedRequest = Validator::make($post,  Work::$rules, [
+            'code.unique' => trans('validation.work_code_unique')
+        ]);
 
         if ($validatedRequest->fails()) {
             return response()->json([

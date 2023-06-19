@@ -63,7 +63,7 @@ class AuthController extends Controller
                 'data' => [
                     'user' => $user,
                     'token' => $user->createToken("API TOKEN")->plainTextToken,
-                    'permission' => $user->permission()->get()
+                    'permission' => $user->permission()->get()->first()
                 ]
             ], 200);
         } catch (\Throwable $th) {
@@ -113,7 +113,7 @@ class AuthController extends Controller
                 'data' => [
                     'user' => $user,
                     'token' => $user->createToken("API TOKEN")->plainTextToken,
-                    'permission' => $user->permission()->get()
+                    'permission' => $user->permission()->get()->first()
                 ]
             ], 200);
         } catch (\Throwable $th) {
