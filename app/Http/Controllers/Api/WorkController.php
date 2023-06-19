@@ -141,10 +141,19 @@ class WorkController extends Controller
             ], 401);
         }
 
-        $post["details"] = explode(',', $post["details"]);
-        $post["details"] = array_map('trim', $post["details"]);
-        $post["images"] = explode(',', $post["images"]);
-        $post["images"] = array_map('trim', $post["images"]);
+        if (isset($post["details"]) && trim($post["details"]) != "") {
+            $post["details"] = explode(',', $post["details"]);
+            $post["details"] = array_map('trim', $post["details"]);
+        } else {
+            $post["details"] = [];
+        }
+
+        if (isset($post["images"]) && trim($post["images"]) != "") {
+            $post["images"] = explode(',', $post["images"]);
+            $post["images"] = array_map('trim', $post["images"]);
+        } else {
+            $post["images"] = [];
+        }
 
         try {
             $work = Work::create($post);
