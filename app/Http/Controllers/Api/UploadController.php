@@ -10,9 +10,9 @@ class UploadController extends Controller
 {
     use UploadTrait;
 
-    public function doUploadPhoto(Request $request)
+    public function doUploadImage(Request $request)
     {
-        $uploadResult = $this->uploadPhoto($request, 'photo');
+        $uploadResult = $this->uploadImage($request, 'image');
         if ($uploadResult['status']) {
             return response()->json($uploadResult, 200);
         } else {
@@ -22,7 +22,7 @@ class UploadController extends Controller
 
     public function doUploadAvatar(Request $request)
     {
-        $uploadResult = $this->uploadAvatar($request, 'photo');
+        $uploadResult = $this->uploadAvatar($request, 'avatar');
         if ($uploadResult['status']) {
             return response()->json($uploadResult, 200);
         } else {

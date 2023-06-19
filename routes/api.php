@@ -47,7 +47,7 @@ Route::group(['middleware' => 'cors'], function () {
         Route::post('works', [WorkController::class, 'createWork']);
         Route::post('works/{workId}/likes', [WorkController::class, 'createWorkLike']);
         Route::post('recruits', [RecruitController::class, 'createRecruit']);
-        Route::post('upload/photo', [UploadController::class, 'doUploadPhoto']);
+        Route::post('upload/image', [UploadController::class, 'doUploadImage']);
         Route::post('upload/avatar', [UploadController::class, 'doUploadAvatar']);
     });
 });

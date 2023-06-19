@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 trait UploadTrait
 {
-    public function uploadPhoto(Request $request, $uploadName = 'photo')
+    public function uploadImage(Request $request, $uploadName = 'image')
     {
         $validatedRequest = Validator::make(
             $request->all(),
@@ -78,7 +78,7 @@ trait UploadTrait
         }
     }
 
-    public function uploadAvatar(Request $request, $uploadName = 'photo')
+    public function uploadAvatar(Request $request, $uploadName = 'avatar')
     {
         $validatedRequest = Validator::make(
             $request->all(),
