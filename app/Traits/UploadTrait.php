@@ -14,14 +14,14 @@ trait UploadTrait
         $validatedRequest = Validator::make(
             $request->all(),
             [
-                $uploadName => 'required|image|max:2048',
+                $uploadName => 'required|image|max:10048',
             ]
         );
 
         if ($validatedRequest->fails()) {
             return [
                 'status' => false,
-                'message' => 'validation error',
+                'message' => implode(",", $validatedRequest->messages()->all()),
                 'errors' => $validatedRequest->errors()
             ];
         }
@@ -29,8 +29,8 @@ trait UploadTrait
         if (!$request->hasFile($uploadName) || !$request->file($uploadName)->isValid()) {
             return [
                 'status' => false,
-                'message' => 'validation error',
-                'errors' => 'file not found'
+                'message' => 'Image file is invalid',
+                'errors' => ['Image file is invalid']
             ];
         }
 
@@ -83,14 +83,14 @@ trait UploadTrait
         $validatedRequest = Validator::make(
             $request->all(),
             [
-                $uploadName => 'required|image|max:2048',
+                $uploadName => 'required|image|max:10048',
             ]
         );
 
         if ($validatedRequest->fails()) {
             return [
                 'status' => false,
-                'message' => 'validation error',
+                'message' => implode(",", $validatedRequest->messages()->all()),
                 'errors' => $validatedRequest->errors()
             ];
         }
@@ -98,8 +98,8 @@ trait UploadTrait
         if (!$request->hasFile($uploadName) || !$request->file($uploadName)->isValid()) {
             return [
                 'status' => false,
-                'message' => 'validation error',
-                'errors' => 'file not found'
+                'message' => 'Image file is invalid',
+                'errors' => ['Image file is invalid']
             ];
         }
 
