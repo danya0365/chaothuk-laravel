@@ -81,6 +81,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Work::class, 'work_likes', 'author_id', 'work_id')->withTimestamps();
     }
 
+    public function bookedWorks()
+    {
+        return $this->belongsToMany(Work::class, 'work_bookings', 'author_id', 'work_id')->withTimestamps();
+    }
+
     public function works()
     {
         return $this->hasMany(Work::class, 'author_id');

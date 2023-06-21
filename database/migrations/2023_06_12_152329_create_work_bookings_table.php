@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('customer_message')->nullable();
             $table->string('mobile_phone')->nullable();
+            $table->dateTime('booking_date');
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
             $table->enum('booking_status', BookingStatus::getValues())->default(BookingStatus::WaitingToConfirm());

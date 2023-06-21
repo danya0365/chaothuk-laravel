@@ -14,15 +14,14 @@ class WorkResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        //return parent::toArray($request);
         return [
             'id'   => $this->id,
             'code' => $this->code,
             'title' => $this->title,
             'description' => $this->description,
-            'details' => $this->details,
+            'details' => array_filter($this->details ?? []),
             'primary_image' => $this->primary_image,
-            'images' => $this->images,
+            'images' => array_filter($this->images ?? []),
             'price' => $this->price,
             'avg_review_rating' => $this->avg_review_rating,
             'display_priority' => $this->display_priority,

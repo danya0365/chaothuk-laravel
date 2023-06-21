@@ -19,7 +19,7 @@ class RecruitResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'primary_image' => $this->primary_image,
-            'images' => $this->images,
+            'images' => array_filter($this->images ?? []),
             'budget' => $this->budget,
             'display_priority' => $this->display_priority,
             'recruit_status' => $this->recruit_status,

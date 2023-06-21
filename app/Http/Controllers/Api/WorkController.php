@@ -146,6 +146,7 @@ class WorkController extends Controller
         if (isset($post["details"]) && trim($post["details"]) != "") {
             $post["details"] = explode(',', $post["details"]);
             $post["details"] = array_map('trim', $post["details"]);
+            $post["details"] = array_filter($post["details"]);
         } else {
             $post["details"] = [];
         }
@@ -153,6 +154,7 @@ class WorkController extends Controller
         if (isset($post["images"]) && trim($post["images"]) != "") {
             $post["images"] = explode(',', $post["images"]);
             $post["images"] = array_map('trim', $post["images"]);
+            $post["images"] = array_filter($post["images"]);
         } else {
             $post["images"] = [];
         }
@@ -170,7 +172,6 @@ class WorkController extends Controller
             ], 500);
         }
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -213,7 +214,7 @@ class WorkController extends Controller
                     function (Builder $query) use ($work) {
                         $query->where('id', $work->id);
                     }
-                )->first();
+                )->where('notification_type', NotificationType::WorkLike())->first();
                 if ($userNotification) {
                     $details = $userNotification->details;
                     $details['count'] = $details['count'] + 1;
@@ -225,6 +226,82 @@ class WorkController extends Controller
                     $userNotification->title = "มีคนชื่นชอบงานของคุณ";
                     $userNotification->details = ['count' => 1];
                     $userNotification->notification_type = NotificationType::WorkLike();
+                    $userNotification->notificationable()->associate($work);
+                    $work->author->notifications()->save($userNotification);
+                }
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'success',
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function createWorkBooking(Request $request, Int $workId)
+    {
+        $post = $request->only(['customer_message', 'mobile_phone', 'booking_date']);
+        // TODO: validate if user can like the work
+        $post['author_id'] = $request->user()->id;
+        $post['work_id'] = $workId;
+
+        $validatedRequest = Validator::make($post,  [
+            'work_id' => 'required|exists:works,id',
+            'customer_message' => 'required',
+            'mobile_phone' => 'required',
+            'booking_date' => 'required|date_format:Y-m-d',
+        ]);
+
+        if ($validatedRequest->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => implode(",", $validatedRequest->messages()->all()),
+                'errors' => $validatedRequest->errors()
+            ], 401);
+        }
+
+        try {
+
+            $user = $request->user();
+            $work = Work::with('author')->find($post['work_id']);
+
+            if ($user->bookedWorks()->get()->contains($work)) {
+                //
+            } else {
+                $user->bookedWorks()->attach(
+                    $work->id,
+                    $post
+                );
+
+                $userNotification = UserNotification::whereHasMorph(
+                    'notificationable',
+                    [Work::class],
+                    function (Builder $query) use ($work) {
+                        $query->where('id', $work->id);
+                    }
+                )->where('notification_type', NotificationType::WorkBooking())->first();
+                if ($userNotification) {
+                    $details = $userNotification->details;
+                    $details['count'] = $details['count'] + 1;
+                    $userNotification->details = $details;
+                    $userNotification->is_read = false;
+                    $userNotification->save();
+                } else {
+                    $userNotification = new UserNotification();
+                    $userNotification->title = "มีคนจองงานของคุณ";
+                    $userNotification->details = ['count' => 1];
+                    $userNotification->notification_type = NotificationType::WorkBooking();
                     $userNotification->notificationable()->associate($work);
                     $work->author->notifications()->save($userNotification);
                 }
