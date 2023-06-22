@@ -31,7 +31,10 @@ Route::group(['middleware' => 'cors'], function () {
     Route::get('works/{workId}/likes/count', [WorkController::class, 'getWorkLikeCount']);
 
     Route::get('work-types', [WorkTypeController::class, 'getWorkTypes']);
+
     Route::get('recruits', [RecruitController::class, 'getRecruits']);
+    Route::get('recruits/{recruitId}', [RecruitController::class, 'getRecruit']);
+
     Route::get('provinces', [ProvinceController::class, 'getProvinces']);
 
     Route::group(['middleware' => 'auth:sanctum'], function () {
@@ -43,8 +46,10 @@ Route::group(['middleware' => 'cors'], function () {
         Route::get('me/works', [MeController::class, 'getWorks']);
         Route::get('me/work-likes', [MeController::class, 'getLikeWork']);
         Route::get('me/work-likes/work/{workId}', [MeController::class, 'getIsLikeWork']);
+        Route::get('me/recruits', [MeController::class, 'getRecruits']);
         Route::post('/auth/logout', [AuthController::class, 'logoutUser']);
         Route::post('works', [WorkController::class, 'createWork']);
+        Route::post('works/{workId}/bookings', [WorkController::class, 'createWorkBooking']);
         Route::post('works/{workId}/likes', [WorkController::class, 'createWorkLike']);
         Route::post('recruits', [RecruitController::class, 'createRecruit']);
         Route::post('upload/image', [UploadController::class, 'doUploadImage']);

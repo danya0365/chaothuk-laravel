@@ -30,6 +30,7 @@ class WorkBooking extends Model
   use SoftDeletes;
 
   static $rules = [
+    'booking_date' => 'required',
     'booking_status' => 'required',
     'customer_confirm_status' => 'required',
     'worker_confirm_status' => 'required',

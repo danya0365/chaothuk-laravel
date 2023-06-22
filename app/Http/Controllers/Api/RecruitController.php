@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RecruitCollection;
+use App\Http\Resources\RecruitResource;
 use App\Models\Recruit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -23,6 +24,20 @@ class RecruitController extends Controller
         return response()->json([
             'status' => true,
             'data' => new RecruitCollection($data),
+        ], 200);
+    }
+
+    /**
+     * Get Work Detail
+     * @param Request $request
+     * @return User 
+     */
+    public function getRecruit(Request $request, $recruitId)
+    {
+        $data = Recruit::with(['author', 'province', 'workType'])->find($recruitId);
+        return response()->json([
+            'status' => true,
+            'data' => new RecruitResource($data),
         ], 200);
     }
 
@@ -50,6 +65,7 @@ class RecruitController extends Controller
 
         $post["images"] = explode(',', $post["images"]);
         $post["images"] = array_map('trim', $post["images"]);
+        $post["images"] = array_filter($post["images"]);
 
         try {
             $recruit = Recruit::create($post);

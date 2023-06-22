@@ -173,8 +173,45 @@ class MeController extends Controller
      */
     public function getWorks(Request $request)
     {
-        //$query = Work::with(['author', 'province', 'workType']);
         $query = $request->user()->works();
+
+        $keyword = trim($request->get('keyword'));
+        if ($keyword) {
+            $query->where(function ($query) use ($keyword) {
+                $query->where('title', 'LIKE', "%{$keyword}%")
+                    ->orWhere('description', 'LIKE',  "%{$keyword}%");
+            });
+        }
+
+        $provinceId = trim($request->get('province_id'));
+        if ($provinceId) {
+            $query->where(function ($query) use ($provinceId) {
+                $query->where('province_id', $provinceId);
+            });
+        }
+
+        $dateFilter = trim($request->get('date'));
+        if ($dateFilter) {
+            $dateCarbon = Carbon::createFromFormat('Y-m-d',  $dateFilter);
+            $query->whereDate('created_at', '=', $dateCarbon);
+        }
+
+        $data = $query->orderBy('created_at', 'desc')
+            ->limitOffset(request()->all())->get();
+        return response()->json([
+            'status' => true,
+            'data' => new WorkCollection($data),
+        ], 200);
+    }
+
+    /**
+     * Get Your Recruits
+     * @param Request $request
+     * @return User 
+     */
+    public function getRecruits(Request $request)
+    {
+        $query = $request->user()->recruits();
 
         $keyword = trim($request->get('keyword'));
         if ($keyword) {
