@@ -211,10 +211,13 @@ class WorkController extends Controller
                 $userNotification = UserNotification::whereHasMorph(
                     'notificationable',
                     [Work::class],
-                    function (Builder $query) use ($work) {
+                    function (Builder $query, string $type) use ($work) {
                         $query->where('id', $work->id);
                     }
-                )->where('notification_type', NotificationType::WorkLike())->first();
+                )
+                    ->where('notification_type', NotificationType::WorkLike())
+                    ->whereBelongsTo($user, 'author')
+                    ->first();
                 if ($userNotification) {
                     $details = $userNotification->details;
                     $details['count'] = $details['count'] + 1;
