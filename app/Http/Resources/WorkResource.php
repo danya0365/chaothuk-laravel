@@ -23,6 +23,8 @@ class WorkResource extends JsonResource
             'primary_image' => $this->primary_image,
             'images' => array_filter($this->images ?? []),
             'price' => $this->price,
+            'like_count' => $this->like_count,
+            'reply_count' => $this->reply_count,
             'avg_review_rating' => $this->avg_review_rating,
             'display_priority' => $this->display_priority,
             'work_status' => $this->work_status,

@@ -234,6 +234,10 @@ class WorkController extends Controller
                 }
             }
 
+
+            $work->like_count = $work->userLikes()->count();
+            $work->save();
+
             return response()->json([
                 'status' => true,
                 'message' => 'success',
