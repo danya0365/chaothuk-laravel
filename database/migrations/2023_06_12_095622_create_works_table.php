@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('primary_image')->nullable();
             $table->longText('images')->nullable();
             $table->float('price')->nullable();
+            $table->integer('like_count')->default(0);
+            $table->integer('reply_count')->default(0);
             $table->float('avg_review_rating')->default(0);
             $table->integer('display_priority')->default(0);
             $table->enum('work_status', WorkStatus::getValues())->default(WorkStatus::Standby());
