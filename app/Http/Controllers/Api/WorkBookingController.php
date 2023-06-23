@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\BookingStatus;
 use App\Enums\ConfirmStatus;
 use App\Enums\NotificationType;
 use App\Http\Controllers\Controller;
 use App\Models\UserNotification;
+use App\Models\Work;
 use App\Models\WorkBooking;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
@@ -43,7 +43,7 @@ class WorkBookingController extends Controller
         try {
 
             $user = $request->user();
-            $workBooking = WorkBooking::with('work')->with('author')->whereHas('work', function (Builder $query) use ($user) {
+            $workBooking = WorkBooking::with('work')->with('author')->whereHas('work', function ($query) use ($user) {
                 $query->with('author')->whereBelongsTo($user, 'author');
             })->find($workBookingId);
 
@@ -57,7 +57,7 @@ class WorkBookingController extends Controller
             $workBooking->worker_confirm_status = ConfirmStatus::Confirm();
             $workBooking->save();
 
-            if ($workBooking->worker_confirm_status && $workBooking->customer_confirm_status) {
+            if ($workBooking->worker_confirm_status == $workBooking->customer_confirm_status) {
                 $workBooking->booking_status = ConfirmStatus::Confirm();
                 $workBooking->save();
 
@@ -65,7 +65,7 @@ class WorkBookingController extends Controller
                 $userNotification = UserNotification::whereHasMorph(
                     'notificationable',
                     [Work::class],
-                    function (Builder $query) use ($workBooking) {
+                    function ($query) use ($workBooking) {
                         $query->where('id', $workBooking->work->id);
                     }
                 )
@@ -92,7 +92,7 @@ class WorkBookingController extends Controller
                 $userNotification = UserNotification::whereHasMorph(
                     'notificationable',
                     [Work::class],
-                    function (Builder $query) use ($workBooking) {
+                    function ($query) use ($workBooking) {
                         $query->where('id', $workBooking->work->id);
                     }
                 )
@@ -171,14 +171,14 @@ class WorkBookingController extends Controller
             $workBooking->customer_confirm_status = ConfirmStatus::Confirm();
             $workBooking->save();
 
-            if ($workBooking->customer_confirm_status && $workBooking->customer_confirm_status) {
+            if ($workBooking->customer_confirm_status == $workBooking->customer_confirm_status) {
                 $workBooking->booking_status = ConfirmStatus::Confirm();
                 $workBooking->save();
 
                 $userNotification = UserNotification::whereHasMorph(
                     'notificationable',
                     [Work::class],
-                    function (Builder $query) use ($workBooking) {
+                    function ($query) use ($workBooking) {
                         $query->where('id', $workBooking->work->id);
                     }
                 )
@@ -205,7 +205,7 @@ class WorkBookingController extends Controller
                 $userNotification = UserNotification::whereHasMorph(
                     'notificationable',
                     [Work::class],
-                    function (Builder $query) use ($workBooking) {
+                    function ($query) use ($workBooking) {
                         $query->where('id', $workBooking->work->id);
                     }
                 )
