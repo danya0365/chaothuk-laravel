@@ -356,9 +356,18 @@ class WorkController extends Controller
      */
     public function getConfirmWorkBookings(Request $request, $workId)
     {
-        $data = Work::find($workId)->bookings()
-            ->where('booking_status', BookingStatus::Confirm())
-            ->orderBy('created_at', 'desc')
+        $query = Work::find($workId)->bookings()
+            ->where('booking_status', BookingStatus::Confirm());
+
+        $dateStart = trim($request->get('date_start'));
+        $dateEnd = trim($request->get('date_end'));
+        if ($dateStart && $dateEnd) {
+            $dateStartCarbon = Carbon::createFromFormat('Y-m-d',  $dateStart);
+            $dateEndCarbon = Carbon::createFromFormat('Y-m-d',  $dateEnd);
+            $query->whereDateBetween('booking_date', $dateStartCarbon, $dateEndCarbon);
+        }
+
+        $data = $query->orderBy('created_at', 'desc')
             ->limitOffset(request()->all())->get();
 
         return response()->json([
