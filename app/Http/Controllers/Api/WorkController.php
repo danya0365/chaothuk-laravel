@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class WorkController extends Controller
 {
@@ -364,7 +365,7 @@ class WorkController extends Controller
         if ($dateStart && $dateEnd) {
             $dateStartCarbon = Carbon::createFromFormat('Y-m-d',  $dateStart);
             $dateEndCarbon = Carbon::createFromFormat('Y-m-d',  $dateEnd);
-            $query->whereDateBetween('booking_date', $dateStartCarbon, $dateEndCarbon);
+            $query->whereBetween(DB::raw('DATE(booking_date)'), [$dateStartCarbon, $dateEndCarbon]);
         }
 
         $data = $query->orderBy('created_at', 'desc')
