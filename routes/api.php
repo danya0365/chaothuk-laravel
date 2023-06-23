@@ -30,7 +30,8 @@ Route::group(['middleware' => 'cors'], function () {
     Route::get('works/{workId}', [WorkController::class, 'getWork']);
     Route::get('works/{workId}/likes', [WorkController::class, 'getWorkLikes']);
     Route::get('works/{workId}/likes/count', [WorkController::class, 'getWorkLikeCount']);
-    Route::get('works/{workId}/bookings', [WorkController::class, 'getWorkBooking']);
+    Route::get('works/{workId}/bookings', [WorkController::class, 'getWorkBookings']);
+    Route::get('works/{workId}/confirm-bookings', [WorkController::class, 'getConfirmWorkBookings']);
 
     Route::get('work-types', [WorkTypeController::class, 'getWorkTypes']);
 

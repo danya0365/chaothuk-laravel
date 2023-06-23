@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\BookingStatus;
 use App\Enums\NotificationType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TopHitWorkCollection;
@@ -336,10 +337,27 @@ class WorkController extends Controller
      * @param Request $request
      * @return User 
      */
-    public function getWorkBooking(Request $request, $workId)
+    public function getWorkBookings(Request $request, $workId)
     {
-        $work = Work::find($workId);
-        $data = WorkBooking::with(['author', 'work'])->whereBelongsTo($work)
+        $data = Work::find($workId)->bookings()
+            ->orderBy('created_at', 'desc')
+            ->limitOffset(request()->all())->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => new WorkBookingCollection($data),
+        ], 200);
+    }
+
+    /**
+     * Get Confirm Work Booking
+     * @param Request $request
+     * @return User 
+     */
+    public function getConfirmWorkBookings(Request $request, $workId)
+    {
+        $data = Work::find($workId)->bookings()
+            ->where('booking_status', BookingStatus::Confirm())
             ->orderBy('created_at', 'desc')
             ->limitOffset(request()->all())->get();
 
