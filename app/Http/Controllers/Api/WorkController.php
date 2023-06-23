@@ -6,10 +6,12 @@ use App\Enums\NotificationType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TopHitWorkCollection;
 use App\Http\Resources\UserCollection;
+use App\Http\Resources\WorkBookingCollection;
 use App\Http\Resources\WorkCollection;
 use App\Http\Resources\WorkResource;
 use App\Models\UserNotification;
 use App\Models\Work;
+use App\Models\WorkBooking;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -216,7 +218,7 @@ class WorkController extends Controller
                     }
                 )
                     ->where('notification_type', NotificationType::WorkLike())
-                    ->whereBelongsTo($user, 'author')
+                    ->whereBelongsTo($work->author, 'author')
                     ->first();
                 if ($userNotification) {
                     $details = $userNotification->details;
@@ -297,7 +299,10 @@ class WorkController extends Controller
                     function (Builder $query) use ($work) {
                         $query->where('id', $work->id);
                     }
-                )->where('notification_type', NotificationType::WorkBooking())->first();
+                )
+                    ->where('notification_type', NotificationType::WorkBooking())
+                    ->whereBelongsTo($work->author, 'author')
+                    ->first();
                 if ($userNotification) {
                     $details = $userNotification->details;
                     $details['count'] = $details['count'] + 1;
@@ -324,5 +329,23 @@ class WorkController extends Controller
                 'message' => $th->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Get Work Booking
+     * @param Request $request
+     * @return User 
+     */
+    public function getWorkBooking(Request $request, $workId)
+    {
+        $work = Work::find($workId);
+        $data = WorkBooking::with(['author', 'work'])->whereBelongsTo($work)
+            ->orderBy('created_at', 'desc')
+            ->limitOffset(request()->all())->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => new WorkBookingCollection($data),
+        ], 200);
     }
 }

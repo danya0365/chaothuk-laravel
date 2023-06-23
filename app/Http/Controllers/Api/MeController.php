@@ -3,12 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\RecruitBookingCollection;
 use App\Http\Resources\UserLikeWorkCollection;
 use App\Http\Resources\UserNotificationCollection;
+use App\Http\Resources\UserResource;
+use App\Http\Resources\WorkBookingCollection;
 use App\Http\Resources\WorkCollection;
+use App\Models\Recruit;
+use App\Models\RecruitBooking;
 use App\Models\User;
 use App\Models\UserNotification;
 use App\Models\Work;
+use App\Models\WorkBooking;
 use App\Models\WorkLike;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -26,7 +32,7 @@ class MeController extends Controller
     {
         return response()->json([
             'status' => true,
-            'data' => $request->user(),
+            'data' => new UserResource($request->user()),
         ], 200);
     }
 
@@ -239,6 +245,40 @@ class MeController extends Controller
         return response()->json([
             'status' => true,
             'data' => new WorkCollection($data),
+        ], 200);
+    }
+
+    /**
+     * Get Work Booking
+     * @param Request $request
+     * @return User 
+     */
+    public function getWorkBookings(Request $request)
+    {
+        $data = WorkBooking::with(['author', 'work'])->whereBelongsTo($request->user(), 'author')
+            ->orderBy('created_at', 'desc')
+            ->limitOffset(request()->all())->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => new WorkBookingCollection($data),
+        ], 200);
+    }
+
+    /**
+     * Get Recruit Booking
+     * @param Request $request
+     * @return User 
+     */
+    public function getRecruitBookings(Request $request)
+    {
+        $data = RecruitBooking::with(['author', 'recruit'])->whereBelongsTo($request->user(), 'author')
+            ->orderBy('created_at', 'desc')
+            ->limitOffset(request()->all())->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => new RecruitBookingCollection($data),
         ], 200);
     }
 }

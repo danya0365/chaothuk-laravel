@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Traits\Scopes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class WorkBooking
@@ -27,7 +29,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class WorkBooking extends Model
 {
-  use SoftDeletes;
+  use SoftDeletes, Scopes;
 
   static $rules = [
     'booking_date' => 'required',
@@ -50,5 +52,15 @@ class WorkBooking extends Model
   public function notifications()
   {
     return $this->morphMany(UserNotification::class, 'notificationable');
+  }
+
+  public function work(): BelongsTo
+  {
+    return $this->belongsTo(Work::class, 'work_id');
+  }
+
+  public function author(): BelongsTo
+  {
+    return $this->belongsTo(User::class, 'author_id');
   }
 }
