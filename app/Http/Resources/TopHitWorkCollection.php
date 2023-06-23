@@ -15,7 +15,9 @@ class TopHitWorkCollection extends ResourceCollection
     public function toArray(Request $request): array
     {
         return [
-            'list' => $this->collection
+            'list' => $this->collection->map(function ($work) {
+                return new WorkResource($work);
+            })
         ];
     }
 }
