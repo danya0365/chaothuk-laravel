@@ -171,7 +171,7 @@ class WorkBookingController extends Controller
             $workBooking->customer_confirm_status = ConfirmStatus::Confirm();
             $workBooking->save();
 
-            if ($workBooking->customer_confirm_status == $workBooking->customer_confirm_status) {
+            if ($workBooking->customer_confirm_status == $workBooking->worker_confirm_status) {
                 $workBooking->booking_status = ConfirmStatus::Confirm();
                 $workBooking->save();
 
