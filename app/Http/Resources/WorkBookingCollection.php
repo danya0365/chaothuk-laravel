@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class TopHitWorkCollection extends ResourceCollection
+class WorkBookingCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -15,9 +15,7 @@ class TopHitWorkCollection extends ResourceCollection
     public function toArray(Request $request): array
     {
         return [
-            'list' => $this->collection->map(function ($work) {
-                return new WorkResource($work);
-            })
+            'list' => $this->collection
         ];
     }
 }

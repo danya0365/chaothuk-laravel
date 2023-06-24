@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\BookingStatus;
 use App\Enums\NotificationType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TopHitWorkCollection;
 use App\Http\Resources\UserCollection;
+use App\Http\Resources\WorkBookingCollection;
 use App\Http\Resources\WorkCollection;
 use App\Http\Resources\WorkResource;
 use App\Models\UserNotification;
 use App\Models\Work;
+use App\Models\WorkBooking;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class WorkController extends Controller
 {
@@ -216,7 +220,7 @@ class WorkController extends Controller
                     }
                 )
                     ->where('notification_type', NotificationType::WorkLike())
-                    ->whereBelongsTo($user, 'author')
+                    ->whereBelongsTo($work->author, 'author')
                     ->first();
                 if ($userNotification) {
                     $details = $userNotification->details;
@@ -297,7 +301,10 @@ class WorkController extends Controller
                     function (Builder $query) use ($work) {
                         $query->where('id', $work->id);
                     }
-                )->where('notification_type', NotificationType::WorkBooking())->first();
+                )
+                    ->where('notification_type', NotificationType::WorkBooking())
+                    ->whereBelongsTo($work->author, 'author')
+                    ->first();
                 if ($userNotification) {
                     $details = $userNotification->details;
                     $details['count'] = $details['count'] + 1;
@@ -324,5 +331,49 @@ class WorkController extends Controller
                 'message' => $th->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Get Work Booking
+     * @param Request $request
+     * @return User 
+     */
+    public function getWorkBookings(Request $request, $workId)
+    {
+        $data = Work::find($workId)->bookings()
+            ->orderBy('created_at', 'desc')
+            ->limitOffset(request()->all())->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => new WorkBookingCollection($data),
+        ], 200);
+    }
+
+    /**
+     * Get Confirm Work Booking
+     * @param Request $request
+     * @return User 
+     */
+    public function getConfirmWorkBookings(Request $request, $workId)
+    {
+        $query = Work::find($workId)->bookings()
+            ->where('booking_status', BookingStatus::Confirm());
+
+        $dateStart = trim($request->get('date_start'));
+        $dateEnd = trim($request->get('date_end'));
+        if ($dateStart && $dateEnd) {
+            $dateStartCarbon = Carbon::createFromFormat('Y-m-d',  $dateStart);
+            $dateEndCarbon = Carbon::createFromFormat('Y-m-d',  $dateEnd);
+            $query->whereBetween(DB::raw('DATE(booking_date)'), [$dateStartCarbon, $dateEndCarbon]);
+        }
+
+        $data = $query->orderBy('created_at', 'desc')
+            ->limitOffset(request()->all())->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => new WorkBookingCollection($data),
+        ], 200);
     }
 }

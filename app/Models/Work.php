@@ -7,6 +7,7 @@ use App\Traits\Scopes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Work
@@ -88,5 +89,10 @@ class Work extends Model
   public function userLikes()
   {
     return $this->belongsToMany(User::class, 'work_likes', 'work_id', 'author_id');
+  }
+
+  public function bookings(): HasMany
+  {
+    return $this->hasMany(WorkBooking::class);
   }
 }

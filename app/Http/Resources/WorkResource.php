@@ -29,7 +29,7 @@ class WorkResource extends JsonResource
             'display_priority' => $this->display_priority,
             'work_status' => $this->work_status,
             'created_at' => $this->created_at,
-            'author' => $this->author,
+            'author' => new UserResource($this->author),
             'province' => new ProvinceResource($this->province),
             'work_type' => new WorkTypeResource($this->workType)
         ];
