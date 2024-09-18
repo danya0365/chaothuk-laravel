@@ -1,0 +1,287 @@
+<?php
+
+namespace App\Traits;
+
+use App\Enums\BannerType;
+use App\Enums\ConfigurationValueType;
+use App\Enums\CouponExpiresType;
+use App\Enums\CronRepeatType;
+use App\Enums\Gender;
+use App\Enums\IssueStatus;
+use App\Enums\IssueType;
+use App\Enums\MissionStatus;
+use App\Enums\PersonType;
+use App\Enums\PromotionType;
+use App\Models\BannerProduct;
+use App\Models\BannerPromotion;
+use App\Models\Role;
+use App\Models\UserType;
+
+trait SelectOption
+{
+    public function personType()
+    {
+        $selectOptions = PersonType::values();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => __('common.' . $selectOption),
+                'value' => $selectOption
+            ];
+        }
+        return $selections;
+    }
+
+    public function yesNo()
+    {
+        $selections = [[
+            'id' => 1,
+            'label' => __('common.yes'),
+            'value' => '1'
+        ], [
+            'id' => 2,
+            'label' => __('common.no'),
+            'value' => '0'
+        ]];
+        return $selections;
+    }
+
+    public function onOff()
+    {
+        $selections = [[
+            'id' => 1,
+            'label' => __('common.on'),
+            'value' => '1'
+        ], [
+            'id' => 2,
+            'label' => __('common.off'),
+            'value' => '0'
+        ]];
+        return $selections;
+    }
+
+    public function publicStatus()
+    {
+        $selections = [[
+            'id' => 1,
+            'label' => __('common.public'),
+            'value' => '1'
+        ], [
+            'id' => 2,
+            'label' => __('common.private'),
+            'value' => '0'
+        ]];
+        return $selections;
+    }
+
+    public function gender()
+    {
+        $selectOptions = Gender::values();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => __('common.' . $selectOption),
+                'value' => $selectOption
+            ];
+        }
+        return $selections;
+    }
+
+    public function role()
+    {
+        $selectOptions = Role::query()->get();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => $selectOption->name,
+                'value' => $selectOption->id
+            ];
+        }
+        return $selections;
+    }
+
+    public function bannerType()
+    {
+        $selectOptions = BannerType::values();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => __('banner.type-' . $selectOption),
+                'value' => $selectOption
+            ];
+        }
+        return $selections;
+    }
+
+    public function couponExpiresType()
+    {
+        $selectOptions = CouponExpiresType::values();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => __('banner.coupon_expires_type-' . $selectOption),
+                'value' => $selectOption
+            ];
+        }
+        return $selections;
+    }
+
+    public function promotionType()
+    {
+        $selectOptions = PromotionType::values();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => __('banner.promotion_type-' . $selectOption),
+                'value' => $selectOption
+            ];
+        }
+        return $selections;
+    }
+
+    public function missionStatus()
+    {
+        $selectOptions = MissionStatus::values();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => __('mission.status-' . $selectOption),
+                'value' => $selectOption
+            ];
+        }
+        return $selections;
+    }
+
+    public function issueStatus()
+    {
+        $selectOptions = IssueStatus::values();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => __('issue.status-' . $selectOption),
+                'value' => $selectOption
+            ];
+        }
+        return $selections;
+    }
+
+    public function issueType()
+    {
+        $selectOptions = IssueType::values();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => __('issue.type-' . $selectOption),
+                'value' => $selectOption
+            ];
+        }
+        return $selections;
+    }
+
+    public function cronRepeatType()
+    {
+        $selectOptions = CronRepeatType::values();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => __('common.cron_repeat_type-' . $selectOption),
+                'value' => $selectOption
+            ];
+        }
+        return $selections;
+    }
+
+    public function userType()
+    {
+        $selectOptions = UserType::query()->get();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => $selectOption->name,
+                'value' => $selectOption->id
+            ];
+        }
+        return $selections;
+    }
+
+    public function bannerProduct()
+    {
+        $selectOptions = BannerProduct::query()->get();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => $selectOption->name,
+                'value' => $selectOption->id
+            ];
+        }
+        return $selections;
+    }
+
+    public function bannerPromotion()
+    {
+        $selectOptions = BannerPromotion::query()->get();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => $selectOption->name,
+                'value' => $selectOption->id
+            ];
+        }
+        return $selections;
+    }
+
+    public function weekDay()
+    {
+        $selectOptions = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => __('common.weekday-' . strtolower($selectOption)),
+                'value' => strtolower($selectOption)
+            ];
+        }
+        return $selections;
+    }
+
+    public function date()
+    {
+        $selectOptions = range(1, 25);
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => $selectOption,
+                'value' => $selectOption
+            ];
+        }
+        return $selections;
+    }
+
+    public function configurationValueType()
+    {
+        $selectOptions = ConfigurationValueType::values();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => __('common.value-type-' . $selectOption),
+                'value' => $selectOption
+            ];
+        }
+        return $selections;
+    }
+}

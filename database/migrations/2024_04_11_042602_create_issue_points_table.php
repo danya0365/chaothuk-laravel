@@ -1,0 +1,42 @@
+<?php
+
+use App\Enums\IssueStatus;
+use App\Enums\IssueType;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('issue_points', function (Blueprint $table) {
+            $table->id();
+            $table->string('slug');
+            $table->string('name');
+            $table->string('desc');
+            $table->decimal('points', 12, 2);
+            $table->enum('type', IssueType::values());
+            $table->enum('status', IssueStatus::values())->default(IssueStatus::SUBMIT->value);
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->unsignedBigInteger('user_mission_id')->nullable();
+            $table->foreign('user_mission_id')->references('id')->on('user_missions')->cascadeOnDelete();
+            $table->softDeletes();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('issue_points');
+        Schema::enableForeignKeyConstraints();
+    }
+};
