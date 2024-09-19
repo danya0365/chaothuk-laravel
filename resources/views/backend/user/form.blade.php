@@ -1,6 +1,12 @@
 <div class="flex flex-col space-y-4">
 
     <div>
+        <x-input-label for="role_id" :value="__('บทบาท')" />
+        <x-select-multiple name="users_roles" class="mt-1 block w-full" :selections="$roleSelections" :selected="$user?->roleIds()" />
+        <x-input-error :messages="$errors->get('role_id')" class="mt-2" />
+    </div>
+
+    <div>
         <x-input-label for="name" :value="__('ชื่อไอดี')" />
         <x-text-input :value="old('name', $user?->name)" id="name" name="name" type="text" class="mt-1 block w-full" required
             autocomplete="name" />

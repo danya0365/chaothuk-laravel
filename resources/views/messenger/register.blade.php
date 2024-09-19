@@ -4,8 +4,8 @@
 
         <!-- Name -->
         <div>
-            <x-input-label for="telephone" :value="__('mobilePhone')" />
-            <x-text-input id="telephone" class="block mt-1 w-full" type="text" name="telephone" :value="old('mobilePhone')"
+            <x-input-label for="mobilePhone" :value="__('mobilePhone')" />
+            <x-text-input id="mobilePhone" class="block mt-1 w-full" type="text" name="mobilePhone" :value="old('mobilePhone')"
                 required autofocus autocomplete="name" />
             <x-input-error :messages="$errors->get('mobilePhone')" class="mt-2" />
         </div>

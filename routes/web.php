@@ -25,7 +25,7 @@ Route::get('/dashboard', function () {
 
 Route::get('messenger/mobilephone-channels/new', [MessengerController::class, 'newMobilePhoneChannel'])->name('messenger.mobilephone-channel.new');
 Route::post('messenger/mobilephone-channels/register', [MessengerController::class, 'registerMobilePhoneChannel'])->name('messenger.mobilephone-channel.register');
-Route::get('messenger/mobilephone-channels/{id}/{telephone}', [MessengerController::class, 'getMobilePhoneChannel'])->name('messenger.mobilephone-channel');
+Route::get('messenger/mobilephone-channels/{id}/{mobilePhone}', [MessengerController::class, 'getMobilePhoneChannel'])->name('messenger.mobilephone-channel');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

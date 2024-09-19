@@ -56,6 +56,10 @@ class UserController extends Controller
             $user->syncUserPermissions($post['user_permissions']);
         }
 
+        if (auth()->user()->isCanManageRole()) {
+            $user->syncUserRoles($post['users_roles'] ?? []);
+        }
+
         return redirect()->route('backend.users.index')
             ->with('success', 'User created successfully.');
     }
@@ -107,6 +111,9 @@ class UserController extends Controller
         $user->update($post);
         if (auth()->user()->isCanManagePermission()) {
             $user->syncUserPermissions($post['user_permissions']);
+        }
+        if (auth()->user()->isCanManageRole()) {
+            $user->syncUserRoles($post['users_roles'] ?? []);
         }
         return redirect()->route('backend.users.index')
             ->with('success', 'User updated successfully');

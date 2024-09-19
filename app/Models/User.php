@@ -211,6 +211,14 @@ class User extends Authenticatable
         return implode(', ', $roleNames);
     }
 
+    public function roleIds(): array
+    {
+        $roleIds = array_map(function ($role) {
+            return  $role['id'];
+        }, $this->roles->toArray());
+        return $roleIds;
+    }
+
     public function syncUserPermissions($userPermissions)
     {
         $syncData = [];
@@ -234,5 +242,18 @@ class User extends Authenticatable
             return $this->permissions()->sync([]);
         }
         return $this->permissions()->sync($syncData);
+    }
+
+    public function syncUserRoles($userRoles)
+    {
+        $syncData = [];
+        foreach ($userRoles as $userRole) {
+            $random = substr(md5(mt_rand()), 0, 7);
+            $syncData[$random] = $userRole;
+        }
+        if (count($syncData) === 0) {
+            return $this->roles()->sync([]);
+        }
+        return $this->roles()->sync($syncData);
     }
 }

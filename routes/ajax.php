@@ -16,8 +16,8 @@ Route::group(['prefix' => 'messenger', 'as' => 'ajax.messenger.', 'middleware' =
 
 Route::group(['prefix' => 'messenger', 'as' => 'ajax.messenger.'], function () {
     Route::post('/mobilephone-channel/new', [MessengerController::class, 'newMobilePhoneChannel'])->name('mobilephone-channel.new');
-    Route::get('/mobilephone-channel/{channelId}/{telephone}/conversations', [MessengerController::class, 'getMobilePhoneChannelConversations'])->name('mobilephone-channel.conversations');
-    Route::post('/mobilephone-channel/{channelId}/{telephone}/conversations', [MessengerController::class, 'storeMobilePhoneChannelConversations'])->name('mobilephone-channel.conversations.store');
+    Route::get('/mobilephone-channel/{channelId}/{mobilePhone}/conversations', [MessengerController::class, 'getMobilePhoneChannelConversations'])->name('mobilephone-channel.conversations');
+    Route::post('/mobilephone-channel/{channelId}/{mobilePhone}/conversations', [MessengerController::class, 'storeMobilePhoneChannelConversations'])->name('mobilephone-channel.conversations.store');
     Route::post('/channel/{id}/conversations/{conversationId}/seen', [MessengerController::class, 'updateSeenAtInConversations'])->name('channel.conversations.seen');
 });
 
