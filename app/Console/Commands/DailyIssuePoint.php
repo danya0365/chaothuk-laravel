@@ -7,6 +7,7 @@ use App\Enums\CronRepeatType;
 use App\Enums\IssueType;
 use App\Models\CronLog;
 use App\Models\IssuePoint;
+use App\Models\PointTransactionLog;
 use App\Models\UserPoint;
 use App\Models\UserPointLog;
 use Carbon\Carbon;
