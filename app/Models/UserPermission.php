@@ -8,7 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Traits\Scopes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class RolePermission extends Model
+class UserPermission extends Model
 {
     use HasFactory;
     use Notifiable;
@@ -19,7 +19,7 @@ class RolePermission extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['data', 'desc', 'role_id', 'permission_id'];
+    protected $fillable = ['data', 'desc', 'user_id', 'permission_id'];
 
     protected $casts = [
         'data' => 'boolean',

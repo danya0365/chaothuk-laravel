@@ -35,7 +35,8 @@ class UserController extends Controller
     {
         $user = new User();
         $roleSelections = $this->role();
-        return view('backend.user.create', compact('user', 'roleSelections'));
+        $permissionSelections = $this->permission();
+        return view('backend.user.create', compact('user', 'roleSelections', 'permissionSelections'));
     }
 
     /**
@@ -50,6 +51,10 @@ class UserController extends Controller
         $post = $request->all();
         $post['password'] = Hash::make($post['password']);
         $user = User::create($post);
+
+        if (auth()->user()->isCanManagePermission()) {
+            $user->syncUserPermissions($post['user_permissions']);
+        }
 
         return redirect()->route('backend.users.index')
             ->with('success', 'User created successfully.');
@@ -78,7 +83,8 @@ class UserController extends Controller
     {
         $user = User::find($id);
         $roleSelections = $this->role();
-        return view('backend.user.edit', compact('user', 'roleSelections'));
+        $permissionSelections = $this->permission();
+        return view('backend.user.edit', compact('user', 'roleSelections', 'permissionSelections'));
     }
 
     /**
@@ -99,7 +105,9 @@ class UserController extends Controller
             unset($post['password']);
         }
         $user->update($post);
-
+        if (auth()->user()->isCanManagePermission()) {
+            $user->syncUserPermissions($post['user_permissions']);
+        }
         return redirect()->route('backend.users.index')
             ->with('success', 'User updated successfully');
     }

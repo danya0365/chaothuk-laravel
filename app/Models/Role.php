@@ -53,7 +53,7 @@ class Role extends Model
                 continue;
             }
             $random = substr(md5(mt_rand()), 0, 7);
-            if (!$rolePermission['data']) {
+            if (!isset($rolePermission['data'])) {
                 $rolePermission['data'] = 1;
             }
 
@@ -61,11 +61,11 @@ class Role extends Model
                 $rolePermission['desc'] = '';
             }
 
-            $rolePermission['data'] = $rolePermission['data'] ? 1 : 0;
+            $rolePermission['data'] = $rolePermission['data'] == '1' || strtolower($rolePermission['data']) == 'yes' ? true : false;
             $syncData[$random] = $rolePermission;
         }
         if (count($syncData) === 0) {
-            return null;
+            return $this->permissions()->sync([]);
         }
         return $this->permissions()->sync($syncData);
     }

@@ -162,22 +162,27 @@ class User extends Authenticatable
         return $this->belongsToMany(Permission::class, 'user_permissions')->withPivot(['data', 'desc']);
     }
 
+    public function userPermissions(): HasMany
+    {
+        return $this->hasMany(UserPermission::class);
+    }
+
     public function isPermission($slug): bool
     {
+        $permissions = $this->permissions;
+        foreach ($permissions as $permission) {
+            if ($permission->slug == $slug) {
+                return $permission->pivot->data;
+            }
+        }
+
         $roles = $this->roles;
         foreach ($roles as $role) {
             $permissions = $role->permissions;
             foreach ($permissions as $permission) {
                 if ($permission->slug == $slug) {
-                    return true;
+                    return $permission->pivot->data;
                 }
-            }
-        }
-
-        $permissions = $this->permissions;
-        foreach ($permissions as $permission) {
-            if ($permission->slug == $slug) {
-                return true;
             }
         }
         return false;
@@ -193,11 +198,41 @@ class User extends Authenticatable
         return $this->isPermission(PermissionEnum::MANAGE_ROLE->value);
     }
 
+    public function isCanManagePermission(): bool
+    {
+        return $this->isPermission(PermissionEnum::MANAGE_PERMISSION->value);
+    }
+
     public function roleNames(): string
     {
         $roleNames = array_map(function ($role) {
             return  __('common.role-' . $role['id']);
         }, $this->roles->toArray());
         return implode(', ', $roleNames);
+    }
+
+    public function syncUserPermissions($userPermissions)
+    {
+        $syncData = [];
+        foreach ($userPermissions as $userPermission) {
+            if (!isset($userPermission['permission_id'])) {
+                continue;
+            }
+            $random = substr(md5(mt_rand()), 0, 7);
+            if (!isset($userPermission['data'])) {
+                $userPermission['data'] = 1;
+            }
+
+            if (!$userPermission['desc']) {
+                $userPermission['desc'] = '';
+            }
+
+            $userPermission['data'] = $userPermission['data'] == '1' || strtolower($userPermission['data']) == 'yes' ? true : false;
+            $syncData[$random] = $userPermission;
+        }
+        if (count($syncData) === 0) {
+            return $this->permissions()->sync([]);
+        }
+        return $this->permissions()->sync($syncData);
     }
 }

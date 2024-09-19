@@ -16,6 +16,11 @@
                         <span>เฉพาะ{{ __('common.role-1') }}เท่านั้น ที่สามารถแก้ไขข้อมูลบทบาทได้</span>
                     </div>
                 @endif
+                @if (!Auth::user()->isCanManagePermission())
+                    <div class="p-4 rounded bg-red-500 text-red-100 mb-4">
+                        <span>เฉพาะ{{ __('common.role-1') }}เท่านั้น ที่สามารถแก้ไขข้อมูลสิทธิได้</span>
+                    </div>
+                @endif
                 <div class="flex mt-5">
                     <a class="px-2 py-1 rounded-md bg-sky-500 text-sky-100 hover:bg-sky-600"
                         href="{{ route('backend.users.index') }}">
