@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\Permission;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +18,7 @@ class IsCanAccessBackend
     public function handle(Request $request, Closure $next): Response
     {
         $user = Auth::user();
-        if ($user instanceof \App\Models\User && $user->isCanAccessBackend()) {
+        if ($user instanceof \App\Models\User && $user->isPermission(Permission::ACCESS_BACKEND->value)) {
             return $next($request);
         }
         return redirect()->route('home')->with('error', 'คุณไม่มีสิทธิเข้าหน้า Backend');

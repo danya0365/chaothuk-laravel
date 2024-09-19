@@ -13,7 +13,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Banner extends Model
 {
-    use HasFactory, Notifiable, SoftDeletes, Scopes;
+    use HasFactory;
+    use Notifiable;
+    use SoftDeletes;
+    use Scopes;
 
     /**
      * The attributes that should be mass-assignable.
@@ -26,24 +29,28 @@ class Banner extends Model
 
     public function getExpiredDate(): string
     {
-        if (!$this->expired_at) return 'ไม่ระบุ';
-        return Carbon::createFromFormat('Y-m-d H:i:s',  $this->expired_at)->format('Y-m-d');
+        if (!$this->expired_at) {
+            return 'ไม่ระบุ';
+        }
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->expired_at)->format('Y-m-d');
     }
 
     public function getExpiredDateFormat(): string
     {
-        if (!$this->expired_at) return 'ไม่ระบุ';
-        return Carbon::createFromFormat('Y-m-d H:i:s',  $this->expired_at)->format('d/m/Y');
+        if (!$this->expired_at) {
+            return 'ไม่ระบุ';
+        }
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->expired_at)->format('d/m/Y');
     }
 
     public function getCreateDate(): string
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s',  $this->created_at)->format('Y-m-d');
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('Y-m-d');
     }
 
     public function getCreateDateFormat(): string
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s',  $this->created_at)->format('d/m/Y');
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('d/m/Y');
     }
 
     public function getTypeFormat(): string
@@ -74,15 +81,5 @@ class Banner extends Model
     public function isPromotion(): bool
     {
         return $this->type == BannerType::PROMOTION->value;
-    }
-
-    public function bannerProduct(): BelongsTo
-    {
-        return $this->belongsTo(BannerProduct::class, 'banner_product_id');
-    }
-
-    public function bannerPromotion(): BelongsTo
-    {
-        return $this->belongsTo(BannerPromotion::class, 'banner_promotion_id');
     }
 }

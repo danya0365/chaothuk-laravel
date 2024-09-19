@@ -20,7 +20,7 @@ class ConfigurationSeeder extends Seeder
             'slug' => EnumsConfiguration::COMPANY_NAME->value,
             'name' => 'ชื่อบริษัท',
             'value_type' => ConfigurationValueType::TEXT->value,
-            'value' => 'บริษัทรอยัลตี้เรวอร์ด จำกัด'
+            'value' => 'บริษัทเช่าถูก จำกัด'
         ]);
         Configuration::create([
             'slug' => EnumsConfiguration::THEME_SCHEME->value,

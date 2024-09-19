@@ -8,8 +8,8 @@ enum Role: int
 {
     use UsefulEnums;
 
+    case MEMBER = 3;
     case SUPERVISOR = 1;
     case BACKEND = 2;
-    case CUSTOMER = 3;
-    case MERCHANT = 4;
+    case MOBILE_PHONE = 4;
 }

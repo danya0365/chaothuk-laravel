@@ -1,13 +1,13 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('messenger.telephone-channel.register') }}">
+    <form method="POST" action="{{ route('messenger.mobilephone-channel.register') }}">
         @csrf
 
         <!-- Name -->
         <div>
-            <x-input-label for="telephone" :value="__('Telephone')" />
-            <x-text-input id="telephone" class="block mt-1 w-full" type="text" name="telephone" :value="old('telephone')"
+            <x-input-label for="telephone" :value="__('mobilePhone')" />
+            <x-text-input id="telephone" class="block mt-1 w-full" type="text" name="telephone" :value="old('mobilePhone')"
                 required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('telephone')" class="mt-2" />
+            <x-input-error :messages="$errors->get('mobilePhone')" class="mt-2" />
         </div>
 
         <div class="flex items-center justify-end mt-4">

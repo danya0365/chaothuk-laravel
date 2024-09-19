@@ -13,10 +13,10 @@ return [
     'value-type-boolean' => 'Boolean',
     'value-type-url' => 'Url',
 
-    'role-1' => 'เจ้าของบริษัท',
-    'role-2' => 'เจ้าหน้าที่บริษัท',
-    'role-3' => 'ลูกค้า',
-    'role-4' => 'ร้านค้า',
+    'role-1' => 'ผู้ดูแลสูงสุด',
+    'role-2' => 'ผู้ดูแลหลังบ้าน',
+    'role-3' => 'ผู้ใช้ทั่วไป',
+    'role-4' => 'ผู้ใช้มือถือ',
 
     'yes' => 'ใช่',
     'no' => 'ไม่ใช่',
@@ -45,6 +45,14 @@ return [
     'user_activity_type-logout' => 'ออกจากระบบ',
     'user_activity_type-api_login' => 'เข้าสู่ระบบด้วย API',
     'user_activity_type-api_logout' => 'ออกจากระบบด้วย API',
+
+    'permission-access_backend' => 'เข้าหลังบ้าน',
+    'permission-manage_permission' => 'จัดการสิทธิ',
+    'permission-manage_role' => 'จัดการบทบาท',
+    'permission-create_recruit' => 'สร้างโพสท์หางาน',
+    'permission-create_work' => 'สร้างโพสท์ขายงาน',
+    'permission-review_work' => 'รีวิวโพสท์ขายงาน',
+    'permission-reply_review' => 'ตอบกลับรีวิว',
 
     'cron_type-every_minute' => 'ทุกๆนาที',
     'cron_type-hourly' => 'ทุกต้นชั่วโมง',

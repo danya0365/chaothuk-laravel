@@ -12,7 +12,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserActivityLog extends Model
 {
-    use HasFactory, Notifiable, SoftDeletes, Scopes;
+    use HasFactory;
+    use Notifiable;
+    use SoftDeletes;
+    use Scopes;
 
     /**
      * The attributes that should be mass-assignable.
@@ -30,17 +33,17 @@ class UserActivityLog extends Model
 
     public function getCreateDate(): string
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s',  $this->created_at)->format('Y-m-d');
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('Y-m-d');
     }
 
     public function getCreateDateFormat(): string
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s',  $this->created_at)->format('d/m/Y');
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('d/m/Y');
     }
 
     public function getCreateDateTimeFormat(): string
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s',  $this->created_at)->format('d/m/Y H:i:s');
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('d/m/Y H:i:s');
     }
 
     public function getActivityTypeFormat(): string

@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Enums\Permission as PermissionEnum;
 use App\Enums\Role as RoleEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -22,7 +23,11 @@ use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, Scopes;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
+    use SoftDeletes;
+    use Scopes;
 
     /**
      * The attributes that should be mass-assignable.
@@ -75,87 +80,14 @@ class User extends Authenticatable
         return $this->cover_image ?? "https://placehold.co/{$size}?text=Cover+Photo";
     }
 
-    public function getRoleName(): string
-    {
-        return __('common.role-' . $this->role_id);
-    }
-
-    public function customer(): HasOne
-    {
-        return $this->hasOne(UserCustomer::class, 'user_id');
-    }
-
-    public function merchant(): HasOne
-    {
-        return $this->hasOne(UserMerchant::class, 'user_id');
-    }
-
-    public function backend(): HasOne
-    {
-        return $this->hasOne(UserBackend::class, 'user_id');
-    }
-
-    public function role(): BelongsTo
-    {
-        return $this->belongsTo(Role::class, 'role_id');
-    }
-
-    public function userTypes(): BelongsToMany
-    {
-        return $this->belongsToMany(UserType::class, 'user_type_maps');
-    }
-
-    public function userTypeMaps(): HasMany
-    {
-        return $this->hasMany(UserTypeMap::class);
-    }
-
-    public function coupons(): HasMany
-    {
-        return $this->hasMany(UserCoupon::class, 'user_id');
-    }
-
-    public function missions(): HasMany
-    {
-        return $this->hasMany(UserMission::class, 'user_id');
-    }
-
     public function userPoints(): HasMany
     {
         return $this->hasMany(UserPoint::class, 'user_id');
     }
 
-    public function promotions(): HasMany
-    {
-        return $this->hasMany(BannerPromotion::class, 'merchant_id');
-    }
-
-    public function products(): HasMany
-    {
-        return $this->hasMany(BannerProduct::class, 'merchant_id');
-    }
-
     public function transactions()
     {
         return $this->hasMany(PointTransactionLog::class, 'user_id');
-    }
-
-    public function promotionCount()
-    {
-        $promotionCount = $this->promotions()->count();
-        if (!$promotionCount) {
-            return 0;
-        }
-        return $promotionCount;
-    }
-
-    public function productCount()
-    {
-        $productCount = $this->products()->count();
-        if (!$productCount) {
-            return 0;
-        }
-        return $productCount;
     }
 
     public function receivedPoints()
@@ -187,55 +119,85 @@ class User extends Authenticatable
         return $redeemPoints;
     }
 
-    public function isCanAccessBackend(): Bool
+    public static function getOrCreateMobilePhoneUser($mobilePhone): User
     {
-        return $this->role->is_can_access_backend;
-    }
-
-    public static function getOrCreateTelephoneUser($telephone): User
-    {
-        $user = self::where('name', $telephone)->first();
-        if ($user) return $user;
+        $user = self::where('name', $mobilePhone)->first();
+        if ($user) {
+            return $user;
+        }
 
         $user = User::create([
-            'name' => $telephone,
-            'email' => $telephone,
-            'password' => Hash::make($telephone),
-            'role_id' => RoleEnum::CUSTOMER->value,
+            'name' => $mobilePhone,
+            'email' => $mobilePhone,
+            'password' => Hash::make($mobilePhone),
         ]);
+
+        $user->roles()->sync(['role_id' => RoleEnum::MOBILE_PHONE->value]);
 
         event(new Registered($user));
 
         return $user;
     }
 
-    public function getUserTypeValue(): array
+    public function getRolesValue(): array
     {
-        $userTypeMaps = $this->userTypeMaps;
-        if (!$userTypeMaps) return [];
-        $userTypeIds = [];
-        foreach ($userTypeMaps as $userType) {
-            $userTypeIds[] = $userType->user_type_id;
+        $usersRoles = $this->usersRoles;
+        if (!$usersRoles) {
+            return [];
         }
-        return $userTypeIds;
+        $roleIds = [];
+        foreach ($usersRoles as $usersRole) {
+            $roleIds[] = $usersRole->role_id;
+        }
+        return $roleIds;
     }
 
-    public function syncUserTypes($userTypes)
+    public function roles(): BelongsToMany
     {
-        $syncData = [];
-        foreach ($userTypes as $userType) {
-            if (!isset($userType['user_type_id'])) continue;
-            $random = substr(md5(mt_rand()), 0, 7);
-            if (!$userType['amount']) {
-                $userType['amount'] = 0;
+        return $this->belongsToMany(Role::class, 'users_roles');
+    }
+
+    public function permissions(): BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class, 'user_permissions')->withPivot(['data', 'desc']);
+    }
+
+    public function isPermission($slug): bool
+    {
+        $roles = $this->roles;
+        foreach ($roles as $role) {
+            $permissions = $role->permissions;
+            foreach ($permissions as $permission) {
+                if ($permission->slug == $slug) {
+                    return true;
+                }
             }
-            if (!$userType['text_condition']) {
-                $userType['text_condition'] = '-';
-            }
-            $userType['amount'] = intval($userType['amount']);
-            $syncData[$random] = $userType;
         }
-        if (count($syncData) === 0) return null;
-        return $this->userTypes()->sync($syncData);
+
+        $permissions = $this->permissions;
+        foreach ($permissions as $permission) {
+            if ($permission->slug == $slug) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function isCanAccessBackend(): bool
+    {
+        return $this->isPermission(PermissionEnum::ACCESS_BACKEND->value);
+    }
+
+    public function isCanManageRole(): bool
+    {
+        return $this->isPermission(PermissionEnum::MANAGE_ROLE->value);
+    }
+
+    public function roleNames(): string
+    {
+        $roleNames = array_map(function ($role) {
+            return  __('common.role-' . $role['id']);
+        }, $this->roles->toArray());
+        return implode(', ', $roleNames);
     }
 }

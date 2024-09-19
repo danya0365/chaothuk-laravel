@@ -4,18 +4,13 @@ namespace App\Traits;
 
 use App\Enums\BannerType;
 use App\Enums\ConfigurationValueType;
-use App\Enums\CouponExpiresType;
 use App\Enums\CronRepeatType;
 use App\Enums\Gender;
 use App\Enums\IssueStatus;
 use App\Enums\IssueType;
-use App\Enums\MissionStatus;
 use App\Enums\PersonType;
-use App\Enums\PromotionType;
-use App\Models\BannerProduct;
-use App\Models\BannerPromotion;
+use App\Models\Permission;
 use App\Models\Role;
-use App\Models\UserType;
 
 trait SelectOption
 {
@@ -103,6 +98,20 @@ trait SelectOption
         return $selections;
     }
 
+    public function permission()
+    {
+        $selectOptions = Permission::query()->get();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => __('common.permission-' . $selectOption->slug),
+                'value' => $selectOption->id
+            ];
+        }
+        return $selections;
+    }
+
     public function bannerType()
     {
         $selectOptions = BannerType::values();
@@ -111,48 +120,6 @@ trait SelectOption
             $selections[] = [
                 'id' => $key,
                 'label' => __('banner.type-' . $selectOption),
-                'value' => $selectOption
-            ];
-        }
-        return $selections;
-    }
-
-    public function couponExpiresType()
-    {
-        $selectOptions = CouponExpiresType::values();
-        $selections = [];
-        foreach ($selectOptions as $key => $selectOption) {
-            $selections[] = [
-                'id' => $key,
-                'label' => __('banner.coupon_expires_type-' . $selectOption),
-                'value' => $selectOption
-            ];
-        }
-        return $selections;
-    }
-
-    public function promotionType()
-    {
-        $selectOptions = PromotionType::values();
-        $selections = [];
-        foreach ($selectOptions as $key => $selectOption) {
-            $selections[] = [
-                'id' => $key,
-                'label' => __('banner.promotion_type-' . $selectOption),
-                'value' => $selectOption
-            ];
-        }
-        return $selections;
-    }
-
-    public function missionStatus()
-    {
-        $selectOptions = MissionStatus::values();
-        $selections = [];
-        foreach ($selectOptions as $key => $selectOption) {
-            $selections[] = [
-                'id' => $key,
-                'label' => __('mission.status-' . $selectOption),
                 'value' => $selectOption
             ];
         }
@@ -196,48 +163,6 @@ trait SelectOption
                 'id' => $key,
                 'label' => __('common.cron_repeat_type-' . $selectOption),
                 'value' => $selectOption
-            ];
-        }
-        return $selections;
-    }
-
-    public function userType()
-    {
-        $selectOptions = UserType::query()->get();
-        $selections = [];
-        foreach ($selectOptions as $key => $selectOption) {
-            $selections[] = [
-                'id' => $key,
-                'label' => $selectOption->name,
-                'value' => $selectOption->id
-            ];
-        }
-        return $selections;
-    }
-
-    public function bannerProduct()
-    {
-        $selectOptions = BannerProduct::query()->get();
-        $selections = [];
-        foreach ($selectOptions as $key => $selectOption) {
-            $selections[] = [
-                'id' => $key,
-                'label' => $selectOption->name,
-                'value' => $selectOption->id
-            ];
-        }
-        return $selections;
-    }
-
-    public function bannerPromotion()
-    {
-        $selectOptions = BannerPromotion::query()->get();
-        $selections = [];
-        foreach ($selectOptions as $key => $selectOption) {
-            $selections[] = [
-                'id' => $key,
-                'label' => $selectOption->name,
-                'value' => $selectOption->id
             ];
         }
         return $selections;

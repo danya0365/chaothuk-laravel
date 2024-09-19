@@ -2,23 +2,18 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BannerController;
-use App\Http\Controllers\Api\BannerProductController;
-use App\Http\Controllers\Api\BannerPromotionController;
 use App\Http\Controllers\Api\BarcodeController;
 use App\Http\Controllers\Api\BarcodePreviewController;
 use App\Http\Controllers\Api\ConfigurationController;
-use App\Http\Controllers\Api\CustomerLogController;
+use App\Http\Controllers\Api\UserLogController;
 use App\Http\Controllers\Api\IssuePointController;
-use App\Http\Controllers\Api\MerchantLogController;
 use App\Http\Controllers\Api\MessengerController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ProvinceController;
-use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\UploadController;
-use App\Http\Controllers\Api\UserCouponController;
-use App\Http\Controllers\Api\UserMissionController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -54,12 +49,6 @@ Route::group(['prefix' => 'provinces', 'as' => 'api.provinces.'], function () {
     Route::get('/', [ProvinceController::class, 'all'])->name('all');
 });
 
-Route::group(['prefix' => 'tags', 'as' => 'api.tags.'], function () {
-    Route::get('/', [TagController::class, 'all'])->name('all');
-    Route::get('/products', [TagController::class, 'products'])->name('products');
-    Route::get('/promotions', [TagController::class, 'promotions'])->name('promotions');
-});
-
 Route::group(['prefix' => 'notifications', 'as' => 'api.notifications.'], function () {
     Route::get('/', [NotificationController::class, 'list'])->name('list');
     Route::get('/last-update', [NotificationController::class, 'lastUpdate'])->name('last-update');
@@ -86,28 +75,6 @@ Route::group(['prefix' => 'banners', 'as' => 'api.banners.', 'middleware' => ['a
     Route::get('/{id}', [BannerController::class, 'show'])->name('show');
 });
 
-Route::group(['prefix' => 'user-missions', 'as' => 'api.user-missions.'], function () {
-    Route::get('/{id}', [UserMissionController::class, 'show'])->name('show');
-});
-
-Route::group(['prefix' => 'banner-products', 'as' => 'api.banner-products.', 'middleware' => ['auth:sanctum']], function () {
-    Route::get('/', [BannerProductController::class, 'bannerProducts'])->name('list');
-    Route::get('/{id}', [BannerProductController::class, 'show'])->name('show');
-    Route::get('/code/{code}', [BannerProductController::class, 'searchByCode'])->name('code');
-});
-
-Route::group(['prefix' => 'banner-promotions', 'as' => 'api.banner-promotions.', 'middleware' => ['auth:sanctum']], function () {
-    Route::get('/', [BannerPromotionController::class, 'bannerPromotions'])->name('list');
-    Route::get('/{id}', [BannerPromotionController::class, 'show'])->name('show');
-    Route::get('/code/{code}', [BannerProductController::class, 'searchByCode'])->name('code');
-});
-
-Route::group(['prefix' => 'user-coupons', 'as' => 'api.user-coupons.'], function () {
-    Route::get('/{id}', [UserCouponController::class, 'show'])->name('show');
-    Route::get('/code/{code}', [UserCouponController::class, 'searchByCode'])->name('code');
-    Route::post('/use', [UserCouponController::class, 'use'])->name('use');
-});
-
 
 Route::group(['prefix' => 'issue-points', 'as' => 'api.issue-points.'], function () {
     Route::get('/{id}', [IssuePointController::class, 'show'])->name('show');
@@ -131,10 +98,10 @@ Route::group(['prefix' => 'barcode-preview', 'as' => 'api.barcode-preview.'], fu
 });
 
 Route::group(['prefix' => 'messenger', 'as' => 'api.messenger.'], function () {
-    Route::post('/telephone-channel/new', [MessengerController::class, 'newTelephoneChannel'])->name('telephone-channel.new');
-    Route::get('/telephone-channel/{id}/{telephone}/conversations', [MessengerController::class, 'getTelephoneChannelConversations'])->name('telephone-channel.conversations');
-    Route::get('/telephone-channel/{id}/{telephone}/conversations/last', [MessengerController::class, 'getLastTelephoneChannelConversations'])->name('telephone-channel.conversations.last');
-    Route::post('/telephone-channel/{id}/{telephone}/conversations', [MessengerController::class, 'storeTelephoneChannelConversations'])->name('telephone-channel.conversations.store');
+    Route::post('/mobilephone-channel/new', [MessengerController::class, 'newMobilePhoneChannel'])->name('mobilephone-channel.new');
+    Route::get('/mobilephone-channel/{id}/{telephone}/conversations', [MessengerController::class, 'getMobilePhoneChannelConversations'])->name('mobilephone-channel.conversations');
+    Route::get('/mobilephone-channel/{id}/{telephone}/conversations/last', [MessengerController::class, 'getLastMobilePhoneChannelConversations'])->name('mobilephone-channel.conversations.last');
+    Route::post('/mobilephone-channel/{id}/{telephone}/conversations', [MessengerController::class, 'storeMobilePhoneChannelConversations'])->name('mobilephone-channel.conversations.store');
     Route::post('/channel/{id}/conversations/{conversationId}/seen', [MessengerController::class, 'updateSeenAtInConversations'])->name('channel.conversations.seen');
 
     Route::group(['middleware' => ['auth:sanctum']], function () {
@@ -149,16 +116,9 @@ Route::get('/link-storage', function () {
     Artisan::call('storage:link');
 });
 
-Route::group(['prefix' => 'customer-logs', 'as' => 'api.customer-logs.', 'middleware' => ['auth:sanctum']], function () {
-    Route::get('/point-logs', [CustomerLogController::class, 'getPointLogs'])->name('point-logs');
-    Route::get('/coupon-logs', [CustomerLogController::class, 'getCouponLogs'])->name('coupon-logs');
-    Route::get('/missions', [CustomerLogController::class, 'getMissions'])->name('missions');
-    Route::get('/point-transaction-logs', [CustomerLogController::class, 'getPointTransactionLogs'])->name('point-transaction-logs');
-});
-
-Route::group(['prefix' => 'merchant-logs', 'as' => 'api.merchant-logs.', 'middleware' => ['auth:sanctum']], function () {
-    Route::get('/coupon-logs', [MerchantLogController::class, 'getCouponLogs'])->name('coupon-logs');
-    Route::get('/missions', [MerchantLogController::class, 'getMissions'])->name('missions');
+Route::group(['prefix' => 'user-logs', 'as' => 'api.customer-logs.', 'middleware' => ['auth:sanctum']], function () {
+    Route::get('/point-logs', [UserLogController::class, 'getPointLogs'])->name('point-logs');
+    Route::get('/point-transaction-logs', [UserLogController::class, 'getPointTransactionLogs'])->name('point-transaction-logs');
 });
 
 Route::group(['prefix' => 'auth', 'as' => 'api.auth.'], function () {

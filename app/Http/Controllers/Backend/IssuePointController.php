@@ -59,12 +59,13 @@ class IssuePointController extends Controller
         $weekDaySelections = $this->weekDay();
         $dateSelections = $this->date();
 
-        $customerId = request()->get('customerId', 0);
+        $memberId = request()->get('memberId', 0);
         $users = null;
-        if (!$customerId)
-            $users = User::query()->where('role_id', Role::CUSTOMER->value)->paginate()->withQueryString();
+        if (!$memberId) {
+            $users = User::query()->where('role_id', Role::MEMBER->value)->paginate()->withQueryString();
+        }
 
-        $view = view('backend.issue-point.create', compact('issuePoint', 'customerId', 'users', 'issuePointTypeSelections', 'cronRepeatTypeSelections', 'weekDaySelections', 'dateSelections'));
+        $view = view('backend.issue-point.create', compact('issuePoint', 'memberId', 'users', 'issuePointTypeSelections', 'cronRepeatTypeSelections', 'weekDaySelections', 'dateSelections'));
 
         if ($users) {
             $view->with('i', (request()->input('page', 1) - 1) * $users->perPage());

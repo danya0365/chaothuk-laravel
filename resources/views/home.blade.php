@@ -23,7 +23,7 @@
             </div>
             <div class="grid grid-cols-1 gap-4 mt-4">
                 <a class="flex h-[150px] items-center justify-center text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-200 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg"
-                    href="{{ route('messenger.telephone-channel.new') }}">
+                    href="{{ route('messenger.mobilephone-channel.new') }}">
                     <div class="flex-1 w-full flex flex-col items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-12 h-12">

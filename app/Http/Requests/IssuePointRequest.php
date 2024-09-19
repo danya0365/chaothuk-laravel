@@ -23,7 +23,6 @@ class IssuePointRequest extends FormRequest
             'type' => ['nullable', 'in:' . implode(',', IssueType::values())],
             //'status' => ['nullable', 'in:' . implode(',', IssueStatus::values())],
             'user_id' => ['required', 'exists:App\Models\User,id'],
-            'user_mission_id' => ['nullable', 'numeric'],
             'cron_task' => ['nullable', 'string'],
             'start_at' => ['nullable', 'string'],
             'end_at' => ['nullable', 'string'],

@@ -11,9 +11,9 @@
                     Update
                 </h1>
                 <p class="my-1 max-w-2xl text-sm leading-6 text-red-500 font-bold">**ต้องกรอกข้อมูลให้ครบถ้วน**</p>
-                @if (!Auth::user()->role?->isSupervisor())
+                @if (!Auth::user()->isCanManageRole())
                     <div class="p-4 rounded bg-red-500 text-red-100 mb-4">
-                        <span>เฉพาะ{{ __('common.role-1') }}เท่านั้น ที่สามารถแก้ไขข้อมูล</span>
+                        <span>เฉพาะ{{ __('common.role-1') }}เท่านั้น ที่สามารถแก้ไขข้อมูลบทบาทได้</span>
                     </div>
                 @endif
                 <div class="flex mt-5">

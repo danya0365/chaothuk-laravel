@@ -36,8 +36,6 @@ class BannerController extends Controller
         $banner = new Banner();
         $bannerTypeSelections = $this->bannerType();
         $publicSelections = $this->yesNo();
-        $bannerProductSelections = $this->bannerProduct();
-        $bannerPromotionSelections = $this->bannerPromotion();
         return view('backend.banner.create', compact('banner', 'bannerTypeSelections', 'publicSelections', 'bannerProductSelections', 'bannerPromotionSelections'));
     }
 
@@ -71,8 +69,6 @@ class BannerController extends Controller
         $banner = Banner::find($id);
         $bannerTypeSelections = $this->bannerType();
         $publicSelections = $this->yesNo();
-        $bannerProductSelections = $this->bannerProduct();
-        $bannerPromotionSelections = $this->bannerPromotion();
         return view('backend.banner.edit', compact('banner', 'bannerTypeSelections', 'publicSelections', 'bannerProductSelections', 'bannerPromotionSelections'));
     }
 

@@ -15,27 +15,27 @@ use Illuminate\Support\Facades\Redirect;
  */
 class MessengerController extends Controller
 {
-    public function newTelephoneChannel()
+    public function newMobilePhoneChannel()
     {
         return view('messenger.register');
     }
 
-    public function registerTelephoneChannel()
+    public function registerMobilePhoneChannel()
     {
         $post = request()->all();
-        $user = User::getOrCreateTelephoneUser($post['telephone']);
+        $user = User::getOrCreateMobilePhoneUser($post['mobilePhone']);
         $channel =  MessengerChannel::with('participants')
             ->whereHas('participants', function ($q) use ($user) {
                 $q->with(['author'])->whereBelongsTo($user, 'author');
             })->first();
 
         if ($channel) {
-            return Redirect::route('messenger.telephone-channel', ['id' => $channel->id, 'telephone' => $post['telephone']]);
+            return Redirect::route('messenger.mobilephone-channel', ['id' => $channel->id, 'mobilePhone' => $post['mobilePhone']]);
         }
 
         $channel =  MessengerChannel::create([
-            'slug' => $post['telephone'],
-            'title' => $post['telephone'],
+            'slug' => $post['mobilePhone'],
+            'title' => $post['mobilePhone'],
         ]);
 
         if (!$channel) {
@@ -46,7 +46,7 @@ class MessengerController extends Controller
             'user_id' => $user->id,
         ]);
 
-        return Redirect::route('messenger.telephone-channel', ['id' => $channel->id, 'telephone' => $post['telephone']])->with('status', 'profile-updated');
+        return Redirect::route('messenger.mobilephone-channel', ['id' => $channel->id, 'mobilePhone' => $post['mobilePhone']])->with('status', 'profile-updated');
     }
 
     /**
@@ -55,12 +55,12 @@ class MessengerController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function getTelephoneChannel($id, $telephone)
+    public function getMobilePhoneChannel($id, $mobilePhone)
     {
         $messengerChannel = MessengerChannel::find($id);
         $messengerParticipants = $messengerChannel->participants;
         $messengerConversations = $messengerChannel->conversations;
 
-        return view('messenger.telephone-channel.index', compact('messengerChannel', 'messengerParticipants', 'messengerConversations', 'telephone'));
+        return view('messenger.mobilephone-channel.index', compact('messengerChannel', 'messengerParticipants', 'messengerConversations', 'mobilePhone'));
     }
 }

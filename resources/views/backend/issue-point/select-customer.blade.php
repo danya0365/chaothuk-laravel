@@ -55,7 +55,7 @@
                         <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 dark:border-gray-600">
 
                             <a class="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-200"
-                                href="{{ route('backend.issue-points.create', ['customerId' => $user->id]) }}">
+                                href="{{ route('backend.issue-points.create', ['memberId' => $user->id]) }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="2" stroke="currentColor" class="w-6 h-6 inline-block">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />

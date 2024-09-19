@@ -23,12 +23,6 @@ class AuthUserResource extends JsonResource
             'received_points' => $this->receivedPoints(),
             'available_points' => $this->availablePoints(),
             'redeem_points' => $this->redeemPoints(),
-            'promotion_count' => $this->promotionCount(),
-            'product_count' => $this->productCount(),
-            'role' => new RoleResource($this->role),
-            'customer' => new CustomerResource($this->customer),
-            'merchant' => new MerchantResource($this->merchant),
-            'user_type_maps' => $this->userTypeMaps
         ];
     }
 }

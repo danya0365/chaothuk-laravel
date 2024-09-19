@@ -46,11 +46,6 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        if (!Auth::user()->role?->isSupervisor()) {
-            return redirect()->route('backend.users.index')
-                ->with('error', 'User was not create.');
-        }
-
         $request->validated();
         $post = $request->all();
         $post['password'] = Hash::make($post['password']);
@@ -95,11 +90,6 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, User $user)
     {
-        if (!Auth::user()->role?->isSupervisor()) {
-            return redirect()->route('backend.users.index')
-                ->with('error', 'User was not update.');
-        }
-
         $request->validated();
         $post = $request->all();
 

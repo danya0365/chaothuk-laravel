@@ -19,7 +19,7 @@ class NotificationSeeder extends Seeder
             ->sequence(fn ($sequence) => [
                 'title' => 'แจ้งเตือน ' . $sequence->index + 1,
                 'content' => 'ข้อความการแจ้งเตือน ' . $sequence->index + 1,
-                'notification_type' => NotificationType::GENERAL->value
+                'notification_type' => NotificationType::ANNOUNCEMENT->value
             ])
             ->create();
     }

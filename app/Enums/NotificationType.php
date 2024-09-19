@@ -8,8 +8,11 @@ enum NotificationType: string
 {
     use UsefulEnums;
 
-    case GENERAL = 'general';
-    case SAVING_BENEFIT = 'saving-benefit';
-    case LOAN_APPLICATION = 'loan-application';
-    case SAVING_APPLICATION = 'saving-application';
+    case ANNOUNCEMENT = 'announcement';
+    case BOOKING_CONFIRM = 'booking-confirm';
+    case WORK_LIKE = 'work-like';
+    case WORK_REVIEW = 'work-review';
+    case REVIEW_REPLY = 'review-reply';
+    case REVIEW_LIKE = 'review-like';
+    case RECRUIT_BOOKING = 'recruit-booking';
 }

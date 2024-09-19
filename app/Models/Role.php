@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Enums\Role as EnumsRole;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Role extends Model
 {
@@ -16,11 +18,55 @@ class Role extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'id',
         'name',
     ];
 
-    public function isSupervisor(): bool
+    public function users(): BelongsToMany
     {
-        return $this->is_supervisor;
+        return $this->belongsToMany(User::class, 'users_roles');
+    }
+
+    public function permissions(): BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class, 'role_permissions')->withPivot(['data', 'desc']);
+    }
+
+    public function rolePermissions(): HasMany
+    {
+        return $this->hasMany(RolePermission::class);
+    }
+
+    public function permissionDetails(): string
+    {
+        $permissionDetails = array_map(function ($role) {
+            return  __('common.permission-' . $role['slug']);
+        }, $this->permissions->toArray());
+        return implode(', ', $permissionDetails);
+    }
+
+    public function syncRolePermissions($rolePermissions)
+    {
+        $syncData = [];
+        foreach ($rolePermissions as $rolePermission) {
+            if (!isset($rolePermission['permission_id'])) {
+                continue;
+            }
+            $random = substr(md5(mt_rand()), 0, 7);
+            if (!$rolePermission['data']) {
+                $rolePermission['data'] = 1;
+            }
+
+            if (!$rolePermission['desc']) {
+                $rolePermission['desc'] = '';
+            }
+
+            $rolePermission['data'] = $rolePermission['data'] ? 1 : 0;
+            $syncData[$random] = $rolePermission;
+        }
+        if (count($syncData) === 0) {
+            return null;
+        }
+        return $this->permissions()->sync($syncData);
     }
 }

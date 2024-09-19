@@ -1,6 +1,6 @@
 <div class="flex flex-col space-y-4" x-data="alpineFormData('{{ old('type', $issuePoint?->type) }}', '{{ old('repeat_type', $issuePoint?->cron()->getRepeatType()) }}', '{{ old('repeat_value', $issuePoint?->cron()->getRepeatValue()) }}')">
 
-    <x-text-input id="user_id" name="user_id" :value="old('user_id', $issuePoint?->user_id ?? $customerId)" type="hidden" class="mt-1 block w-full" required />
+    <x-text-input id="user_id" name="user_id" :value="old('user_id', $issuePoint?->user_id ?? $memberId)" type="hidden" class="mt-1 block w-full" required />
 
     <div>
         <x-input-label for="slug" :value="__('Slug')" />

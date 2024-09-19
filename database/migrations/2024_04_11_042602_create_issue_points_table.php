@@ -6,8 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
@@ -20,11 +19,13 @@ return new class extends Migration
             $table->string('desc');
             $table->decimal('points', 12, 2);
             $table->enum('type', IssueType::values());
+            $table->jsonb('cron_info')->nullable();
+            $table->string('cron_task')->nullable();
+            $table->dateTime('start_at')->nullable();
+            $table->dateTime('end_at')->nullable();
             $table->enum('status', IssueStatus::values())->default(IssueStatus::SUBMIT->value);
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
-            $table->unsignedBigInteger('user_mission_id')->nullable();
-            $table->foreign('user_mission_id')->references('id')->on('user_missions')->cascadeOnDelete();
             $table->softDeletes();
             $table->timestamps();
         });

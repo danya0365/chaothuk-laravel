@@ -41,7 +41,7 @@
                             <form action="{{ route('backend.issue-points.store') }}" method="POST">
                                 @csrf
 
-                                @if (!$customerId)
+                                @if (!$memberId)
                                     @include('backend.issue-point.select-customer')
                                 @else
                                     @include('backend.issue-point.form')

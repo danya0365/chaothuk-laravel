@@ -7,11 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\Scopes;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PointTransactionLog extends Model
 {
-    use HasFactory, Notifiable, SoftDeletes, Scopes;
+    use HasFactory;
+    use Notifiable;
+    use SoftDeletes;
+    use Scopes;
 
     /**
      * The attributes that should be mass-assignable.
@@ -33,12 +37,12 @@ class PointTransactionLog extends Model
 
     public function getCreateDate(): string
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s',  $this->created_at)->format('Y-m-d');
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('Y-m-d');
     }
 
     public function getCreateDateFormat(): string
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s',  $this->created_at)->format('d/m/Y');
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('d/m/Y');
     }
 
     public function user(): BelongsTo

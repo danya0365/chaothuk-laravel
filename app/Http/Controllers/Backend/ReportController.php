@@ -10,9 +10,6 @@ use App\Models\IssuePointStatusLog;
 use App\Models\PointTransactionLog;
 use App\Models\User;
 use App\Models\UserActivityLog;
-use App\Models\UserCouponLog;
-use App\Models\UserMerchant;
-use App\Models\UserMissionStatusLog;
 use App\Models\UserPointLog;
 use App\Traits\SelectOption;
 
@@ -39,8 +36,9 @@ class ReportController extends Controller
 
         $query = UserPointLog::query();
 
-        if ($startDate && $endDate)
+        if ($startDate && $endDate) {
             $query->whereBetween('created_at', [$startDate->startOfDay(), $endDate->endOfDay()]);
+        }
 
         $pointLogs = $query->orderBy('id', 'desc')->paginate()->withQueryString();
 
@@ -58,32 +56,14 @@ class ReportController extends Controller
 
         $query = IssuePoint::query();
 
-        if ($startDate && $endDate)
+        if ($startDate && $endDate) {
             $query->whereBetween('created_at', [$startDate->startOfDay(), $endDate->endOfDay()]);
+        }
 
         $issuePoints = $query->orderBy('id', 'desc')->paginate()->withQueryString();
 
         return view('backend.report.issue-points', compact('issuePoints'))
             ->with('i', (request()->input('page', 1) - 1) * $issuePoints->perPage());
-    }
-
-    public function getMissionStatusLog()
-    {
-        $post = request()->all();
-        $startDateString = $post['start_date'] ?? null;
-        $endDateString = $post['end_date'] ?? null;
-        $startDate = $startDateString ? \Carbon\Carbon::parse($startDateString) : null;
-        $endDate = $endDateString ? \Carbon\Carbon::parse($endDateString) : null;
-
-        $query = UserMissionStatusLog::query();
-
-        if ($startDate && $endDate)
-            $query->whereBetween('created_at', [$startDate->startOfDay(), $endDate->endOfDay()]);
-
-        $missionStatusLogs = $query->orderBy('id', 'desc')->paginate()->withQueryString();
-
-        return view('backend.report.mission-status-logs', compact('missionStatusLogs'))
-            ->with('i', (request()->input('page', 1) - 1) * $missionStatusLogs->perPage());
     }
 
     public function getIssuePointStatusLogs()
@@ -96,65 +76,14 @@ class ReportController extends Controller
 
         $query = IssuePointStatusLog::query();
 
-        if ($startDate && $endDate)
+        if ($startDate && $endDate) {
             $query->whereBetween('created_at', [$startDate->startOfDay(), $endDate->endOfDay()]);
+        }
 
         $issuePointStatusLogs = $query->orderBy('id', 'desc')->paginate()->withQueryString();
 
         return view('backend.report.issue-point-status-logs', compact('issuePointStatusLogs'))
             ->with('i', (request()->input('page', 1) - 1) * $issuePointStatusLogs->perPage());
-    }
-
-    public function getCouponLogs()
-    {
-        $post = request()->all();
-        $startDateString = $post['start_date'] ?? null;
-        $endDateString = $post['end_date'] ?? null;
-        $startDate = $startDateString ? \Carbon\Carbon::parse($startDateString) : null;
-        $endDate = $endDateString ? \Carbon\Carbon::parse($endDateString) : null;
-
-        $query = UserCouponLog::query();
-
-        if ($startDate && $endDate)
-            $query->whereBetween('created_at', [$startDate->startOfDay(), $endDate->endOfDay()]);
-
-        $couponLogs = $query->orderBy('id', 'desc')->paginate()->withQueryString();
-
-
-        return view('backend.report.coupon-logs', compact('couponLogs'))
-            ->with('i', (request()->input('page', 1) - 1) * $couponLogs->perPage());
-    }
-
-
-    public function getCouponLogsByMerchant()
-    {
-        $post = request()->all();
-        $merchantId = request()->get('merchantId', 0);
-        $startDateString = $post['start_date'] ?? null;
-        $endDateString = $post['end_date'] ?? null;
-        $startDate = $startDateString ? \Carbon\Carbon::parse($startDateString) : null;
-        $endDate = $endDateString ? \Carbon\Carbon::parse($endDateString) : null;
-
-        $merchant = UserMerchant::find($merchantId);
-        if (!$merchant) {
-            $users = User::query()->where('role_id', Role::MERCHANT->value)->paginate()->withQueryString();
-            return view('backend.report.coupon-logs-by-merchant', compact('users', 'merchant'))
-                ->with('i', (request()->input('page', 1) - 1) * $users->perPage());
-        }
-
-        $query = UserCouponLog::query()->whereHas('userCoupon', function ($q) use ($merchant) {
-            return $q->whereHas('bannerProduct', function ($q) use ($merchant) {
-                return $q->with(['merchant'])->whereBelongsTo($merchant, 'merchant');
-            });
-        });
-
-        if ($startDate && $endDate)
-            $query->whereBetween('created_at', [$startDate->startOfDay(), $endDate->endOfDay()]);
-
-        $couponLogs = $query->orderBy('id', 'desc')->paginate()->withQueryString();
-
-        return view('backend.report.coupon-logs-by-merchant', compact('couponLogs', 'merchantId', 'merchant'))
-            ->with('i', (request()->input('page', 1) - 1) * $couponLogs->perPage());
     }
 
     public function getUserActivityLogs()
@@ -167,8 +96,9 @@ class ReportController extends Controller
 
         $query = UserActivityLog::query();
 
-        if ($startDate && $endDate)
+        if ($startDate && $endDate) {
             $query->whereBetween('created_at', [$startDate->startOfDay(), $endDate->endOfDay()]);
+        }
 
         $userActivityLogs = $query->orderBy('id', 'desc')->paginate()->withQueryString();
 
@@ -186,8 +116,9 @@ class ReportController extends Controller
 
         $query = CronLog::query();
 
-        if ($startDate && $endDate)
+        if ($startDate && $endDate) {
             $query->whereBetween('created_at', [$startDate->startOfDay(), $endDate->endOfDay()]);
+        }
 
         $cronLogs = $query->orderBy('id', 'desc')->paginate()->withQueryString();
 
@@ -205,8 +136,9 @@ class ReportController extends Controller
 
         $query = PointTransactionLog::query();
 
-        if ($startDate && $endDate)
+        if ($startDate && $endDate) {
             $query->whereBetween('created_at', [$startDate->startOfDay(), $endDate->endOfDay()]);
+        }
 
         $pointTransactionLogs = $query->orderBy('id', 'desc')->paginate()->withQueryString();
 

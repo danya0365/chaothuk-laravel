@@ -19,9 +19,8 @@ class UserSeeder extends Seeder
             'name' => config('auth.supervisor.name'),
             'email' => config('auth.supervisor.email'),
             'password' => Hash::make(config('auth.supervisor.password')),
-            'role_id' => Role::SUPERVISOR->value,
         ]);
 
-        UserBackend::create(['user_id' => $user->id, 'is_can_approved' => 1]);
+        $user->roles()->sync(['role_id' => Role::SUPERVISOR->value]);
     }
 }

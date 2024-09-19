@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\MessengerConversationType;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CreateCustomerMessengerChannelRequest;
-use App\Http\Requests\CreateCustomerMessengerConversationRequest;
+use App\Http\Requests\CreateMobilePhoneMessengerChannelRequest;
+use App\Http\Requests\CreateMobilePhoneMessengerConversationRequest;
 use App\Http\Resources\MessengerConversationCollection;
 use App\Http\Resources\MessengerConversationResource;
 use App\Models\MessengerChannel;
@@ -69,10 +69,10 @@ class MessengerController extends Controller
         ], 200);
     }
 
-    public function newTelephoneChannel(CreateCustomerMessengerChannelRequest $request)
+    public function newMobilePhoneChannel(CreateMobilePhoneMessengerChannelRequest $request)
     {
         $post = $request->validated();
-        $user = User::getOrCreateTelephoneUser($post['telephone']);
+        $user = User::getOrCreateMobilePhoneUser($post['mobilePhone']);
         $channel =  MessengerChannel::with('participants')
             ->whereHas('participants', function ($q) use ($user) {
                 $q->with(['author'])->whereBelongsTo($user, 'author');
@@ -86,8 +86,8 @@ class MessengerController extends Controller
         }
 
         $channel =  MessengerChannel::create([
-            'slug' => $post['telephone'],
-            'title' => $post['telephone'],
+            'slug' => $post['mobilePhone'],
+            'title' => $post['mobilePhone'],
         ]);
 
         if (!$channel) {
@@ -144,7 +144,7 @@ class MessengerController extends Controller
         ], 200);
     }
 
-    public function getTelephoneChannelConversations($channelId, $telephone)
+    public function getMobilePhoneChannelConversations($channelId, $mobilePhone)
     {
         $channel  =  MessengerChannel::find($channelId);
         if (!$channel) {
@@ -156,7 +156,7 @@ class MessengerController extends Controller
         $participants = $channel->participants;
         $customerParticipant = null;
         foreach ($participants as $participant) {
-            if ($participant->is_customer && $participant->author->name == $telephone) {
+            if ($participant->is_customer && $participant->author->name == $mobilePhone) {
                 $customerParticipant = $participant;
                 break;
             }
@@ -218,7 +218,7 @@ class MessengerController extends Controller
         ], 200);
     }
 
-    public function getLastTelephoneChannelConversations($channelId, $telephone)
+    public function getLastMobilePhoneChannelConversations($channelId, $mobilePhone)
     {
         $channel  =  MessengerChannel::find($channelId);
         if (!$channel) {
@@ -230,7 +230,7 @@ class MessengerController extends Controller
         $participants = $channel->participants;
         $customerParticipant = null;
         foreach ($participants as $participant) {
-            if ($participant->is_customer && $participant->author->name == $telephone) {
+            if ($participant->is_customer && $participant->author->name == $mobilePhone) {
                 $customerParticipant = $participant;
                 break;
             }
@@ -254,10 +254,10 @@ class MessengerController extends Controller
         ], 200);
     }
 
-    public function storeTelephoneChannelConversations(CreateCustomerMessengerConversationRequest $request, $channelId, $telephone)
+    public function storeMobilePhoneChannelConversations(CreateMobilePhoneMessengerConversationRequest $request, $channelId, $mobilePhone)
     {
         $post = $request->validated();
-        $user = User::getOrCreateTelephoneUser($telephone);
+        $user = User::getOrCreateMobilePhoneUser($mobilePhone);
         $channel =  MessengerChannel::find($channelId);
         if (!$channel) {
             return response()->json([
@@ -268,7 +268,7 @@ class MessengerController extends Controller
         $participants = $channel->participants;
         $customerParticipant = null;
         foreach ($participants as $participant) {
-            if ($participant->is_customer && $participant->author->name == $telephone) {
+            if ($participant->is_customer && $participant->author->name == $mobilePhone) {
                 $customerParticipant = $participant;
                 break;
             }

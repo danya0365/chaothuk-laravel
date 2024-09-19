@@ -7,9 +7,9 @@
         <div class="flex-1 flex flex-col">
             <main class="flex-grow flex flex-row min-h-0">
                 <section class="flex flex-col flex-auto">
-                    @include('messenger.telephone-channel.partials.header')
-                    @include('messenger.telephone-channel.partials.conversation')
-                    @include('messenger.telephone-channel.partials.footer')
+                    @include('messenger.mobilephone-channel.partials.header')
+                    @include('messenger.mobilephone-channel.partials.conversation')
+                    @include('messenger.mobilephone-channel.partials.footer')
                 </section>
             </main>
         </div>
@@ -70,7 +70,7 @@
                     },
                     getConversations: async function() {
                         const url =
-                            '{{ route('ajax.messenger.telephone-channel.conversations', ['channelId' => $messengerChannel->id, 'telephone' => $telephone]) }}';
+                            '{{ route('ajax.messenger.mobilephone-channel.conversations', ['channelId' => $messengerChannel->id, 'mobilePhone' => $mobilePhone]) }}';
                         const conversationResponse = await $.get(url)
                         if (conversationResponse.data) {
                             this.conversations = conversationResponse.data
@@ -111,7 +111,7 @@
                         }
                         if (this.message == '') return;
                         const url =
-                            '{{ route('ajax.messenger.telephone-channel.conversations.store', ['channelId' => $messengerChannel->id, 'telephone' => $telephone]) }}';
+                            '{{ route('ajax.messenger.mobilephone-channel.conversations.store', ['channelId' => $messengerChannel->id, 'mobilePhone' => $mobilePhone]) }}';
                         const conversationResponse = await $.post(url, {
                             content: this.message,
                             local_code_id: new Date().getTime(),

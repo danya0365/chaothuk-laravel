@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Enums\UserActivityType;
+use App\Events\ApiLogout;
 use App\Models\UserActivityLog;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;

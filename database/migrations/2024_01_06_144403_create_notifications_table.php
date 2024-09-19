@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
@@ -15,7 +14,7 @@ return new class extends Migration
             $table->id();
             $table->nullableMorphs('notificationable');
             $table->string('title')->nullable();
-            $table->longText('content')->nullable();
+            $table->jsonb('content');
             $table->string('notification_type', 100);
             $table->unsignedInteger('total_reads')->default(0);
             $table->softDeletes();

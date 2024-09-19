@@ -12,7 +12,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserPoint extends Model
 {
-    use HasFactory, Notifiable, SoftDeletes, Scopes;
+    use HasFactory;
+    use Notifiable;
+    use SoftDeletes;
+    use Scopes;
 
     /**
      * The attributes that should be mass-assignable.
@@ -37,18 +40,13 @@ class UserPoint extends Model
         return $this->belongsTo(IssuePoint::class, 'issue_point_id');
     }
 
-    public function customer(): BelongsTo
-    {
-        return $this->belongsTo(UserCustomer::class, 'user_id');
-    }
-
     public function getCreateDate(): string
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s',  $this->created_at)->format('Y-m-d');
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('Y-m-d');
     }
 
     public function getCreateDateFormat(): string
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s',  $this->created_at)->format('d/m/Y');
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('d/m/Y');
     }
 }

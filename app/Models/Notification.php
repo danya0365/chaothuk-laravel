@@ -11,7 +11,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Notification extends Model
 {
-    use HasFactory, Notifiable, SoftDeletes, Scopes;
+    use HasFactory;
+    use Notifiable;
+    use SoftDeletes;
+    use Scopes;
 
     /**
      * The attributes that should be mass-assignable.
@@ -20,7 +23,7 @@ class Notification extends Model
      */
     protected $fillable = ['title', 'content', 'notification_type', 'total_reads'];
 
-    static $rules = [
+    public static $rules = [
         'title' => 'required',
         'content' => 'required',
         'notification_type' => 'required',
@@ -30,12 +33,12 @@ class Notification extends Model
 
     public function getCreateDate(): string
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s',  $this->created_at)->format('Y-m-d');
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('Y-m-d');
     }
 
     public function getCreateDateFormat(): string
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s',  $this->created_at)->format('d/m/Y');
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('d/m/Y');
     }
 
     public function getNotificationTypeFormat(): string
