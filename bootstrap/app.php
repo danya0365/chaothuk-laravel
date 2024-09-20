@@ -37,6 +37,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'IsCanAccessBackend' => IsCanAccessBackend::class
         ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'api/*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

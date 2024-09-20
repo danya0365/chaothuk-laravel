@@ -68,9 +68,9 @@ class AuthController extends Controller
     {
         $user = auth('sanctum')->user();
         if ($user) {
-            $userInfo = User::with('role')->with('customer')->with('merchant')->with('userTypeMaps', function ($q) {
-                $q->with('userType');
-            })->where('id', $user->id)->first();
+            $userInfo = User::with(['roles' => function ($q) {
+                return $q->with('permissions');
+            }])->with('permissions')->where('id', $user->id)->first();
             return response()->json(['data' => new AuthUserResource($userInfo), 'status' => 1], 200);
         }
         return response()->json(['message' => 'not login', 'status' => 0], 401);
@@ -78,11 +78,15 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $user = $request->user();
+        $user = auth('sanctum')->user();
         if (!$user) {
             return response()->json(['message' => 'not login', 'status' => 0], 401);
         }
-        $user->currentAccessToken()->delete();
+        if (method_exists($user->currentAccessToken(), 'delete')) {
+            $user->currentAccessToken()->delete();
+        }
+
+        auth()->guard('web')->logout();
 
         ApiLogout::dispatch($user);
 

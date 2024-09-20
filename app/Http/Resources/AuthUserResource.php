@@ -23,6 +23,8 @@ class AuthUserResource extends JsonResource
             'received_points' => $this->receivedPoints(),
             'available_points' => $this->availablePoints(),
             'redeem_points' => $this->redeemPoints(),
+            'roles' => $this->roles,
+            'permissions' => $this->permissions
         ];
     }
 }
