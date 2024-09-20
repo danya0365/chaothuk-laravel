@@ -39,8 +39,8 @@ class Role extends Model
 
     public function permissionDetails(): string
     {
-        $permissionDetails = array_map(function ($role) {
-            return  __('common.permission-' . $role['slug']);
+        $permissionDetails = array_map(function ($permission) {
+            return  ($permission['pivot']['data'] ? "✅" : "❌") . " " . __('common.permission-' . $permission['slug']);
         }, $this->permissions->toArray());
         return implode(', ', $permissionDetails);
     }

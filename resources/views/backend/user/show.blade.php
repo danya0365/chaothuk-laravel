@@ -63,7 +63,38 @@
                                     class="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-300 sm:col-span-2 sm:mt-0">
                                     {{ $user->email }}</dd>
                             </div>
+                            <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                <dt class="text-sm font-medium leading-6 text-gray-900 dark:text-gray-100">
+                                    รายละเอียดสิทธิที่กระทำได้ (เฉพาะตัวเอง)</dt>
+                                <dd
+                                    class="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-300 sm:col-span-2 sm:mt-0">
+                                    {{ $user->permissionDetails() }}</dd>
+                            </div>
+                            <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                <dt class="text-sm font-medium leading-6 text-gray-900 dark:text-gray-100">
+                                    รายละเอียดสิทธิที่กระทำได้ (ตามบทบาท)</dt>
+                                <dd
+                                    class="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-300 sm:col-span-2 sm:mt-0">
 
+                                    <div class="py-4 whitespace-no-wrap border-b border-gray-200 dark:border-gray-600">
+                                        <dl class="divide-y divide-gray-100 dark:divide-gray-700">
+                                            @php
+                                                $roles = $user->roles;
+                                            @endphp
+                                            @foreach ($roles as $role)
+                                                <div class="p-2 sm:grid sm:grid-cols-3 sm:gap-2 sm:px-0">
+                                                    <dt
+                                                        class="text-sm font-medium leading-6 text-gray-900 dark:text-gray-100">
+                                                        {{ $role->name }}</dt>
+                                                    <dd
+                                                        class="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-300 sm:col-span-2 sm:mt-0">
+                                                        {{ $role->permissionDetails() }}</dd>
+                                                </div>
+                                            @endforeach
+                                        </dl>
+                                    </div>
+                                </dd>
+                            </div>
                         </dl>
                     </div>
                 </div>
