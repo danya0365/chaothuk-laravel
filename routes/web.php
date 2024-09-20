@@ -8,9 +8,11 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Backend\MessengerChannelController;
 use App\Http\Controllers\MessengerController;
 use App\Http\Controllers\Backend\MessengerController as BackendMessengerController;
+use App\Http\Controllers\Backend\RecruitController;
 use App\Http\Controllers\Backend\ReportController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\UserController;
+use App\Http\Controllers\Backend\WorkController;
 use App\Http\Controllers\BackendController;
 use App\Http\Controllers\BarcodeController;
 use Illuminate\Support\Facades\Route;
@@ -42,6 +44,9 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
     Route::resource('messenger-channels', MessengerChannelController::class);
     Route::resource('configurations', ConfigurationController::class);
     Route::resource('banners', BannerController::class);
+
+    Route::resource('works', WorkController::class);
+    Route::resource('recruits', RecruitController::class);
 
     Route::get('messenger/channels/{id}', [BackendMessengerController::class, 'getChannel'])->name('messenger.channel');
 

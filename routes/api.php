@@ -106,18 +106,6 @@ Route::group(['prefix' => 'banners', 'as' => 'api.banners.', 'middleware' => ['a
     Route::get('/pinned', [BannerController::class, 'pinnedBanners'])->name('pinned-banners');
     Route::get('/last-update', [BannerController::class, 'lastUpdate'])->name('last-update');
 
-    Route::group(['prefix' => 'products', 'as' => 'products.'], function () {
-        Route::get('/', [BannerController::class, 'bannerProducts'])->name('list');
-        Route::get('/{id}/user-coupons', [BannerController::class, 'listUserCoupons'])->name('user-coupons.list');
-        Route::post('/{id}/user-coupons', [BannerController::class, 'storeUserCoupon'])->name('user-coupons.store');
-    });
-
-    Route::group(['prefix' => 'promotions', 'as' => 'promotions.'], function () {
-        Route::get('/', [BannerController::class, 'bannerPromotions'])->name('list');
-        Route::get('/{id}/user-missions', [BannerController::class, 'listUserMissions'])->name('user-missions.list');
-        Route::post('/{id}/user-missions', [BannerController::class, 'storeUserMission'])->name('user-missions.store');
-    });
-
     Route::get('/{id}', [BannerController::class, 'show'])->name('show');
 });
 
