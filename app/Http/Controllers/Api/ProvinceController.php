@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProvinceCollection;
 use App\Models\Province;
 
 /**
@@ -18,11 +19,10 @@ class ProvinceController extends Controller
      */
     public function all()
     {
-        $provinces = Province::data();
-
+        $data = Province::orderBy('id', 'asc')->get();
         return response()->json([
             'status' => true,
-            'data' => $provinces,
+            'data' => new ProvinceCollection($data),
         ], 200);
     }
 }

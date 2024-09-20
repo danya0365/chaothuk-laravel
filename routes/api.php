@@ -7,12 +7,15 @@ use App\Http\Controllers\Api\BarcodePreviewController;
 use App\Http\Controllers\Api\ConfigurationController;
 use App\Http\Controllers\Api\UserLogController;
 use App\Http\Controllers\Api\IssuePointController;
+use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\MessengerController;
 use App\Http\Controllers\Api\NotificationController;
-use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ProvinceController;
+use App\Http\Controllers\Api\RecruitController;
 use App\Http\Controllers\Api\UploadController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\WorkBookingController;
+use App\Http\Controllers\Api\WorkController;
+use App\Http\Controllers\Api\WorkTypeController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -28,10 +31,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['prefix' => 'me', 'as' => 'api.me.', 'middleware' => ['auth:sanctum']], function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    })->name('index');
-    Route::post('/update-theme', [ProfileController::class, 'updateTheme'])->name('update-theme');
+    Route::get('/', [MeController::class, 'getMe']);
+    Route::post('/', [MeController::class, 'updateMe']);
+    Route::post('/password', [MeController::class, 'updatePassword']);
+    Route::get('/notifications', [MeController::class, 'getUserNotifications']);
+    Route::get('/works', [MeController::class, 'getWorks']);
+    Route::get('/work-likes', [MeController::class, 'getLikeWork']);
+    Route::get('/work-likes/work/{workId}', [MeController::class, 'getIsLikeWork']);
+    Route::get('/work-bookings', [MeController::class, 'getWorkBookings']);
+    Route::get('/recruits', [MeController::class, 'getRecruits']);
+    Route::get('/recruit-bookings', [MeController::class, 'getRecruitBookings']);
 });
 
 Route::group(['prefix' => 'upload', 'as' => 'api.upload.'], function () {
@@ -47,6 +56,43 @@ Route::group(['prefix' => 'configurations', 'as' => 'api.configurations.'], func
 
 Route::group(['prefix' => 'provinces', 'as' => 'api.provinces.'], function () {
     Route::get('/', [ProvinceController::class, 'all'])->name('all');
+});
+
+Route::group(['prefix' => 'works', 'as' => 'api.works.'], function () {
+    Route::get('/', [WorkController::class, 'getWorks']);
+    Route::get('/top-hits', [WorkController::class, 'getTopHits'])->name('/top-hits');
+    Route::get('/{workId}', [WorkController::class, 'getWork']);
+    Route::get('/{workId}/likes', [WorkController::class, 'getWorkLikes']);
+    Route::get('/{workId}/likes/count', [WorkController::class, 'getWorkLikeCount']);
+    Route::get('/{workId}/bookings', [WorkController::class, 'getWorkBookings']);
+    Route::get('/{workId}/confirm-bookings', [WorkController::class, 'getConfirmWorkBookings']);
+
+    Route::group(['middleware' => ['auth:sanctum']], function () {
+        Route::post('/', [WorkController::class, 'createWork']);
+        Route::post('/{workId}/bookings', [WorkController::class, 'createWorkBooking']);
+        Route::post('/{workId}/likes', [WorkController::class, 'createWorkLike']);
+    });
+});
+
+Route::group(['prefix' => 'work-types', 'as' => 'api.work-types.'], function () {
+    Route::get('/', [WorkTypeController::class, 'getWorkTypes']);
+});
+
+Route::group(['prefix' => 'work-bookings', 'as' => 'api.work-bookings.'], function () {
+
+    Route::group(['middleware' => ['auth:sanctum']], function () {
+        Route::post('/{workBookingId}/worker-confirm', [WorkBookingController::class, 'doWorkerConfirm']);
+        Route::post('/{workBookingId}/customer-confirm', [WorkBookingController::class, 'doCustomerConfirm']);
+    });
+});
+
+Route::group(['prefix' => 'recruits', 'as' => 'api.recruits.'], function () {
+    Route::get('/', [RecruitController::class, 'getRecruits']);
+    Route::get('/{recruitId}', [RecruitController::class, 'getRecruit']);
+
+    Route::group(['middleware' => ['auth:sanctum']], function () {
+        Route::post('/', [RecruitController::class, 'createRecruit']);
+    });
 });
 
 Route::group(['prefix' => 'notifications', 'as' => 'api.notifications.'], function () {
