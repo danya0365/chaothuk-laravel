@@ -16,4 +16,5 @@ enum NotificationType: string
     case REVIEW_LIKE = 'review-like';
     case RECRUIT_BOOKING = 'recruit-booking';
     case WORK_BOOKING = 'work-booking';
+    case GENERAL = 'general';
 }

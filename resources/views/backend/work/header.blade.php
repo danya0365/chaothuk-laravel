@@ -35,7 +35,7 @@
                             clip-rule="evenodd"></path>
                     </svg>
                     <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">
-                        โพสท์ขายงาน</span>
+                        โพสท์รับงาน</span>
                 </div>
             </li>
         </ol>

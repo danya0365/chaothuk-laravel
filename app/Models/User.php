@@ -265,4 +265,29 @@ class User extends Authenticatable
         }, $this->permissions->toArray());
         return implode(', ', $permissionDetails);
     }
+
+    public function likedWorks()
+    {
+        return $this->belongsToMany(Work::class, 'work_likes', 'author_id', 'work_id')->withTimestamps();
+    }
+
+    public function bookedWorks()
+    {
+        return $this->belongsToMany(Work::class, 'work_bookings', 'author_id', 'work_id')->withTimestamps();
+    }
+
+    public function works()
+    {
+        return $this->hasMany(Work::class, 'author_id');
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(UserNotification::class, 'author_id');
+    }
+
+    public function recruits()
+    {
+        return $this->hasMany(Recruit::class, 'author_id');
+    }
 }

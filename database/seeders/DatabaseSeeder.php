@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+
             GeographySeeder::class,
             ProvinceSeeder::class,
             DistrictSeeder::class,
@@ -19,7 +20,8 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             RoleSeeder::class,
             UserSeeder::class,
-            ConfigurationSeeder::class
+            ConfigurationSeeder::class,
+            WorkTypeSeeder::class
         ]);
     }
 }

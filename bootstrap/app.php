@@ -41,6 +41,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'api/*',
         ]);
+
+        //$middleware->append(Cors::class); //
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

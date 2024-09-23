@@ -50,8 +50,8 @@ return [
     'permission-manage_permission' => 'จัดการสิทธิ',
     'permission-manage_role' => 'จัดการบทบาท',
     'permission-create_recruit' => 'สร้างโพสท์หางาน',
-    'permission-create_work' => 'สร้างโพสท์ขายงาน',
-    'permission-review_work' => 'รีวิวโพสท์ขายงาน',
+    'permission-create_work' => 'สร้างโพสท์รับงาน',
+    'permission-review_work' => 'รีวิวโพสท์รับงาน',
     'permission-reply_review' => 'ตอบกลับรีวิว',
 
     'cron_type-every_minute' => 'ทุกๆนาที',

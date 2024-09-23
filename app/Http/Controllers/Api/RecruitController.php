@@ -14,7 +14,7 @@ class RecruitController extends Controller
     /**
      * Get Recruits
      * @param Request $request
-     * @return User 
+     * @return User
      */
     public function getRecruits(Request $request)
     {
@@ -30,7 +30,7 @@ class RecruitController extends Controller
     /**
      * Get Work Detail
      * @param Request $request
-     * @return User 
+     * @return User
      */
     public function getRecruit(Request $request, $recruitId)
     {
@@ -53,7 +53,7 @@ class RecruitController extends Controller
         // TODO: validate if user can create new work
         $post['author_id'] = $request->user()->id;
 
-        $validatedRequest = Validator::make($post,  Recruit::$rules);
+        $validatedRequest = Validator::make($post, Recruit::$rules);
 
         if ($validatedRequest->fails()) {
             return response()->json([
@@ -69,6 +69,47 @@ class RecruitController extends Controller
 
         try {
             $recruit = Recruit::create($post);
+            return response()->json([
+                'status' => true,
+                'data' => $recruit,
+            ], 201);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateRecruit(Request $request, $id)
+    {
+        $post = $request->all();
+        // TODO: validate if user can create new work
+        $post['author_id'] = $request->user()->id;
+
+        $validatedRequest = Validator::make($post, Recruit::$rules);
+
+        if ($validatedRequest->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'validation error',
+                'errors' => $validatedRequest->errors()
+            ], 401);
+        }
+
+        $post["images"] = explode(',', $post["images"]);
+        $post["images"] = array_map('trim', $post["images"]);
+        $post["images"] = array_filter($post["images"]);
+
+        try {
+            $recruit = Recruit::find($id);
+            $recruit->update($post);
             return response()->json([
                 'status' => true,
                 'data' => $recruit,

@@ -22,7 +22,7 @@ class UploadController extends Controller
         if ($uploadResult['status']) {
             return response()->json($uploadResult, 200);
         } else {
-            return response()->json($uploadResult, 401);
+            return response()->json($uploadResult, 500);
         }
     }
 
@@ -34,7 +34,7 @@ class UploadController extends Controller
         if ($uploadResult['status']) {
             return response()->json($uploadResult, 200);
         } else {
-            return response()->json($uploadResult, 401);
+            return response()->json($uploadResult, 500);
         }
     }
 
@@ -46,7 +46,7 @@ class UploadController extends Controller
         if ($uploadResult['status']) {
             return response()->json($uploadResult, 200);
         } else {
-            return response()->json($uploadResult, 401);
+            return response()->json($uploadResult, 500);
         }
     }
 
@@ -58,7 +58,7 @@ class UploadController extends Controller
         if ($uploadResult['status']) {
             return response()->json($uploadResult, 200);
         } else {
-            return response()->json($uploadResult, 401);
+            return response()->json($uploadResult, 500);
         }
     }
 }

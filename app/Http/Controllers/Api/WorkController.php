@@ -185,6 +185,62 @@ class WorkController extends Controller
             return response()->json([
                 'status' => true,
                 'data' => $work,
+            ], 201);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateWork(Request $request, $id)
+    {
+        $user = auth('sanctum')->user();
+        $post = $request->all();
+        // TODO: validate if user can create new work
+        $post['author_id'] = $user->id;
+
+        $validatedRequest = Validator::make($post, Work::$rules, [
+            'code.unique' => trans('validation.work_code_unique')
+        ]);
+
+        if ($validatedRequest->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => implode(",", $validatedRequest->messages()->all()),
+                'errors' => $validatedRequest->errors()
+            ], 401);
+        }
+
+        if (isset($post["details"]) && trim($post["details"]) != "") {
+            $post["details"] = explode(',', $post["details"]);
+            $post["details"] = array_map('trim', $post["details"]);
+            $post["details"] = array_filter($post["details"]);
+        } else {
+            $post["details"] = [];
+        }
+
+        if (isset($post["images"]) && trim($post["images"]) != "") {
+            $post["images"] = explode(',', $post["images"]);
+            $post["images"] = array_map('trim', $post["images"]);
+            $post["images"] = array_filter($post["images"]);
+        } else {
+            $post["images"] = [];
+        }
+
+        try {
+            $work = Work::find($id);
+            $work->update($post);
+            return response()->json([
+                'status' => true,
+                'data' => $work,
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -262,7 +318,7 @@ class WorkController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'success',
-            ], 200);
+            ], 201);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
