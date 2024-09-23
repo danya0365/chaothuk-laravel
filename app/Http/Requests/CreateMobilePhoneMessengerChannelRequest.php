@@ -14,7 +14,7 @@ class CreateMobilePhoneMessengerChannelRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'mobilePhone' => ['required', 'string', 'min:9', 'max:30'],
+            'mobile_phone' => ['required', 'string', 'min:9', 'max:30'],
         ];
     }
 }

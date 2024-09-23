@@ -23,30 +23,30 @@ class MessengerController extends Controller
     public function registerMobilePhoneChannel()
     {
         $post = request()->all();
-        $user = User::getOrCreateMobilePhoneUser($post['mobilePhone']);
+        $user = User::getOrCreateMobilePhoneUser($post['mobile_phone']);
         $channel =  MessengerChannel::with('participants')
             ->whereHas('participants', function ($q) use ($user) {
                 $q->with(['author'])->whereBelongsTo($user, 'author');
             })->first();
 
         if ($channel) {
-            return Redirect::route('messenger.mobilephone-channel', ['id' => $channel->id, 'mobilePhone' => $post['mobilePhone']]);
+            return Redirect::route('messenger.mobile-phone-channel', ['id' => $channel->id, 'mobilePhone' => $post['mobile_phone']]);
         }
 
         $channel =  MessengerChannel::create([
-            'slug' => $post['mobilePhone'],
-            'title' => $post['mobilePhone'],
+            'slug' => $post['mobile_phone'],
+            'title' => $post['mobile_phone'],
         ]);
 
         if (!$channel) {
-            return Redirect::back()->with('status', 'profile-updated');
+            return Redirect::back()->with('status', 'Error for create channel');
         }
 
         $channel->participants()->create([
             'user_id' => $user->id,
         ]);
 
-        return Redirect::route('messenger.mobilephone-channel', ['id' => $channel->id, 'mobilePhone' => $post['mobilePhone']])->with('status', 'profile-updated');
+        return Redirect::route('messenger.mobile-phone-channel', ['id' => $channel->id, 'mobilePhone' => $post['mobile_phone']]);
     }
 
     /**
@@ -61,6 +61,6 @@ class MessengerController extends Controller
         $messengerParticipants = $messengerChannel->participants;
         $messengerConversations = $messengerChannel->conversations;
 
-        return view('messenger.mobilephone-channel.index', compact('messengerChannel', 'messengerParticipants', 'messengerConversations', 'mobilePhone'));
+        return view('messenger.mobile-phone-channel.index', compact('messengerChannel', 'messengerParticipants', 'messengerConversations', 'mobilePhone'));
     }
 }

@@ -132,10 +132,10 @@ Route::group(['prefix' => 'barcode-preview', 'as' => 'api.barcode-preview.'], fu
 });
 
 Route::group(['prefix' => 'messenger', 'as' => 'api.messenger.'], function () {
-    Route::post('/mobilephone-channel/new', [MessengerController::class, 'newMobilePhoneChannel'])->name('mobilephone-channel.new');
-    Route::get('/mobilephone-channel/{id}/{mobilePhone}/conversations', [MessengerController::class, 'getMobilePhoneChannelConversations'])->name('mobilephone-channel.conversations');
-    Route::get('/mobilephone-channel/{id}/{mobilePhone}/conversations/last', [MessengerController::class, 'getLastMobilePhoneChannelConversations'])->name('mobilephone-channel.conversations.last');
-    Route::post('/mobilephone-channel/{id}/{mobilePhone}/conversations', [MessengerController::class, 'storeMobilePhoneChannelConversations'])->name('mobilephone-channel.conversations.store');
+    Route::post('/mobile-phone-channel/new', [MessengerController::class, 'newMobilePhoneChannel'])->name('mobile-phone-channel.new');
+    Route::get('/mobile-phone-channel/{id}/{mobilePhone}/conversations', [MessengerController::class, 'getMobilePhoneChannelConversations'])->name('mobile-phone-channel.conversations');
+    Route::get('/mobile-phone-channel/{id}/{mobilePhone}/conversations/last', [MessengerController::class, 'getLastMobilePhoneChannelConversations'])->name('mobile-phone-channel.conversations.last');
+    Route::post('/mobile-phone-channel/{id}/{mobilePhone}/conversations', [MessengerController::class, 'storeMobilePhoneChannelConversations'])->name('mobile-phone-channel.conversations.store');
     Route::post('/channel/{id}/conversations/{conversationId}/seen', [MessengerController::class, 'updateSeenAtInConversations'])->name('channel.conversations.seen');
 
     Route::group(['middleware' => ['auth:sanctum']], function () {

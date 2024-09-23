@@ -72,7 +72,7 @@ class MessengerController extends Controller
     public function newMobilePhoneChannel(CreateMobilePhoneMessengerChannelRequest $request)
     {
         $post = $request->validated();
-        $user = User::getOrCreateMobilePhoneUser($post['mobilePhone']);
+        $user = User::getOrCreateMobilePhoneUser($post['mobile_phone']);
         $channel =  MessengerChannel::with('participants')
             ->whereHas('participants', function ($q) use ($user) {
                 $q->with(['author'])->whereBelongsTo($user, 'author');
@@ -86,8 +86,8 @@ class MessengerController extends Controller
         }
 
         $channel =  MessengerChannel::create([
-            'slug' => $post['mobilePhone'],
-            'title' => $post['mobilePhone'],
+            'slug' => $post['mobile_phone'],
+            'title' => $post['mobile_phone'],
         ]);
 
         if (!$channel) {
