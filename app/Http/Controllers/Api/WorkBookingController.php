@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Enums\ConfirmStatus;
 use App\Enums\NotificationType;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\WorkBookingResource;
 use App\Models\UserNotification;
 use App\Models\Work;
 use App\Models\WorkBooking;
@@ -14,6 +15,20 @@ use Illuminate\Support\Facades\Validator;
 
 class WorkBookingController extends Controller
 {
+    /**
+     * Get WorkBooking Detail
+     * @param Request $request
+     * @return WorkBooking
+     */
+    public function show(Request $request, $id)
+    {
+        $data = WorkBooking::with('work')->with('author')->find($id);
+        return response()->json([
+            'status' => $data ? true : false,
+            'data' => $data ? new WorkBookingResource($data) : null,
+        ], 200);
+    }
+
     /**
      * Do Worker Confirm
      *
@@ -68,7 +83,7 @@ class WorkBookingController extends Controller
                         $query->where('id', $workBooking->work->id);
                     }
                 )
-                    ->where('notification_type', NotificationType::BOOKING_CONFIRM->value)
+                    ->where('notification_type', NotificationType::WORK_BOOKING_CONFIRM->value)
                     ->whereBelongsTo($workBooking->author, 'author')
                     ->first();
                 if ($userNotification) {
@@ -82,7 +97,7 @@ class WorkBookingController extends Controller
                     $userNotification = new UserNotification();
                     $userNotification->title = "การจองของคุณได้รับการยืนยัน";
                     $userNotification->details = ['count' => 1];
-                    $userNotification->notification_type = NotificationType::BOOKING_CONFIRM->value;
+                    $userNotification->notification_type = NotificationType::WORK_BOOKING_CONFIRM->value;
                     $userNotification->notificationable()->associate($workBooking->work);
                     $workBooking->author->notifications()->save($userNotification);
                 }
@@ -95,7 +110,7 @@ class WorkBookingController extends Controller
                         $query->where('id', $workBooking->work->id);
                     }
                 )
-                    ->where('notification_type', NotificationType::BOOKING_CONFIRM->value)
+                    ->where('notification_type', NotificationType::WORK_BOOKING_CONFIRM->value)
                     ->whereBelongsTo($workBooking->author, 'author')
                     ->first();
                 if ($userNotification) {
@@ -108,7 +123,7 @@ class WorkBookingController extends Controller
                     $userNotification = new UserNotification();
                     $userNotification->title = "ผู้รับงานยืนยันการจองของคุณ";
                     $userNotification->details = ['count' => 1];
-                    $userNotification->notification_type = NotificationType::BOOKING_CONFIRM->value;
+                    $userNotification->notification_type = NotificationType::WORK_BOOKING_CONFIRM->value;
                     $userNotification->notificationable()->associate($workBooking->work);
                     $workBooking->author->notifications()->save($userNotification);
                 }
@@ -181,7 +196,7 @@ class WorkBookingController extends Controller
                         $query->where('id', $workBooking->work->id);
                     }
                 )
-                    ->where('notification_type', NotificationType::BOOKING_CONFIRM->value)
+                    ->where('notification_type', NotificationType::WORK_BOOKING_CONFIRM->value)
                     ->whereBelongsTo($workBooking->author, 'author')
                     ->first();
                 if ($userNotification) {
@@ -195,7 +210,7 @@ class WorkBookingController extends Controller
                     $userNotification = new UserNotification();
                     $userNotification->title = "การจองของลูกค้าได้รับการยืนยัน";
                     $userNotification->details = ['count' => 1];
-                    $userNotification->notification_type = NotificationType::BOOKING_CONFIRM->value;
+                    $userNotification->notification_type = NotificationType::WORK_BOOKING_CONFIRM->value;
                     $userNotification->notificationable()->associate($workBooking->work);
                     $workBooking->author->notifications()->save($userNotification);
                 }
@@ -208,7 +223,7 @@ class WorkBookingController extends Controller
                         $query->where('id', $workBooking->work->id);
                     }
                 )
-                    ->where('notification_type', NotificationType::BOOKING_CONFIRM->value)
+                    ->where('notification_type', NotificationType::WORK_BOOKING_CONFIRM->value)
                     ->whereBelongsTo($workBooking->author, 'author')
                     ->first();
                 if ($userNotification) {
@@ -221,7 +236,7 @@ class WorkBookingController extends Controller
                     $userNotification = new UserNotification();
                     $userNotification->title = "ลูกค้ายืนยันการจองงาน";
                     $userNotification->details = ['count' => 1];
-                    $userNotification->notification_type = NotificationType::BOOKING_CONFIRM->value;
+                    $userNotification->notification_type = NotificationType::WORK_BOOKING_CONFIRM->value;
                     $userNotification->notificationable()->associate($workBooking->work);
                     $workBooking->author->notifications()->save($userNotification);
                 }

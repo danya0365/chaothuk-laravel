@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\BookingStatus;
 use App\Enums\NotificationType;
+use App\Enums\Permission;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TopHitWorkCollection;
 use App\Http\Resources\UserCollection;
@@ -62,7 +63,7 @@ class WorkController extends Controller
     /**
      * Get Work Detail
      * @param Request $request
-     * @return User
+     * @return Work
      */
     public function getWork(Request $request, $workId)
     {
@@ -147,9 +148,17 @@ class WorkController extends Controller
      */
     public function createWork(Request $request)
     {
-        $user = auth('sanctum')->user();
         $post = $request->all();
-        // TODO: validate if user can create new work
+        /** @var User $user */
+        $user = auth('sanctum')->user();
+
+        if (!$user->isPermission(Permission::CREATE_WORK->value)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'no permission',
+            ], 403);
+        }
+
         $post['author_id'] = $user->id;
 
         $validatedRequest = Validator::make($post, Work::$rules, [
@@ -202,9 +211,10 @@ class WorkController extends Controller
      */
     public function updateWork(Request $request, $id)
     {
+        /** @var User $user */
         $user = auth('sanctum')->user();
         $post = $request->all();
-        // TODO: validate if user can create new work
+
         $post['author_id'] = $user->id;
 
         $validatedRequest = Validator::make($post, Work::$rules, [
@@ -237,6 +247,14 @@ class WorkController extends Controller
 
         try {
             $work = Work::find($id);
+
+            if ($user->id != $work->author_id) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'no permission',
+                ], 403);
+            }
+
             $work->update($post);
             return response()->json([
                 'status' => true,

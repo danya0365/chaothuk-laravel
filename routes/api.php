@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\MessengerController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ProvinceController;
+use App\Http\Controllers\Api\RecruitBookingController;
 use App\Http\Controllers\Api\RecruitController;
 use App\Http\Controllers\Api\UploadController;
 use App\Http\Controllers\Api\WorkBookingController;
@@ -79,6 +80,7 @@ Route::group(['prefix' => 'work-types', 'as' => 'api.work-types.'], function () 
 });
 
 Route::group(['prefix' => 'work-bookings', 'as' => 'api.work-bookings.'], function () {
+    Route::get('/{id}', [WorkBookingController::class, 'show']);
 
     Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/{workBookingId}/worker-confirm', [WorkBookingController::class, 'doWorkerConfirm']);
@@ -89,9 +91,20 @@ Route::group(['prefix' => 'work-bookings', 'as' => 'api.work-bookings.'], functi
 Route::group(['prefix' => 'recruits', 'as' => 'api.recruits.'], function () {
     Route::get('/', [RecruitController::class, 'getRecruits']);
     Route::get('/{recruitId}', [RecruitController::class, 'getRecruit']);
+    Route::get('/{recruitId}/bookings', [RecruitController::class, 'getRecruitBookings']);
 
     Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/', [RecruitController::class, 'createRecruit']);
+        Route::post('/{recruitId}/bookings', [RecruitController::class, 'createRecruitBooking']);
+    });
+});
+
+Route::group(['prefix' => 'recruit-bookings', 'as' => 'api.recruit-bookings.'], function () {
+    Route::get('/{id}', [RecruitBookingController::class, 'show']);
+
+    Route::group(['middleware' => ['auth:sanctum']], function () {
+        Route::post('/{recruitBookingId}/worker-confirm', [RecruitBookingController::class, 'doWorkerConfirm']);
+        Route::post('/{recruitBookingId}/customer-confirm', [RecruitBookingController::class, 'doCustomerConfirm']);
     });
 });
 

@@ -290,4 +290,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Recruit::class, 'author_id');
     }
+
+    public function bookedRecruits()
+    {
+        return $this->belongsToMany(Recruit::class, 'recruit_bookings', 'author_id', 'recruit_id')->withTimestamps();
+    }
+
 }

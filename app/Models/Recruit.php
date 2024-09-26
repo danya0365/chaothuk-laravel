@@ -6,6 +6,7 @@ use App\Traits\Scopes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Recruit
@@ -80,5 +81,10 @@ class Recruit extends Model
     public function notifications()
     {
         return $this->morphMany(UserNotification::class, 'notificationable');
+    }
+
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(RecruitBooking::class);
     }
 }

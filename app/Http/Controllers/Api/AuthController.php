@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\PersonType;
 use App\Enums\Role;
 use App\Events\ApiLogin;
 use App\Events\ApiLogout;
@@ -33,6 +32,9 @@ class AuthController extends Controller
             'name' => $post['name'],
             'email' => $post['email'],
             'password' => Hash::make($post['password']),
+            'first_name' => $post['first_name'],
+            'last_name' => $post['last_name'],
+            'profile_image' => $post['profile_image'] ?? ''
         ]);
 
         if ($user) {
@@ -66,6 +68,7 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
+        /** @var User $user */
         $user = auth('sanctum')->user();
         if ($user) {
             $userInfo = User::with(['roles' => function ($q) {
@@ -78,6 +81,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        /** @var User $user */
         $user = auth('sanctum')->user();
         if (!$user) {
             return response()->json(['message' => 'not login', 'status' => 0], 401);
@@ -96,7 +100,8 @@ class AuthController extends Controller
     public function revokeToken(Request $request)
     {
         $token = $request->get('token');
-        $user = $request->user();
+        /** @var User $user */
+        $user = auth('sanctum')->user();
         if (!$user) {
             return response()->json(['message' => 'not login', 'status' => 0], 401);
         }
