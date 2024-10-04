@@ -80,8 +80,9 @@
                                     <td
                                         class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 dark:border-gray-600">
                                         <div class="flex items-center">
-                                            <x-text-input name="{{ $data }}" :value="old($data, $dataValue)" type="text"
-                                                class="mt-1 block w-full" x-on:keyup="autoChecked()" />
+                                            <x-radio-input name="{{ $data }}" :selections="$yesNoSelections"
+                                                x-on:click="autoChecked()" :selected="old($data, $dataValue)" class="mt-1 block w-full"
+                                                required />
                                         </div>
                                     </td>
                                     <td

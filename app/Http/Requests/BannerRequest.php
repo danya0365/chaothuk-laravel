@@ -22,8 +22,6 @@ class BannerRequest extends FormRequest
             'image_url' => ['required', 'url', 'max:255'],
             'external_url' => ['nullable', 'url', 'max:255'],
             'is_public' => ['required', 'numeric'],
-            'banner_product_id' => ['nullable', 'numeric'],
-            'banner_promotion_id' => ['nullable', 'numeric'],
             'is_pinned' => ['nullable', 'numeric'],
         ];
     }
