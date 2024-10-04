@@ -53,7 +53,7 @@ class MeController extends Controller
             //'cover_image' => 'nullable|min:2',
             //'birth_date' => 'required',
             //'mobile_phone' => 'required',
-            //'location' => 'required',
+            'location' => 'required',
             //'biography' => 'required',
         ]);
 
