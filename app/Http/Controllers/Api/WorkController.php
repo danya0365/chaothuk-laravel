@@ -149,7 +149,7 @@ class WorkController extends Controller
     public function createWork(Request $request)
     {
         $post = $request->all();
-        /** @var User $user */
+        /** @var \App\Models/User $user */
         $user = auth('sanctum')->user();
 
         if (!$user->isPermission(Permission::CREATE_WORK->value)) {
@@ -211,7 +211,7 @@ class WorkController extends Controller
      */
     public function updateWork(Request $request, $id)
     {
-        /** @var User $user */
+        /** @var \App\Models/User $user */
         $user = auth('sanctum')->user();
         $post = $request->all();
 

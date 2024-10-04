@@ -29,9 +29,7 @@ class RoleSeeder extends Seeder
         $MOBILE_PHONE = Role::create(['name' => __('common.role-' . EnumsRole::MOBILE_PHONE->value), 'id' => EnumsRole::MOBILE_PHONE->value]);
 
         $SUPERVISOR->permissions()->sync([$ACCESS_BACKEND->id, $MANAGE_PERMISSION->id, $MANAGE_ROLE->id, $CREATE_RECRUIT->id, $CREATE_WORK->id, $REVIEW_WORK->id, $REPLY_REVIEW->id]);
-
         $BACKEND->permissions()->sync([$ACCESS_BACKEND->id, $CREATE_RECRUIT->id, $CREATE_WORK->id, $REVIEW_WORK->id, $REPLY_REVIEW->id]);
-
         $MEMBER->permissions()->sync([$CREATE_RECRUIT->id, $CREATE_WORK->id, $REVIEW_WORK->id, $REPLY_REVIEW->id]);
     }
 }

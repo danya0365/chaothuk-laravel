@@ -43,7 +43,9 @@ class RoleController extends Controller
      */
     public function store(RoleRequest $request)
     {
-        if (!auth()->user()->isCanManageRole()) {
+        /** @var \App\Models/User $user */
+        $user = auth()->user();
+        if (!$user->isCanManageRole()) {
             return redirect()->route('backend.roles.index')
                 ->with('error', 'Role was not create.');
         }
@@ -90,7 +92,9 @@ class RoleController extends Controller
      */
     public function update(RoleRequest $request, Role $role)
     {
-        if (!auth()->user()->isCanManageRole()) {
+        /** @var \App\Models/User $user */
+        $user = auth()->user();
+        if (!$user->isCanManageRole()) {
             return redirect()->route('backend.roles.index')
                 ->with('error', 'Role was not update.');
         }
@@ -109,7 +113,9 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        if (!auth()->user()->isCanManageRole()) {
+        /** @var \App\Models/User $user */
+        $user = auth()->user();
+        if (!$user->isCanManageRole()) {
             return redirect()->route('backend.roles.index')
                 ->with('error', 'Role was not update.');
         }

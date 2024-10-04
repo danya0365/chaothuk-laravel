@@ -16,7 +16,6 @@ class WorkTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        WorkType::truncate();
         WorkType::create([
             'title' => 'รถกะบะ',
         ]);
