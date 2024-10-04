@@ -62,7 +62,7 @@ class RecruitController extends Controller
     {
         $post = $request->all();
 
-        /** @var User $user */
+        /** @var \App\Models/User $user */
         $user = auth('sanctum')->user();
 
         if (!$user->isPermission(Permission::CREATE_RECRUIT->value)) {
@@ -111,7 +111,7 @@ class RecruitController extends Controller
     public function updateRecruit(Request $request, $id)
     {
         $post = $request->all();
-        /** @var User $user */
+        /** @var \App\Models/User $user */
         $user = auth('sanctum')->user();
 
         $post['author_id'] = $user->id;
@@ -162,7 +162,7 @@ class RecruitController extends Controller
      */
     public function createRecruitBooking(Request $request, Int $recruitId)
     {
-        /** @var User $user */
+        /** @var \App\Models/User $user */
         $user = $request->user();
 
         $post = $request->only(['customer_message', 'mobile_phone', 'booking_date']);

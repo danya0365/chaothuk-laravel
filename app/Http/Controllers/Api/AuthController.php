@@ -68,7 +68,7 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        /** @var User $user */
+        /** @var \App\Models/User $user */
         $user = auth('sanctum')->user();
         if ($user) {
             $userInfo = User::with(['roles' => function ($q) {
@@ -81,14 +81,13 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        /** @var User $user */
+        /** @var \App\Models/User $user */
         $user = auth('sanctum')->user();
         if (!$user) {
             return response()->json(['message' => 'not login', 'status' => 0], 401);
         }
-        if (method_exists($user->currentAccessToken(), 'delete')) {
-            $user->currentAccessToken()->delete();
-        }
+
+        $user->currentAccessToken()->delete();
 
         auth()->guard('web')->logout();
 
@@ -100,7 +99,7 @@ class AuthController extends Controller
     public function revokeToken(Request $request)
     {
         $token = $request->get('token');
-        /** @var User $user */
+        /** @var \App\Models/User $user */
         $user = auth('sanctum')->user();
         if (!$user) {
             return response()->json(['message' => 'not login', 'status' => 0], 401);

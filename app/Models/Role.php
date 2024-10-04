@@ -39,9 +39,13 @@ class Role extends Model
 
     public function permissionDetails(): string
     {
+        $permissionRows = $this->permissions->toArray();
+        if (count($permissionRows) == 0) {
+            return "❌ ไม่พบสิทธิ";
+        }
         $permissionDetails = array_map(function ($permission) {
             return  ($permission['pivot']['data'] ? "✅" : "❌") . " " . __('common.permission-' . $permission['slug']);
-        }, $this->permissions->toArray());
+        }, $permissionRows);
         return implode(', ', $permissionDetails);
     }
 
