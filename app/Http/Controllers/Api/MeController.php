@@ -49,7 +49,7 @@ class MeController extends Controller
         $validatedRequest = Validator::make($post, [
             'first_name' => 'nullable|min:2',
             'last_name' => 'nullable|min:2',
-            //'profile_image' => 'nullable|min:2',
+            'profile_image' => 'nullable|min:2',
             //'cover_image' => 'nullable|min:2',
             //'birth_date' => 'required',
             //'mobile_phone' => 'required',

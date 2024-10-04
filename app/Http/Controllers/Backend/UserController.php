@@ -36,7 +36,8 @@ class UserController extends Controller
         $user = new User();
         $roleSelections = $this->role();
         $permissionSelections = $this->permission();
-        return view('backend.user.create', compact('user', 'roleSelections', 'permissionSelections'));
+        $yesNoSelections = $this->yesNo();
+        return view('backend.user.create', compact('user', 'roleSelections', 'permissionSelections', 'yesNoSelections'));
     }
 
     /**
@@ -47,16 +48,19 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
+        /** @var \App\Models/User $user */
+        $user = auth()->user();
+
         $request->validated();
         $post = $request->all();
         $post['password'] = Hash::make($post['password']);
         $user = User::create($post);
 
-        if (auth()->user()->isCanManagePermission()) {
+        if ($user->isCanManagePermission()) {
             $user->syncUserPermissions($post['user_permissions']);
         }
 
-        if (auth()->user()->isCanManageRole()) {
+        if ($user->isCanManageRole()) {
             $user->syncUserRoles($post['users_roles'] ?? []);
         }
 
@@ -88,7 +92,8 @@ class UserController extends Controller
         $user = User::find($id);
         $roleSelections = $this->role();
         $permissionSelections = $this->permission();
-        return view('backend.user.edit', compact('user', 'roleSelections', 'permissionSelections'));
+        $yesNoSelections = $this->yesNo();
+        return view('backend.user.edit', compact('user', 'roleSelections', 'permissionSelections', 'yesNoSelections'));
     }
 
     /**
@@ -100,6 +105,9 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, User $user)
     {
+        /** @var \App\Models/User $user */
+        $user = auth()->user();
+
         $request->validated();
         $post = $request->all();
 
@@ -109,12 +117,15 @@ class UserController extends Controller
             unset($post['password']);
         }
         $user->update($post);
-        if (auth()->user()->isCanManagePermission()) {
+
+        if ($user->isCanManagePermission()) {
             $user->syncUserPermissions($post['user_permissions']);
         }
-        if (auth()->user()->isCanManageRole()) {
+
+        if ($user->isCanManageRole()) {
             $user->syncUserRoles($post['users_roles'] ?? []);
         }
+
         return redirect()->route('backend.users.index')
             ->with('success', 'User updated successfully');
     }

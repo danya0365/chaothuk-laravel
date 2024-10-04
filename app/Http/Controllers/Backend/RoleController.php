@@ -32,7 +32,8 @@ class RoleController extends Controller
     {
         $role = new Role();
         $permissionSelections = $this->permission();
-        return view('backend.role.create', compact('role', 'permissionSelections'));
+        $yesNoSelections = $this->yesNo();
+        return view('backend.role.create', compact('role', 'permissionSelections', 'yesNoSelections'));
     }
 
     /**
@@ -80,7 +81,8 @@ class RoleController extends Controller
     {
         $role = Role::find($id);
         $permissionSelections = $this->permission();
-        return view('backend.role.edit', compact('role', 'permissionSelections'));
+        $yesNoSelections = $this->yesNo();
+        return view('backend.role.edit', compact('role', 'permissionSelections', 'yesNoSelections'));
     }
 
     /**
