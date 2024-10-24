@@ -48,19 +48,19 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        /** @var \App\Models/User $user */
-        $user = auth()->user();
+        /** @var \App\Models/User $authUser */
+        $authUser = auth()->user();
 
         $request->validated();
         $post = $request->all();
         $post['password'] = Hash::make($post['password']);
         $user = User::create($post);
 
-        if ($user->isCanManagePermission()) {
+        if ($authUser->isCanManagePermission()) {
             $user->syncUserPermissions($post['user_permissions']);
         }
 
-        if ($user->isCanManageRole()) {
+        if ($authUser->isCanManageRole()) {
             $user->syncUserRoles($post['users_roles'] ?? []);
         }
 
@@ -105,8 +105,8 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, User $user)
     {
-        /** @var \App\Models/User $user */
-        $user = auth()->user();
+        /** @var \App\Models/User $authUser */
+        $authUser = auth()->user();
 
         $request->validated();
         $post = $request->all();
@@ -118,11 +118,11 @@ class UserController extends Controller
         }
         $user->update($post);
 
-        if ($user->isCanManagePermission()) {
+        if ($authUser->isCanManagePermission()) {
             $user->syncUserPermissions($post['user_permissions']);
         }
 
-        if ($user->isCanManageRole()) {
+        if ($authUser->isCanManageRole()) {
             $user->syncUserRoles($post['users_roles'] ?? []);
         }
 
