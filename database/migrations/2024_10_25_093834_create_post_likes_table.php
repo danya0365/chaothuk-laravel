@@ -10,16 +10,16 @@ return new class () extends Migration {
      */
     public function up(): void
     {
-        Schema::create('review_likes', function (Blueprint $table) {
+        Schema::create('post_likes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('review_id')->index();
+            $table->unsignedBigInteger('post_id')->index();
             $table->unsignedBigInteger('author_id')->index();
             $table->timestamps();
             $table->softDeletes();
-            $table->unique(['review_id', 'author_id']);
+            $table->unique(['post_id', 'author_id']);
 
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
             $table->foreign('author_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('review_id')->references('id')->on('reviews')->onDelete('cascade');
         });
     }
 
@@ -28,6 +28,6 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('review_likes');
+        Schema::dropIfExists('post_likes');
     }
 };

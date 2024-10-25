@@ -10,18 +10,18 @@ return new class () extends Migration {
      */
     public function up(): void
     {
-        Schema::create('reviews', function (Blueprint $table) {
+        Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable()->index();
-            $table->string('message')->nullable()->index();
+            $table->string('content')->nullable()->index();
+            $table->jsonb('images')->nullable();
             $table->tinyInteger('rating')->default(0);
             $table->unsignedBigInteger('author_id')->index();
-            $table->unsignedBigInteger('work_id')->index();
+            $table->foreign('author_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('parent_id')->index();
+            $table->foreign('parent_id')->references('id')->on('posts')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
-
-            $table->foreign('author_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('work_id')->references('id')->on('works')->onDelete('cascade');
         });
     }
 
@@ -30,6 +30,6 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('reviews');
+        Schema::dropIfExists('posts');
     }
 };
