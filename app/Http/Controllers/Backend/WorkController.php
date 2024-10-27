@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Enums\Permission;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\WorkRequest;
 use App\Models\Work;
+use App\Traits\SelectOption;
 use Illuminate\Http\Request;
 
 class WorkController extends Controller
 {
+    use SelectOption;
     /**
      * Display a listing of the resource.
      *
@@ -29,7 +33,10 @@ class WorkController extends Controller
     public function create()
     {
         $work = new Work();
-        return view('backend.work.create', compact('work'));
+        $provinceSelections = $this->province();
+        $workTypeSelections = $this->workType();
+        $userSelections = $this->user();
+        return view('backend.work.create', compact('work', 'provinceSelections', 'workTypeSelections', 'userSelections'));
     }
 
     /**
@@ -38,11 +45,21 @@ class WorkController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(WorkRequest $request)
     {
-        request()->validate(Work::$rules);
+        /** @var \App\Models/User $authUser */
+        $authUser = auth()->user();
 
+        if (!$authUser->isPermission(Permission::CREATE_WORK->value)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'no permission',
+            ], 403);
+        }
+
+        $request->validated();
         $post = $request->all();
+
         if (isset($post["details"]) && trim($post["details"]) != "") {
             $post["details"] = explode(',', $post["details"]);
             $post["details"] = array_map('trim', $post["details"]);
@@ -50,12 +67,13 @@ class WorkController extends Controller
             $post["details"] = [];
         }
 
-        if (isset($post["images"]) && trim($post["images"]) != "") {
-            $post["images"] = explode(',', $post["images"]);
-            $post["images"] = array_map('trim', $post["images"]);
-        } else {
-            $post["images"] = [];
-        }
+        // if (isset($post["images"]) && trim($post["images"]) != "") {
+        //     $post["images"] = explode(',', $post["images"]);
+        //     $post["images"] = array_map('trim', $post["images"]);
+        // } else {
+        //     $post["images"] = [];
+        // }
+
         $work = Work::create($post);
 
         return redirect()->route('backend.works.index')
@@ -84,8 +102,10 @@ class WorkController extends Controller
     public function edit($id)
     {
         $work = Work::find($id);
-
-        return view('backend.work.edit', compact('work'));
+        $provinceSelections = $this->province();
+        $workTypeSelections = $this->workType();
+        $userSelections = $this->user();
+        return view('backend.work.edit', compact('work', 'provinceSelections', 'workTypeSelections', 'userSelections'));
     }
 
     /**
@@ -95,9 +115,10 @@ class WorkController extends Controller
      * @param  Work $work
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Work $work)
+    public function update(WorkRequest $request, Work $work)
     {
-        request()->validate(Work::$rules);
+        $request->validated();
+        $post = $request->all();
 
         $post = $request->all();
         if (isset($post["details"]) && trim($post["details"]) != "") {
@@ -107,12 +128,13 @@ class WorkController extends Controller
             $post["details"] = [];
         }
 
-        if (isset($post["images"]) && trim($post["images"]) != "") {
-            $post["images"] = explode(',', $post["images"]);
-            $post["images"] = array_map('trim', $post["images"]);
-        } else {
-            $post["images"] = [];
-        }
+        // if (isset($post["images"]) && trim($post["images"]) != "") {
+        //     $post["images"] = explode(',', $post["images"]);
+        //     $post["images"] = array_map('trim', $post["images"]);
+        // } else {
+        //     $post["images"] = [];
+        // }
+
         $work->update($post);
 
         return redirect()->route('backend.works.index')
