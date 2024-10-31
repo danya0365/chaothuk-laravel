@@ -162,39 +162,49 @@
 <x-slot name="javascript">
     <script type="text/javascript">
         function alpineGalleryFormData() {
-            const initGalleryFields = [];
-            @foreach ($work?->images as $galleryImage)
-                initGalleryFields.push({
-                    url: '{{ $galleryImage }}',
-                })
-            @endforeach
+            const initGalleryFields = {!! json_encode($work?->images ?? []) !!};
+
             return {
-                galleryFields: initGalleryFields,
+                galleryFields: initGalleryFields.map((val) => {
+                    return {
+                        url: val
+                    }
+                }),
                 async submitUpload() {
                     if (this.files === null) return;
 
-                    let formData = new FormData();
-                    formData.append('image', this.files[0]);
-                    const uploadResponse = await $.ajax({
-                        url: '{{ route('ajax.upload.image') }}',
-                        type: 'POST',
-                        data: formData,
-                        async: false,
-                        cache: false,
-                        contentType: false,
-                        enctype: 'multipart/form-data',
-                        processData: false,
-                    });
+                    const tasks = this.files.map(async (file) => {
+                        let formData = new FormData();
+                        formData.append('image', file);
+                        const uploadResponse = await $.ajax({
+                            url: '{{ route('ajax.upload.image') }}',
+                            type: 'POST',
+                            data: formData,
+                            async: false,
+                            cache: false,
+                            contentType: false,
+                            enctype: 'multipart/form-data',
+                            processData: false,
+                        });
 
-                    if (!uploadResponse.data) {
-                        return;
+                        if (!uploadResponse.data) {
+                            return null;
+                        }
+
+                        const documentUploadUrl = uploadResponse.data.original
+                        return {
+                            url: documentUploadUrl
+                        }
+                    })
+
+                    const uploads = await Promise.all(tasks);
+
+                    for (const upload of uploads) {
+                        if (upload) {
+                            this.galleryFields.push(upload);
+                        }
                     }
 
-                    const documentUploadUrl = uploadResponse.data.original
-
-                    this.galleryFields.push({
-                        url: documentUploadUrl
-                    });
                     this.files = null;
                 },
                 resetUpload() {
