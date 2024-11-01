@@ -9,6 +9,7 @@ use App\Enums\Gender;
 use App\Enums\IssueStatus;
 use App\Enums\IssueType;
 use App\Enums\PersonType;
+use App\Models\Category;
 use App\Models\Permission;
 use App\Models\Province;
 use App\Models\Role;
@@ -249,6 +250,20 @@ trait SelectOption
             $selections[] = [
                 'id' => $key,
                 'label' => $selectOption->email,
+                'value' => $selectOption->id
+            ];
+        }
+        return $selections;
+    }
+
+    public function category()
+    {
+        $selectOptions = Category::query()->get();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => $selectOption->name,
                 'value' => $selectOption->id
             ];
         }

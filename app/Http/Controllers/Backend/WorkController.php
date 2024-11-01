@@ -36,7 +36,8 @@ class WorkController extends Controller
         $provinceSelections = $this->province();
         $workTypeSelections = $this->workType();
         $userSelections = $this->user();
-        return view('backend.work.create', compact('work', 'provinceSelections', 'workTypeSelections', 'userSelections'));
+        $categorySelections = $this->category();
+        return view('backend.work.create', compact('work', 'provinceSelections', 'workTypeSelections', 'userSelections', 'categorySelections'));
     }
 
     /**
@@ -75,6 +76,7 @@ class WorkController extends Controller
         // }
 
         $work = Work::create($post);
+        $work->syncCategories($post['works_categories'] ?? []);
 
         return redirect()->route('backend.works.index')
             ->with('success', 'Work created successfully.');
@@ -105,7 +107,8 @@ class WorkController extends Controller
         $provinceSelections = $this->province();
         $workTypeSelections = $this->workType();
         $userSelections = $this->user();
-        return view('backend.work.edit', compact('work', 'provinceSelections', 'workTypeSelections', 'userSelections'));
+        $categorySelections = $this->category();
+        return view('backend.work.edit', compact('work', 'provinceSelections', 'workTypeSelections', 'userSelections', 'categorySelections'));
     }
 
     /**
@@ -136,6 +139,7 @@ class WorkController extends Controller
         // }
 
         $work->update($post);
+        $work->syncCategories($post['works_categories'] ?? []);
 
         return redirect()->route('backend.works.index')
             ->with('success', 'Work updated successfully');

@@ -1,6 +1,12 @@
 <div class="flex flex-col space-y-4">
 
     <div>
+        <x-input-label for="works_categories" :value="__('หมวดหมู่')" />
+        <x-select-multiple name="works_categories" class="mt-1 block w-full" :selections="$categorySelections" :selected="$work?->categoryIds()" />
+        <x-input-error :messages="$errors->get('works_categories')" class="mt-2" />
+    </div>
+
+    <div>
         <x-input-label for="code" :value="__('ทะเบียนรถ')" />
         <x-text-input :value="old('code', $work?->code)" id="code" name="code" type="text" class="mt-1 block w-full" required />
         <x-input-error :messages="$errors->get('code')" class="mt-2" />
@@ -8,7 +14,8 @@
 
     <div>
         <x-input-label for="title" :value="__('ชื่อ')" />
-        <x-text-input :value="old('title', $work?->title)" id="title" name="title" type="text" class="mt-1 block w-full" required />
+        <x-text-input :value="old('title', $work?->title)" id="title" name="title" type="text" class="mt-1 block w-full"
+            required />
         <x-input-error :messages="$errors->get('title')" class="mt-2" />
     </div>
 

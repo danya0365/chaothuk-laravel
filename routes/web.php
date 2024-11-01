@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Backend\BannerController;
+use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\ConfigurationController;
 use App\Http\Controllers\Backend\IssuePointController;
 use App\Http\Controllers\Backend\NotificationController;
@@ -64,6 +65,8 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
         Route::get('/cron-logs', [ReportController::class, 'getCronLogs'])->name('cron-logs');
         Route::get('/point-transaction-logs', [ReportController::class, 'getPointTransactionLogs'])->name('point-transaction-logs');
     });
+
+    Route::resource('categories', CategoryController::class);
 });
 
 Route::group(['prefix' => 'barcode', 'as' => 'barcode.'], function () {

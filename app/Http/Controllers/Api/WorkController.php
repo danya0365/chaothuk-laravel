@@ -6,6 +6,7 @@ use App\Enums\BookingStatus;
 use App\Enums\NotificationType;
 use App\Enums\Permission;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\WorkRequest;
 use App\Http\Resources\TopHitWorkCollection;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\WorkBookingCollection;
@@ -29,7 +30,7 @@ class WorkController extends Controller
      */
     public function getWorks(Request $request)
     {
-        $query = Work::with(['author', 'province', 'workType']);
+        $query = Work::with(['author', 'province', 'workType', 'categories']);
 
         $keyword = trim($request->get('keyword'));
         if ($keyword) {
@@ -67,7 +68,7 @@ class WorkController extends Controller
      */
     public function getWork(Request $request, $workId)
     {
-        $data = Work::with(['author', 'province', 'workType'])->find($workId);
+        $data = Work::with(['author', 'province', 'workType', 'categories'])->find($workId);
         return response()->json([
             'status' => $data ? true : false,
             'data' => $data ? new WorkResource($data) : null,
@@ -131,7 +132,7 @@ class WorkController extends Controller
      */
     public function getTopHits(Request $request)
     {
-        $data = Work::with(['author', 'province', 'workType'])
+        $data = Work::with(['author', 'province', 'workType', 'categories'])
             ->orderBy('display_priority', 'desc')
             ->limitOffset(request()->all())->get();
         return response()->json([
@@ -146,9 +147,8 @@ class WorkController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function createWork(Request $request)
+    public function createWork(WorkRequest $request)
     {
-        $post = $request->all();
         /** @var \App\Models/User $user */
         $user = auth('sanctum')->user();
 
@@ -159,19 +159,10 @@ class WorkController extends Controller
             ], 403);
         }
 
+        $request->validated();
+
+        $post = $request->all();
         $post['author_id'] = $user->id;
-
-        $validatedRequest = Validator::make($post, Work::$rules, [
-            'code.unique' => trans('validation.work_code_unique')
-        ]);
-
-        if ($validatedRequest->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => implode(",", $validatedRequest->messages()->all()),
-                'errors' => $validatedRequest->errors()
-            ], 401);
-        }
 
         if (isset($post["details"]) && trim($post["details"]) != "") {
             $post["details"] = explode(',', $post["details"]);
@@ -209,25 +200,14 @@ class WorkController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function updateWork(Request $request, $id)
+    public function updateWork(WorkRequest $request, $id)
     {
         /** @var \App\Models/User $user */
         $user = auth('sanctum')->user();
+        $request->validated();
+
         $post = $request->all();
-
         $post['author_id'] = $user->id;
-
-        $validatedRequest = Validator::make($post, Work::$rules, [
-            'code.unique' => trans('validation.work_code_unique')
-        ]);
-
-        if ($validatedRequest->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => implode(",", $validatedRequest->messages()->all()),
-                'errors' => $validatedRequest->errors()
-            ], 401);
-        }
 
         if (isset($post["details"]) && trim($post["details"]) != "") {
             $post["details"] = explode(',', $post["details"]);
