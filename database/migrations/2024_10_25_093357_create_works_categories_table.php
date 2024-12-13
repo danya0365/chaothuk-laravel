@@ -10,12 +10,13 @@ return new class () extends Migration {
      */
     public function up(): void
     {
-        Schema::create('work_types', function (Blueprint $table) {
+        Schema::create('works_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->index();
-            $table->string('image')->nullable();
+            $table->unsignedBigInteger('work_id');
+            $table->foreign('work_id')->references('id')->on('works')->cascadeOnDelete();
+            $table->unsignedBigInteger('category_id');
+            $table->foreign('category_id')->references('id')->on('categories')->cascadeOnDelete();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -24,6 +25,6 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('work_types');
+        Schema::dropIfExists('works_categories');
     }
 };

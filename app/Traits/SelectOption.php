@@ -9,8 +9,12 @@ use App\Enums\Gender;
 use App\Enums\IssueStatus;
 use App\Enums\IssueType;
 use App\Enums\PersonType;
+use App\Models\Category;
 use App\Models\Permission;
+use App\Models\Province;
 use App\Models\Role;
+use App\Models\User;
+use App\Models\WorkType;
 
 trait SelectOption
 {
@@ -205,6 +209,62 @@ trait SelectOption
                 'id' => $key,
                 'label' => __('common.value-type-' . $selectOption),
                 'value' => $selectOption
+            ];
+        }
+        return $selections;
+    }
+
+    public function province()
+    {
+        $selectOptions = Province::query()->get();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => $selectOption->name_th,
+                'value' => $selectOption->id
+            ];
+        }
+        return $selections;
+    }
+
+    public function workType()
+    {
+        $selectOptions = WorkType::query()->get();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => $selectOption->title,
+                'value' => $selectOption->id
+            ];
+        }
+        return $selections;
+    }
+
+    public function user()
+    {
+        $selectOptions = User::query()->get();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => $selectOption->email,
+                'value' => $selectOption->id
+            ];
+        }
+        return $selections;
+    }
+
+    public function category()
+    {
+        $selectOptions = Category::query()->get();
+        $selections = [];
+        foreach ($selectOptions as $key => $selectOption) {
+            $selections[] = [
+                'id' => $key,
+                'label' => $selectOption->name,
+                'value' => $selectOption->id
             ];
         }
         return $selections;

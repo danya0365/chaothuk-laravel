@@ -10,12 +10,12 @@ return new class () extends Migration {
      */
     public function up(): void
     {
-        Schema::create('work_types', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->index();
-            $table->string('image')->nullable();
+            $table->string('name');
+            $table->longText('description')->nullable();
+            $table->string('image_url')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -24,6 +24,6 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('work_types');
+        Schema::dropIfExists('categories');
     }
 };

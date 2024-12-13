@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use App\Traits\QueryTrait;
 use App\Traits\Scopes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -37,16 +37,6 @@ class Work extends Model
 {
     use SoftDeletes;
     use Scopes;
-
-    public static $rules = [
-      'code' => 'required|unique:works',
-      'title' => 'required',
-      'description' => 'required',
-      'province_id' => 'required',
-      'work_type_id' => 'required',
-      'author_id' => 'required',
-      'price' => 'required',
-    ];
 
     /**
      * The attributes that should be cast.
@@ -95,5 +85,39 @@ class Work extends Model
     public function bookings(): HasMany
     {
         return $this->hasMany(WorkBooking::class);
+    }
+
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'works_categories');
+    }
+
+    public function categoryIds(): array
+    {
+        $categoryIds = array_map(function ($category) {
+            return  $category['id'];
+        }, $this->categories?->toArray() ?? []);
+        return $categoryIds;
+    }
+
+    public function categoryNames(): string
+    {
+        $roleNames = array_map(function ($category) {
+            return  $category['name'];
+        }, $this->categories?->toArray() ?? []);
+        return implode(', ', $roleNames);
+    }
+
+    public function syncCategories($worksCategories)
+    {
+        $syncData = [];
+        foreach ($worksCategories as $workCategory) {
+            $random = substr(md5(mt_rand()), 0, 7);
+            $syncData[$random] = $workCategory;
+        }
+        if (count($syncData) === 0) {
+            return $this->categories()->sync([]);
+        }
+        return $this->categories()->sync($syncData);
     }
 }

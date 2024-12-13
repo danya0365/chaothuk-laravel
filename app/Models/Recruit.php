@@ -6,6 +6,7 @@ use App\Traits\Scopes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -86,5 +87,10 @@ class Recruit extends Model
     public function bookings(): HasMany
     {
         return $this->hasMany(RecruitBooking::class);
+    }
+
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'recruits_categories');
     }
 }
