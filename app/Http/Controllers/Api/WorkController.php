@@ -172,8 +172,7 @@ class WorkController extends Controller
             $post["details"] = [];
         }
 
-        if (isset($post["images"]) && trim($post["images"]) != "") {
-            $post["images"] = explode(',', $post["images"]);
+        if (isset($post["images"]) && is_array($post["images"])) {
             $post["images"] = array_map('trim', $post["images"]);
             $post["images"] = array_filter($post["images"]);
         } else {
@@ -217,12 +216,9 @@ class WorkController extends Controller
             $post["details"] = [];
         }
 
-        if (isset($post["images"]) && trim($post["images"]) != "") {
-            $post["images"] = explode(',', $post["images"]);
+        if (isset($post["images"]) && is_array($post["images"])) {
             $post["images"] = array_map('trim', $post["images"]);
             $post["images"] = array_filter($post["images"]);
-        } else {
-            $post["images"] = [];
         }
 
         try {
