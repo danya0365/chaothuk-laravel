@@ -42,6 +42,97 @@
         </section>
     @endif
 
+    {{-- ⭐ Featured Works Carousel --}}
+    @if(count($featuredWorks) > 0)
+    <section x-data="{
+        currentSlide: 0,
+        total: {{ count($featuredWorks) }},
+        autoplay: null,
+        startAutoplay() {
+            this.autoplay = setInterval(() => { this.next(); }, 4000);
+        },
+        stopAutoplay() {
+            clearInterval(this.autoplay);
+        },
+        next() {
+            this.currentSlide = (this.currentSlide + 1) % this.total;
+        },
+        prev() {
+            this.currentSlide = (this.currentSlide - 1 + this.total) % this.total;
+        }
+    }" x-init="startAutoplay()" @mouseenter="stopAutoplay()" @mouseleave="startAutoplay()">
+        <div class="flex items-center justify-between mb-3">
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">🔥 งานแนะนำ <span class="text-orange-400 text-xs bg-orange-500/20 px-2 py-0.5 rounded-full">Featured</span></h2>
+        </div>
+
+        <div class="relative overflow-hidden rounded-2xl">
+            <div class="flex transition-transform duration-500 ease-in-out"
+                 :style="'transform: translateX(-' + (currentSlide * 100) + '%)'">
+                @foreach($featuredWorks as $fw)
+                <div class="w-full flex-shrink-0">
+                    <a href="{{ route('frontend.works.show', $fw['id']) }}"
+                       class="block relative group">
+                        <div class="aspect-[21/9] bg-gray-800 overflow-hidden">
+                            <img src="{{ $fw['primary_image'] ?? 'https://picsum.photos/seed/'.$fw['id'].'/1200/500' }}"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="">
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-5">
+                            <div class="flex items-end justify-between gap-4">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1.5">
+                                        <span class="bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">🔥 แนะนำ</span>
+                                        @if($fw['type'])
+                                            <span class="bg-white/20 text-white text-[10px] px-2 py-0.5 rounded-full backdrop-blur">{{ $fw['type'] }}</span>
+                                        @endif
+                                        @if($fw['province'])
+                                            <span class="text-white/70 text-[11px]">📍 {{ $fw['province'] }}</span>
+                                        @endif
+                                    </div>
+                                    <h3 class="text-white text-xl font-bold drop-shadow-lg">{{ $fw['title'] }}</h3>
+                                    <div class="flex items-center gap-3 mt-1">
+                                        <span class="text-orange-400 text-lg font-black">฿{{ number_format($fw['price']) }}</span>
+                                        @if($fw['rating'] > 0)
+                                            <span class="text-yellow-400 text-sm">⭐ {{ number_format($fw['rating'], 1) }}</span>
+                                        @endif
+                                        @if($fw['likes'] > 0)
+                                            <span class="text-white/60 text-sm">❤️ {{ $fw['likes'] }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                @if($fw['author_name'])
+                                <div class="flex items-center gap-2 bg-black/40 backdrop-blur rounded-full px-3 py-1.5">
+                                    <img src="{{ $fw['author_avatar'] }}" class="w-6 h-6 rounded-full object-cover" alt="">
+                                    <span class="text-white text-xs font-medium">{{ $fw['author_name'] }}</span>
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                @endforeach
+            </div>
+
+            {{-- Nav arrows --}}
+            @if(count($featuredWorks) > 1)
+            <button @click="prev()" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/50 hover:bg-black/70 backdrop-blur text-white rounded-full flex items-center justify-center transition">‹</button>
+            <button @click="next()" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/50 hover:bg-black/70 backdrop-blur text-white rounded-full flex items-center justify-center transition">›</button>
+            @endif
+        </div>
+
+        {{-- Dot indicators --}}
+        @if(count($featuredWorks) > 1)
+        <div class="flex justify-center gap-1.5 mt-3">
+            @for($i = 0; $i < count($featuredWorks); $i++)
+                <button @click="currentSlide = {{ $i }}"
+                        class="w-2 h-2 rounded-full transition"
+                        :class="currentSlide === {{ $i }} ? 'bg-orange-500 w-5' : 'bg-gray-700 hover:bg-gray-600'"></button>
+            @endfor
+        </div>
+        @endif
+    </section>
+    @endif
+
     {{-- Latest Works --}}
     <section>
         <div class="flex items-center justify-between mb-4">

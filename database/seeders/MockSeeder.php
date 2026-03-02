@@ -385,6 +385,26 @@ class MockSeeder extends Seeder
                 'longitude' => fake()->longitude(98.0, 104.5),
             ]);
         }
+        // ─── 17. Featured Works ─────────────────────────────────────────
+        $this->command->info('Creating featured works...');
+        $featuredWorkIds = Work::inRandomOrder()->limit(4)->pluck('id', 'author_id');
+        $slot = 0;
+        foreach ($featuredWorkIds as $authorId => $workId) {
+            \App\Models\FeaturedWork::create([
+                'work_id'        => $workId,
+                'author_id'      => $authorId,
+                'start_at'       => now()->subDays(rand(0, 5)),
+                'end_at'         => now()->addDays(rand(25, 60)),
+                'slot_position'  => $slot++,
+                'amount_paid'    => fake()->randomElement([99, 199, 299, 499]),
+                'payment_method' => fake()->randomElement(['points', 'transfer']),
+                'payment_status' => 'paid',
+                'is_approved'    => true,
+                'impression_count' => rand(100, 5000),
+                'click_count'    => rand(10, 500),
+            ]);
+        }
+        $this->command->info("  → {$slot} featured works created");
 
         Model::reguard();
 

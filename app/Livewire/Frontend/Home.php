@@ -3,18 +3,40 @@
 namespace App\Livewire\Frontend;
 
 use App\Models\Banner;
+use App\Models\FeaturedWork;
 use App\Models\Work;
 use App\Models\Recruit;
 use Livewire\Component;
 
 class Home extends Component
 {
+    public array $featuredWorks = [];
     public array $latestWorks = [];
     public array $latestRecruits = [];
     public array $banners = [];
 
     public function mount(): void
     {
+        // Featured works carousel
+        $this->featuredWorks = FeaturedWork::active()
+            ->with(['work.author', 'work.province', 'work.workType'])
+            ->orderBy('slot_position')
+            ->limit(10)
+            ->get()
+            ->map(fn($f) => [
+                'id'            => $f->work->id,
+                'title'         => $f->work->title,
+                'price'         => $f->work->price,
+                'primary_image' => $f->work->primary_image,
+                'province'      => $f->work->province?->name_th,
+                'type'          => $f->work->workType?->name,
+                'rating'        => $f->work->avg_review_rating,
+                'likes'         => $f->work->like_count ?? 0,
+                'author_name'   => $f->work->author?->name,
+                'author_avatar' => $f->work->author?->getAvatar(32) ?? '',
+            ])
+            ->toArray();
+
         $this->latestWorks = Work::with(['author', 'province', 'workType'])
             ->latest()
             ->limit(8)
@@ -25,6 +47,9 @@ class Home extends Component
                 'price'        => $w->price,
                 'primary_image'=> $w->primary_image,
                 'province'     => ['name_th' => $w->province?->name_th],
+                'rating'       => $w->avg_review_rating,
+                'likes'        => $w->like_count ?? 0,
+                'type'         => $w->workType?->name,
             ])
             ->toArray();
 
