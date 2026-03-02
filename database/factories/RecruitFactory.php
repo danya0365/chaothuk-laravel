@@ -43,7 +43,7 @@ class RecruitFactory extends Factory
             'images'        => json_encode([
                 'https://picsum.photos/seed/' . $this->faker->numberBetween(201, 400) . '/800/600',
             ]),
-            'recruit_status' => 'open',
+            'recruit_status' => $this->faker->randomElement(['stand-by', 'busy', 'close']),
         ];
     }
 }

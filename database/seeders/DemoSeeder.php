@@ -162,7 +162,7 @@ class DemoSeeder extends Seeder
                     'province_id'    => 1,
                     'work_type_id'   => 1,
                     'primary_image'  => 'https://picsum.photos/seed/' . $data['img_seed'] . '/800/600',
-                    'recruit_status' => 'open',
+                    'recruit_status' => 'stand-by',
                 ]
             );
         }

@@ -10,12 +10,12 @@ class RecruitBookingFactory extends Factory
 {
     public function definition(): array
     {
-        $statuses = ['pending', 'worker_confirmed', 'customer_confirmed', 'completed', 'cancelled'];
+        $statuses = ['waiting-to-confirm', 'confirm', 'close', 'cancel'];
 
         return [
             'recruit_id'       => Recruit::factory(),
-            'worker_id'        => User::factory(),
-            'worker_message'   => $this->faker->randomElement([
+            'author_id'        => User::factory(),
+            'customer_message' => $this->faker->randomElement([
                 'ผมมีประสบการณ์ขับรถมา 5 ปี',
                 'มีใบขับขี่ประเภท 2',
                 'พร้อมเริ่มงานได้ทันที',

@@ -18,8 +18,8 @@ class NotificationFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => $this->faker->text(),
-            'content' => $this->faker->text(),
+            'title'             => $this->faker->text(50),
+            'content'           => json_encode(['message' => $this->faker->text(100)]),
             'notification_type' => NotificationType::GENERAL->value
         ];
     }

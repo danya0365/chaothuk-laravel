@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Scopes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -29,7 +30,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class RecruitBooking extends Model
 {
-  use SoftDeletes, Scopes;
+  use HasFactory, SoftDeletes, Scopes;
 
   static $rules = [
     'booking_date' => 'required',
@@ -47,7 +48,7 @@ class RecruitBooking extends Model
    *
    * @var array
    */
-  protected $fillable = ['customer_message', 'mobile_phone', 'latitude', 'longitude', 'booking_status', 'customer_confirm_status', 'worker_confirm_status', 'author_id', 'recruit_id'];
+  protected $fillable = ['customer_message', 'mobile_phone', 'latitude', 'longitude', 'booking_status', 'booking_date', 'customer_confirm_status', 'worker_confirm_status', 'author_id', 'recruit_id'];
 
   public function notifications()
   {

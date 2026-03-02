@@ -1,0 +1,38 @@
+<?php
+
+use App\Livewire\Frontend\Home;
+use App\Livewire\Frontend\WorkBrowse;
+use App\Livewire\Frontend\WorkDetail;
+use App\Livewire\Frontend\RecruitBrowse;
+use App\Livewire\Frontend\RecruitDetail;
+use App\Livewire\Frontend\Search;
+use App\Livewire\Frontend\Profile;
+use App\Livewire\Frontend\Notifications;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Frontend Routes — Chaothuk Web App
+|--------------------------------------------------------------------------
+|
+| Public: ทุกคนดูได้ ไม่ต้อง login
+| Auth:   write actions + profile + notifications ต้อง login
+|
+*/
+
+Route::prefix('frontend')->name('frontend.')->group(function () {
+
+    // ─── Public Routes ─────────────────────────────────────────────────
+    Route::get('/',              Home::class)->name('home');
+    Route::get('/works',         WorkBrowse::class)->name('works');
+    Route::get('/works/{id}',    WorkDetail::class)->name('works.show');
+    Route::get('/recruits',      RecruitBrowse::class)->name('recruits');
+    Route::get('/recruits/{id}', RecruitDetail::class)->name('recruits.show');
+    Route::get('/search',        Search::class)->name('search');
+
+    // ─── Auth Required ─────────────────────────────────────────────────
+    Route::middleware('auth')->group(function () {
+        Route::get('/profile',       Profile::class)->name('profile');
+        Route::get('/notifications', Notifications::class)->name('notifications');
+    });
+});

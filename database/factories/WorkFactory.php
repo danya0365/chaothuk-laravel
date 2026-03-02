@@ -36,7 +36,7 @@ class WorkFactory extends Factory
             'author_id'        => User::factory(),
             'province_id'      => Province::inRandomOrder()->value('id') ?? 1,
             'work_type_id'     => WorkType::inRandomOrder()->value('id') ?? 1,
-            'code'             => strtoupper($this->faker->lexify('??-####')),
+            'code'             => strtoupper($this->faker->unique()->bothify('??-####')),
             'title'            => $this->faker->randomElement($thaiTitles),
             'description'      => $this->faker->randomElement($descriptions),
             'price'            => $this->faker->numberBetween(500, 50000),

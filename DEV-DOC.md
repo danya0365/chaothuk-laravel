@@ -65,62 +65,68 @@ Refresh Database (delete all data) and seed reference data
 
 ---
 
-#### 🌱 Seeder Overview
+#### 🌱 Seeder Map
 
-| Seeder | ประเภท | รันเมื่อไหร่ |
+| Seeder | ประเภท | สิ่งที่ทำ | ENV |
+|---|---|---|---|
+| `DatabaseSeeder` | Master data | Geography, Provinces, WorkTypes, Categories, Roles | ทุก env |
+| `DemoSeeder` | Demo accounts | 4 users + sample works/recruits | dev, staging |
+| `MockSeeder` | Volume data | 50 users, 100 works, 450 posts, 500 notifications | dev เท่านั้น |
+| `ProductionSeeder` | Admin accounts | Super admin จาก `.env` | prod เท่านั้น |
+
+> **Note:** `MockSeeder` เรียก `DemoSeeder` อัตโนมัติ — ไม่ต้องรัน Demo แยก
+
+---
+
+#### 🔑 Demo Accounts (`DemoSeeder`)
+
+Password ทุก account คือ **`password`**
+
+| Email | ชื่อ | บทบาท |
 |---|---|---|
-| `DatabaseSeeder` | Reference data เท่านั้น | `migrate:fresh --seed` |
-| `StarterSeeder` | WorkType + Category | เรียกผ่าน DatabaseSeeder |
-| `DemoSeeder` | Demo users + works + recruits | dev / staging |
-| `MockSeeder` | Large volume test data | local testing |
+| `worker1@chaothuk.test` | สมชาย ขับรถดี | ผู้รับงาน |
+| `worker2@chaothuk.test` | มานะ ทำงานดี | ผู้รับงาน |
+| `employer1@chaothuk.test` | บริษัท ขนส่งไทย | ผู้จ้าง |
+| `employer2@chaothuk.test` | ห้างหุ้นส่วน โลจิสติกส์ดี | ผู้จ้าง |
 
-#### 📋 ข้อมูลที่ seed แต่ละ class
+---
 
-**`DatabaseSeeder`** (production-safe)
-- Geography, Province, District, SubDistrict
-- Permission, Role
-- Admin/Supervisor user (จาก `config/auth.php`)
-- Configuration
-- WorkType (รถกะบะ, รถบรรทุก, ฯลฯ)
-- Category (15 หมวดหมู่)
+#### 🚀 Commands per Environment
 
-**`DemoSeeder`** (dev/staging only)
-- 4 demo accounts — password ทั้งหมดคือ `password`
-
-| Email | บทบาท |
-|---|---|
-| `worker1@chaothuk.test` | สมชาย ขับรถดี (ผู้รับงาน) |
-| `worker2@chaothuk.test` | มานะ ทำงานดี (ผู้รับงาน) |
-| `employer1@chaothuk.test` | บริษัท ขนส่งไทย (ผู้จ้าง) |
-| `employer2@chaothuk.test` | ห้างหุ้นส่วน โลจิสติกส์ดี (ผู้จ้าง) |
-
-- 4 demo works + 2 demo recruits
-
-**`MockSeeder`** (large volume)
-- 50 users, 100 works, 50 recruits
-- 200 work bookings, 100 recruit bookings
-- ~450 reviews/posts (with 30% reply rate on work reviews)
-- 500 notifications
-
-#### ⚙️ Factories (ใช้กับ MockSeeder / Testing)
-
-`WorkFactory`, `RecruitFactory`, `PostFactory`, `WorkBookingFactory`, `RecruitBookingFactory`, `UserFactory`, `NotificationFactory`
-
-#### 🚀 คำสั่งที่ใช้บ่อย
-
+**[DEV] — ข้อมูลครบสำหรับเทส**
 ```bash
-# Fresh start พร้อม reference data
-sail php artisan migrate:fresh --seed
-
-# เพิ่ม demo accounts สำหรับ dev
-sail php artisan db:seed --class=DemoSeeder
-
-# โหลด test data จำนวนมาก
-sail php artisan db:seed --class=MockSeeder
-
-# Specific seeder อื่นๆ
-sail php artisan db:seed --class=CategorySeeder
+sail artisan migrate:fresh --seed
+sail artisan db:seed --class=MockSeeder   # ← รัน DemoSeeder ภายในอัตโนมัติ
 ```
+
+**[STAGING] — demo accounts + reference data เท่านั้น**
+```bash
+sail artisan migrate:fresh --seed
+sail artisan db:seed --class=DemoSeeder
+```
+
+**[PRODUCTION] — master data + admin เท่านั้น**
+```bash
+# .env ต้องมี:
+# ADMIN_EMAIL=admin@chaothuk.app
+# ADMIN_PASSWORD=your-secure-password
+
+sail artisan migrate --force
+sail artisan db:seed --force                          # StarterSeeder (master data)
+sail artisan db:seed --class=ProductionSeeder --force # admin user
+```
+
+**[ลำดับ seeder ถ้ารันแยก]**
+```bash
+1. migrate:fresh --seed     # DatabaseSeeder ก่อนเสมอ
+2. DemoSeeder               # demo accounts (ถ้าต้องการ)
+3. MockSeeder               # volume data (dev only)
+```
+
+#### ⚙️ Factories
+
+`WorkFactory` · `RecruitFactory` · `PostFactory` · `WorkBookingFactory` · `RecruitBookingFactory` · `UserFactory` · `NotificationFactory`
+
 
 ### Database Management
 

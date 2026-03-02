@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
         then: function () {
             Route::middleware('web')->prefix('ajax')->group(base_path('routes/ajax.php'));
+            Route::middleware('web')->group(base_path('routes/frontend.php'));
         }
     )
     ->withMiddleware(function (Middleware $middleware) {

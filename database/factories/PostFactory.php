@@ -51,6 +51,7 @@ class PostFactory extends Factory
                 'ขอบคุณที่ใช้บริการครับ',
                 'ยินดีครับ ขอบคุณที่ไว้วางใจ',
             ]),
+            // parent_id must be provided via create(['parent_id' => $postId])
         ]);
     }
 }

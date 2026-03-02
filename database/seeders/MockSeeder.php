@@ -40,18 +40,37 @@ class MockSeeder extends Seeder
     {
         Model::unguard();
 
-        // ─── Clean up before re-seeding ──────────────────────────────────────
+        // ─── Step 0: Ensure demo accounts exist first ────────────────────────
+        // DemoSeeder creates worker1, worker2, employer1, employer2 accounts.
+        // MockSeeder only touches @mock.test users so they will NOT conflict.
+        $this->call(DemoSeeder::class);
+
+        // ─── Clean up all mock data before re-seeding ────────────────────────
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('works_reviews')->truncate();
         DB::table('recruits_reviews')->truncate();
         DB::table('post_likes')->truncate();
         DB::table('work_likes')->truncate();
         DB::table('user_notifications')->truncate();
+        DB::table('work_bookings')->truncate();
+        DB::table('recruit_bookings')->truncate();
+        DB::table('posts')->truncate();
         Notification::truncate();
 
-        // Careful: don't delete base/starter data
-        // We'll only delete rows created by MockSeeder (email contains @mock.test)
-        User::where('email', 'like', '%@mock.test')->delete();
+        // Delete mock works/recruits and their mock authors
+        // Only touch rows authored by @mock.test users to preserve starter/demo data
+        $mockUserIds = User::where('email', 'like', '%@mock.test')->pluck('id')->toArray();
+        if (!empty($mockUserIds)) {
+            DB::table('works_categories')->whereIn('work_id',
+                DB::table('works')->whereIn('author_id', $mockUserIds)->pluck('id')
+            )->delete();
+            DB::table('recruits_categories')->whereIn('recruit_id',
+                DB::table('recruits')->whereIn('author_id', $mockUserIds)->pluck('id')
+            )->delete();
+            DB::table('works')->whereIn('author_id', $mockUserIds)->delete();
+            DB::table('recruits')->whereIn('author_id', $mockUserIds)->delete();
+        }
+        User::where('email', 'like', '%@mock.test')->forceDelete();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         // ─── 1. Create Mock Users ─────────────────────────────────────────────
@@ -59,11 +78,11 @@ class MockSeeder extends Seeder
         $users = User::factory()
             ->count(50)
             ->sequence(fn ($seq) => [
-                'email'      => 'user' . ($seq->index + 1) . '@mock.test',
-                'name'       => $this->thaiName($seq->index),
-                'first_name' => $this->thaiFirstName($seq->index),
-                'last_name'  => $this->thaiLastName($seq->index),
-                'password'   => Hash::make('password'),
+                'email'         => 'user' . ($seq->index + 1) . '@mock.test',
+                'name'          => $this->thaiName($seq->index),
+                'first_name'    => $this->thaiFirstName($seq->index),
+                'last_name'     => $this->thaiLastName($seq->index),
+                'password'      => Hash::make('password'),
                 'profile_image' => 'https://i.pravatar.cc/150?img=' . (($seq->index % 70) + 1),
             ])
             ->create();
@@ -124,11 +143,11 @@ class MockSeeder extends Seeder
 
         // ─── 5. Work Bookings (200) ────────────────────────────────────────────
         $this->command->info('Creating 200 work bookings...');
-        $statuses = ['pending', 'worker_confirmed', 'customer_confirmed', 'completed', 'cancelled'];
+        $statuses = ['waiting-to-confirm', 'confirm', 'close', 'cancel'];
         for ($i = 0; $i < 200; $i++) {
             WorkBooking::factory()->create([
-                'work_id'     => $workIds[array_rand($workIds)],
-                'customer_id' => $employerIds[array_rand($employerIds)],
+                'work_id'        => $workIds[array_rand($workIds)],
+                'author_id'      => $employerIds[array_rand($employerIds)],
                 'booking_status' => $statuses[array_rand($statuses)],
             ]);
         }
@@ -137,8 +156,8 @@ class MockSeeder extends Seeder
         $this->command->info('Creating 100 recruit bookings...');
         for ($i = 0; $i < 100; $i++) {
             \App\Models\RecruitBooking::factory()->create([
-                'recruit_id' => $recruitIds[array_rand($recruitIds)],
-                'worker_id'  => $workerIds[array_rand($workerIds)],
+                'recruit_id'     => $recruitIds[array_rand($recruitIds)],
+                'author_id'      => $workerIds[array_rand($workerIds)],
                 'booking_status' => $statuses[array_rand($statuses)],
             ]);
         }
@@ -199,7 +218,7 @@ class MockSeeder extends Seeder
             ->count(500)
             ->sequence(fn ($seq) => [
                 'title'   => 'แจ้งเตือน #' . ($seq->index + 1),
-                'content' => 'มีการอัปเดตเกี่ยวกับงานของคุณ หมายเลข ' . ($seq->index + 1),
+                'content' => json_encode(['message' => 'มีการอัปเดตเกี่ยวกับงานของคุณ หมายเลข ' . ($seq->index + 1)]),
             ])
             ->create();
 

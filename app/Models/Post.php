@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Scopes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -28,8 +29,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Post extends Model
 {
-    use SoftDeletes;
-    use Scopes;
+    use HasFactory, SoftDeletes, Scopes;
 
     protected $perPage = 20;
 

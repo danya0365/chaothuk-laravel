@@ -10,11 +10,11 @@ class WorkBookingFactory extends Factory
 {
     public function definition(): array
     {
-        $statuses = ['pending', 'worker_confirmed', 'customer_confirmed', 'completed', 'cancelled'];
+        $statuses = ['waiting-to-confirm', 'confirm', 'close', 'cancel'];
 
         return [
             'work_id'          => Work::factory(),
-            'customer_id'      => User::factory(),
+            'author_id'        => User::factory(),
             'customer_message' => $this->faker->randomElement([
                 'ต้องการขนของย้ายบ้าน',
                 'รับสินค้าจากโกดัง ส่งลูกค้า',
