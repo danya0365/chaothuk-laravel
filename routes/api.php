@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\IssuePointController;
 use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\MessengerController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\RecruitBookingController;
 use App\Http\Controllers\Api\RecruitController;
@@ -42,6 +43,9 @@ Route::group(['prefix' => 'me', 'as' => 'api.me.', 'middleware' => ['auth:sanctu
     Route::get('/work-bookings', [MeController::class, 'getWorkBookings']);
     Route::get('/recruits', [MeController::class, 'getRecruits']);
     Route::get('/recruit-bookings', [MeController::class, 'getRecruitBookings']);
+    Route::get('/posts', [MeController::class, 'getPosts']);
+    Route::get('/post-likes', [MeController::class, 'getLikedPosts']);
+    Route::get('/post-likes/post/{postId}', [MeController::class, 'getIsLikePost']);
 });
 
 Route::group(['prefix' => 'upload', 'as' => 'api.upload.'], function () {
@@ -67,11 +71,14 @@ Route::group(['prefix' => 'works', 'as' => 'api.works.'], function () {
     Route::get('/{workId}/likes/count', [WorkController::class, 'getWorkLikeCount']);
     Route::get('/{workId}/bookings', [WorkController::class, 'getWorkBookings']);
     Route::get('/{workId}/confirm-bookings', [WorkController::class, 'getConfirmWorkBookings']);
+    Route::get('/{workId}/reviews', [WorkController::class, 'getWorkReviews']);
+    Route::get('/{workId}/reviews/count', [WorkController::class, 'getWorkReviewCount']);
 
     Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/', [WorkController::class, 'createWork']);
         Route::post('/{workId}/bookings', [WorkController::class, 'createWorkBooking']);
         Route::post('/{workId}/likes', [WorkController::class, 'createWorkLike']);
+        Route::post('/{workId}/reviews', [WorkController::class, 'createWorkReview']);
     });
 });
 
@@ -92,10 +99,13 @@ Route::group(['prefix' => 'recruits', 'as' => 'api.recruits.'], function () {
     Route::get('/', [RecruitController::class, 'getRecruits']);
     Route::get('/{recruitId}', [RecruitController::class, 'getRecruit']);
     Route::get('/{recruitId}/bookings', [RecruitController::class, 'getRecruitBookings']);
+    Route::get('/{recruitId}/reviews', [RecruitController::class, 'getRecruitReviews']);
+    Route::get('/{recruitId}/reviews/count', [RecruitController::class, 'getRecruitReviewCount']);
 
     Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/', [RecruitController::class, 'createRecruit']);
         Route::post('/{recruitId}/bookings', [RecruitController::class, 'createRecruitBooking']);
+        Route::post('/{recruitId}/reviews', [RecruitController::class, 'createRecruitReview']);
     });
 });
 
@@ -166,6 +176,20 @@ Route::get('/link-storage', function () {
 Route::group(['prefix' => 'user-logs', 'as' => 'api.customer-logs.', 'middleware' => ['auth:sanctum']], function () {
     Route::get('/point-logs', [UserLogController::class, 'getPointLogs'])->name('point-logs');
     Route::get('/point-transaction-logs', [UserLogController::class, 'getPointTransactionLogs'])->name('point-transaction-logs');
+});
+
+Route::group(['prefix' => 'posts', 'as' => 'api.posts.'], function () {
+    Route::get('/', [PostController::class, 'getPosts'])->name('list');
+    Route::get('/{id}', [PostController::class, 'getPost'])->name('show');
+    Route::get('/{id}/likes', [PostController::class, 'getPostLikes'])->name('likes');
+    Route::get('/{id}/likes/count', [PostController::class, 'getPostLikeCount'])->name('likes.count');
+
+    Route::group(['middleware' => ['auth:sanctum']], function () {
+        Route::post('/', [PostController::class, 'createPost'])->name('create');
+        Route::post('/{id}', [PostController::class, 'updatePost'])->name('update');
+        Route::delete('/{id}', [PostController::class, 'deletePost'])->name('delete');
+        Route::post('/{id}/likes', [PostController::class, 'createPostLike'])->name('likes.toggle');
+    });
 });
 
 Route::group(['prefix' => 'auth', 'as' => 'api.auth.'], function () {

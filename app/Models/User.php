@@ -299,4 +299,14 @@ class User extends Authenticatable
         return $this->belongsToMany(Recruit::class, 'recruit_bookings', 'author_id', 'recruit_id')->withTimestamps();
     }
 
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'author_id');
+    }
+
+    public function likedPosts()
+    {
+        return $this->belongsToMany(Post::class, 'post_likes', 'author_id', 'post_id')->withTimestamps();
+    }
+
 }

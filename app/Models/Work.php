@@ -108,6 +108,11 @@ class Work extends Model
         return implode(', ', $roleNames);
     }
 
+    public function reviews(): BelongsToMany
+    {
+        return $this->belongsToMany(Post::class, 'works_reviews', 'work_id', 'post_id')->withTimestamps();
+    }
+
     public function syncCategories($worksCategories)
     {
         $syncData = [];

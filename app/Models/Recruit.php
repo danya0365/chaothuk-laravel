@@ -93,4 +93,9 @@ class Recruit extends Model
     {
         return $this->belongsToMany(Category::class, 'recruits_categories');
     }
+
+    public function reviews(): BelongsToMany
+    {
+        return $this->belongsToMany(Post::class, 'recruits_reviews', 'recruit_id', 'post_id')->withTimestamps();
+    }
 }
