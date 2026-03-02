@@ -8,7 +8,10 @@
         {{-- ═══════════════════════════════════════════════════════════════════
              1. HERO IMAGE + GALLERY
         ═══════════════════════════════════════════════════════════════════ --}}
-        <div x-data="{ activeImage: '{{ $work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/800/450' }}', allImages: @js(array_merge([$work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/800/450'], $work->images ?? [])) }"
+        @php
+            $galleryImages = is_array($work->images) ? $work->images : (is_string($work->images) ? json_decode($work->images, true) ?? [] : []);
+        @endphp
+        <div x-data="{ activeImage: '{{ $work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/800/450' }}', allImages: @js(array_merge([$work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/800/450'], $galleryImages)) }"
              class="space-y-2">
             <div class="rounded-2xl overflow-hidden aspect-video bg-gray-800 relative">
                 <img :src="activeImage" class="w-full h-full object-cover" alt="{{ $work->title }}">
@@ -26,14 +29,14 @@
                 </span>
             </div>
             {{-- Thumbnail gallery --}}
-            @if(is_array($work->images) && count($work->images) > 0)
+            @if(count($galleryImages) > 0)
             <div class="flex gap-2 overflow-x-auto pb-1">
                 <button @click="activeImage = '{{ $work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/800/450' }}'"
                         class="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden ring-2 transition"
                         :class="activeImage === '{{ $work->primary_image ?? '' }}' ? 'ring-orange-500' : 'ring-transparent hover:ring-gray-600'">
                     <img src="{{ $work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/800/450' }}" class="w-full h-full object-cover" alt="">
                 </button>
-                @foreach($work->images as $img)
+                @foreach($galleryImages as $img)
                     <button @click="activeImage = '{{ $img }}'"
                             class="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden ring-2 transition"
                             :class="activeImage === '{{ $img }}' ? 'ring-orange-500' : 'ring-transparent hover:ring-gray-600'">

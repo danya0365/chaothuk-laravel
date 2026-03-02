@@ -406,6 +406,12 @@ class MockSeeder extends Seeder
         }
         $this->command->info("  → {$slot} featured works created");
 
+        // ─── 18. Province Top Works (calculate from seeded data) ────────
+        $this->command->info('Calculating province top works...');
+        \Artisan::call('top-works:calculate', ['--period' => now()->format('Y-m')]);
+        $topWorksCount = \App\Models\ProvinceTopWork::currentMonth()->count();
+        $this->command->info("  → {$topWorksCount} province top works calculated");
+
         Model::reguard();
 
         $this->command->info('✅ MockSeeder complete!');

@@ -133,6 +133,90 @@
     </section>
     @endif
 
+    {{-- 🏆 Top Work per Province --}}
+    @if(count($provinceTopWorks) > 0)
+    <section x-data="{
+        page: 0,
+        perPage: 4,
+        total: {{ count($provinceTopWorks) }},
+        get maxPage() { return Math.ceil(this.total / this.perPage) - 1; },
+        next() { if (this.page < this.maxPage) this.page++; },
+        prev() { if (this.page > 0) this.page--; },
+    }">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                🏆 งานเด่นประจำจังหวัด
+                <span class="text-gray-500 text-xs font-normal">{{ now()->translatedFormat('F Y') }}</span>
+            </h2>
+            <div class="flex items-center gap-2">
+                <button @click="prev()" :disabled="page === 0"
+                        class="w-8 h-8 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm flex items-center justify-center transition disabled:opacity-30 disabled:cursor-not-allowed">‹</button>
+                <span class="text-gray-500 text-xs" x-text="(page+1)+'/'+Math.ceil(total/perPage)"></span>
+                <button @click="next()" :disabled="page >= maxPage"
+                        class="w-8 h-8 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm flex items-center justify-center transition disabled:opacity-30 disabled:cursor-not-allowed">›</button>
+            </div>
+        </div>
+
+        <div class="overflow-hidden">
+            <div class="flex transition-transform duration-500 ease-in-out"
+                 :style="'transform: translateX(-' + (page * 100) + '%)'">
+                {{-- Chunked into pages of 4 --}}
+                @foreach(array_chunk($provinceTopWorks, 4) as $pageIdx => $chunk)
+                <div class="w-full flex-shrink-0 grid grid-cols-2 md:grid-cols-4 gap-3 px-0.5">
+                    @foreach($chunk as $tw)
+                    <a href="{{ route('frontend.works.show', $tw['id']) }}"
+                       class="group bg-gray-900 rounded-xl overflow-hidden hover:ring-2 hover:ring-yellow-500/40 transition relative">
+                        {{-- Province badge --}}
+                        <div class="absolute top-2 left-2 z-10 bg-yellow-500/90 backdrop-blur text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                            🏆 {{ $tw['province'] }}
+                        </div>
+                        <div class="aspect-video bg-gray-800 overflow-hidden">
+                            <img src="{{ $tw['primary_image'] ?? 'https://picsum.photos/seed/'.$tw['id'].'/400/300' }}"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="">
+                        </div>
+                        <div class="p-3">
+                            <p class="font-semibold text-sm text-white line-clamp-1 group-hover:text-yellow-400 transition">{{ $tw['title'] }}</p>
+                            <div class="flex items-center justify-between mt-1">
+                                <span class="text-orange-400 font-bold text-sm">฿{{ number_format($tw['price']) }}</span>
+                                <div class="flex items-center gap-1.5 text-[11px]">
+                                    @if($tw['rating'] > 0)
+                                        <span class="text-yellow-400">⭐ {{ number_format($tw['rating'], 1) }}</span>
+                                    @endif
+                                    @if($tw['bookings'] > 0)
+                                        <span class="text-gray-500">📋 {{ $tw['bookings'] }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between mt-1.5">
+                                <div class="flex items-center gap-1.5">
+                                    <img src="{{ $tw['author_avatar'] }}" class="w-4 h-4 rounded-full object-cover" alt="">
+                                    <span class="text-gray-400 text-[11px] truncate max-w-[80px]">{{ $tw['author_name'] }}</span>
+                                </div>
+                                @if($tw['type'])
+                                    <span class="text-gray-600 text-[10px]">{{ $tw['type'] }}</span>
+                                @endif
+                            </div>
+                        </div>
+                    </a>
+                    @endforeach
+                </div>
+                @endforeach
+            </div>
+        </div>
+
+        {{-- Dot indicators --}}
+        @if(count($provinceTopWorks) > 4)
+        <div class="flex justify-center gap-1.5 mt-3">
+            @for($i = 0; $i < ceil(count($provinceTopWorks) / 4); $i++)
+                <button @click="page = {{ $i }}"
+                        class="w-2 h-2 rounded-full transition"
+                        :class="page === {{ $i }} ? 'bg-yellow-500 w-5' : 'bg-gray-700 hover:bg-gray-600'"></button>
+            @endfor
+        </div>
+        @endif
+    </section>
+    @endif
+
     {{-- Latest Works --}}
     <section>
         <div class="flex items-center justify-between mb-4">

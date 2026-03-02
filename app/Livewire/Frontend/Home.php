@@ -4,6 +4,7 @@ namespace App\Livewire\Frontend;
 
 use App\Models\Banner;
 use App\Models\FeaturedWork;
+use App\Models\ProvinceTopWork;
 use App\Models\Work;
 use App\Models\Recruit;
 use Livewire\Component;
@@ -11,6 +12,7 @@ use Livewire\Component;
 class Home extends Component
 {
     public array $featuredWorks = [];
+    public array $provinceTopWorks = [];
     public array $latestWorks = [];
     public array $latestRecruits = [];
     public array $banners = [];
@@ -50,6 +52,27 @@ class Home extends Component
                 'rating'       => $w->avg_review_rating,
                 'likes'        => $w->like_count ?? 0,
                 'type'         => $w->workType?->name,
+            ])
+            ->toArray();
+
+        // Province Top Works (monthly)
+        $this->provinceTopWorks = ProvinceTopWork::currentMonth()
+            ->topOnly()
+            ->with(['work.author', 'work.workType', 'province'])
+            ->orderByDesc('total_score')
+            ->get()
+            ->map(fn($pt) => [
+                'id'            => $pt->work->id,
+                'title'         => $pt->work->title,
+                'price'         => $pt->work->price,
+                'primary_image' => $pt->work->primary_image,
+                'province'      => $pt->province?->name_th,
+                'type'          => $pt->work->workType?->name,
+                'rating'        => $pt->avg_rating,
+                'score'         => $pt->total_score,
+                'bookings'      => $pt->booking_count,
+                'author_name'   => $pt->work->author?->name,
+                'author_avatar' => $pt->work->author?->getAvatar(32) ?? '',
             ])
             ->toArray();
 
