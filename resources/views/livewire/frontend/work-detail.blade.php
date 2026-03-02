@@ -3,56 +3,178 @@
     @if(!$work)
         <p class="text-gray-400 text-center py-20">ไม่พบงานนี้</p>
     @else
-    <div class="space-y-6">
+    <div class="space-y-4">
 
-        {{-- Image --}}
-        <div class="rounded-2xl overflow-hidden aspect-video bg-gray-800">
-            <img src="{{ $work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/800/450' }}"
-                 class="w-full h-full object-cover" alt="{{ $work->title }}">
+        {{-- ═══════════════════════════════════════════════════════════════════
+             1. HERO IMAGE + GALLERY
+        ═══════════════════════════════════════════════════════════════════ --}}
+        <div x-data="{ activeImage: '{{ $work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/800/450' }}', allImages: @js(array_merge([$work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/800/450'], $work->images ?? [])) }"
+             class="space-y-2">
+            <div class="rounded-2xl overflow-hidden aspect-video bg-gray-800 relative">
+                <img :src="activeImage" class="w-full h-full object-cover" alt="{{ $work->title }}">
+                {{-- Status badge --}}
+                @php
+                    $statusBadge = match($work->work_status) {
+                        'stand-by' => ['🟢', 'พร้อมรับงาน', 'bg-green-500/90'],
+                        'busy'     => ['🟡', 'ไม่ว่าง', 'bg-yellow-500/90'],
+                        'close'    => ['🔴', 'ปิดรับงาน', 'bg-red-500/90'],
+                        default    => ['⚪', $work->work_status, 'bg-gray-500/90'],
+                    };
+                @endphp
+                <span class="absolute top-3 left-3 {{ $statusBadge[2] }} text-white text-xs font-bold px-3 py-1.5 rounded-lg backdrop-blur">
+                    {{ $statusBadge[0] }} {{ $statusBadge[1] }}
+                </span>
+            </div>
+            {{-- Thumbnail gallery --}}
+            @if(is_array($work->images) && count($work->images) > 0)
+            <div class="flex gap-2 overflow-x-auto pb-1">
+                <button @click="activeImage = '{{ $work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/800/450' }}'"
+                        class="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden ring-2 transition"
+                        :class="activeImage === '{{ $work->primary_image ?? '' }}' ? 'ring-orange-500' : 'ring-transparent hover:ring-gray-600'">
+                    <img src="{{ $work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/800/450' }}" class="w-full h-full object-cover" alt="">
+                </button>
+                @foreach($work->images as $img)
+                    <button @click="activeImage = '{{ $img }}'"
+                            class="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden ring-2 transition"
+                            :class="activeImage === '{{ $img }}' ? 'ring-orange-500' : 'ring-transparent hover:ring-gray-600'">
+                        <img src="{{ $img }}" class="w-full h-full object-cover" alt="">
+                    </button>
+                @endforeach
+            </div>
+            @endif
         </div>
 
-        {{-- Title + actions --}}
-        <div class="flex items-start justify-between gap-4">
-            <div>
-                <div class="flex items-center gap-2 flex-wrap text-sm text-gray-400 mb-1">
-                    <span class="bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded-full text-xs">
-                        {{ $work->workType?->name ?? '-' }}
+        {{-- ═══════════════════════════════════════════════════════════════════
+             2. TITLE + PRICE + QUICK STATS BAR
+        ═══════════════════════════════════════════════════════════════════ --}}
+        <div class="bg-gray-900 rounded-2xl p-5">
+            {{-- Tags row --}}
+            <div class="flex items-center gap-2 flex-wrap mb-2">
+                <span class="bg-orange-500/20 text-orange-400 px-2.5 py-0.5 rounded-full text-xs font-semibold">
+                    {{ $work->workType?->name ?? '-' }}
+                </span>
+                @foreach($work->categories as $cat)
+                    <span class="bg-gray-800 text-gray-400 px-2 py-0.5 rounded-full text-[11px]">{{ $cat->name }}</span>
+                @endforeach
+                <span class="text-gray-600 text-[11px]">📍 {{ $work->province?->name_th ?? '-' }}</span>
+                <span class="text-gray-700 text-[11px]">#{{ $work->code ?? 'W'.$work->id }}</span>
+            </div>
+
+            {{-- Title + Like --}}
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-white leading-tight">{{ $work->title }}</h1>
+                    <p class="text-3xl font-black text-orange-400 mt-1">฿{{ number_format($work->price) }}</p>
+                </div>
+                <button wire:click="toggleLike"
+                        class="flex items-center gap-1.5 px-4 py-2 rounded-full border transition flex-shrink-0
+                               {{ $isLiked ? 'border-red-500 text-red-400 bg-red-500/10' : 'border-gray-700 text-gray-400 hover:border-red-500 hover:text-red-400' }}">
+                    ❤️ {{ $work->like_count }}
+                </button>
+            </div>
+
+            {{-- Stats strip --}}
+            <div class="flex items-center gap-4 mt-3 pt-3 border-t border-gray-800 text-sm">
+                @if($work->avg_review_rating > 0)
+                    <span class="text-yellow-400 font-bold flex items-center gap-1">
+                        ⭐ {{ number_format($work->avg_review_rating, 1) }}
+                        <span class="text-gray-500 font-normal">({{ $work->reply_count ?? count($reviews ?? []) }})</span>
                     </span>
-                    <span>📍 {{ $work->province?->name_th ?? '-' }}</span>
-                    @if($work->avg_review_rating > 0)
-                        <span class="text-yellow-400">⭐ {{ number_format($work->avg_review_rating,1) }}</span>
+                @endif
+                <span class="text-gray-500 flex items-center gap-1">❤️ {{ $work->like_count }} ถูกใจ</span>
+                <span class="text-gray-500 flex items-center gap-1">📋 {{ count($bookedDates) }} จอง</span>
+                <span class="text-gray-600 text-xs">เผยแพร่ {{ $work->created_at?->diffForHumans() }}</span>
+            </div>
+        </div>
+
+        {{-- ═══════════════════════════════════════════════════════════════════
+             3. OWNER BAR (if owner)
+        ═══════════════════════════════════════════════════════════════════ --}}
+        @if($isOwner)
+        <div class="bg-gradient-to-r from-orange-500/10 to-orange-600/5 border border-orange-500/30 rounded-2xl p-4">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+                <span class="text-orange-400 text-sm font-bold">👑 คุณเป็นเจ้าของงานนี้</span>
+                <div class="flex gap-2">
+                    <a href="{{ route('frontend.works.edit', $work->id) }}"
+                       class="px-4 py-2 bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-xl text-sm transition">
+                        ✏️ แก้ไข
+                    </a>
+                    <a href="{{ route('frontend.works.bookings', $work->id) }}"
+                       class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl text-sm transition ring-1 ring-gray-700">
+                        📋 จัดการจอง ({{ count($bookings) }})
+                    </a>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        {{-- ═══════════════════════════════════════════════════════════════════
+             4. PROVIDER CARD (with reputation)
+        ═══════════════════════════════════════════════════════════════════ --}}
+        <a href="{{ route('frontend.reputation', $work->author_id) }}"
+           class="bg-gray-900 rounded-2xl p-4 flex items-center gap-4 hover:ring-2 hover:ring-orange-500/40 transition block group">
+            <img src="{{ $work->author?->profile_image ?? 'https://ui-avatars.com/api/?name='.urlencode($work->author?->name ?? 'U') }}"
+                 class="w-14 h-14 rounded-xl object-cover ring-2 ring-orange-500/30" alt="">
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                    <p class="font-bold text-white group-hover:text-orange-400 transition">{{ $work->author?->name }}</p>
+                    @if($providerStats && $providerStats['trust_level'])
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full
+                            {{ match($providerStats['trust_level']) {
+                                'diamond'  => 'bg-purple-500/20 text-purple-300',
+                                'platinum' => 'bg-blue-500/20 text-blue-300',
+                                'gold'     => 'bg-yellow-500/20 text-yellow-300',
+                                'silver'   => 'bg-gray-400/20 text-gray-300',
+                                'bronze'   => 'bg-orange-700/20 text-orange-400',
+                                default    => 'bg-gray-700/20 text-gray-400',
+                            } }}">
+                            {{ $providerStats['trust_label'] }}
+                        </span>
                     @endif
                 </div>
-                <h1 class="text-2xl font-bold text-white">{{ $work->title }}</h1>
-                <p class="text-3xl font-black text-orange-400 mt-1">฿{{ number_format($work->price) }}</p>
+                <div class="flex items-center gap-3 text-xs text-gray-400 mt-0.5">
+                    <span>📦 {{ $providerStats['total_works'] ?? 0 }} งาน</span>
+                    <span>✅ {{ $providerStats['completed_jobs'] ?? 0 }} สำเร็จ</span>
+                    @if(($providerStats['completion_rate'] ?? 0) > 0)
+                        <span class="{{ $providerStats['completion_rate'] >= 80 ? 'text-green-400' : 'text-yellow-400' }}">
+                            📊 {{ $providerStats['completion_rate'] }}%
+                        </span>
+                    @endif
+                    @if($providerStats['overall_score'])
+                        <span class="text-yellow-400">⭐ {{ $providerStats['overall_score'] }}</span>
+                    @endif
+                </div>
             </div>
-            <button wire:click="toggleLike"
-                    class="flex items-center gap-1.5 px-4 py-2 rounded-full border transition
-                           {{ $isLiked ? 'border-red-500 text-red-400 bg-red-500/10' : 'border-gray-700 text-gray-400 hover:border-red-500 hover:text-red-400' }}">
-                ❤️ {{ $work->like_count }}
-            </button>
-        </div>
-
-        {{-- Description --}}
-        <div class="bg-gray-900 rounded-xl p-4">
-            <h2 class="font-bold text-white mb-2">รายละเอียด</h2>
-            <p class="text-gray-300 leading-relaxed whitespace-pre-wrap">{{ $work->description }}</p>
-        </div>
-
-        {{-- Provider --}}
-        <a href="{{ route('frontend.reputation', $work->author_id) }}"
-           class="bg-gray-900 rounded-xl p-4 flex items-center gap-4 hover:ring-2 hover:ring-orange-500/40 transition block group">
-            <img src="{{ $work->author?->profile_image ?? 'https://ui-avatars.com/api/?name='.urlencode($work->author?->name ?? 'U') }}"
-                 class="w-12 h-12 rounded-full object-cover ring-2 ring-orange-500/30" alt="">
-            <div class="flex-1">
-                <p class="font-semibold text-white group-hover:text-orange-400 transition">{{ $work->author?->name }}</p>
-                <p class="text-gray-400 text-sm">ผู้ให้บริการ</p>
-            </div>
-            <span class="text-gray-500 text-sm group-hover:text-orange-400 transition">ดูโปรไฟล์ →</span>
+            <span class="text-gray-500 text-sm group-hover:text-orange-400 transition flex-shrink-0">ดูโปรไฟล์ →</span>
         </a>
 
-        {{-- ═══ Availability Calendar ═══ --}}
-        <div class="bg-gray-900 rounded-xl p-4"
+        {{-- ═══════════════════════════════════════════════════════════════════
+             5. DESCRIPTION + DETAILS
+        ═══════════════════════════════════════════════════════════════════ --}}
+        <div class="bg-gray-900 rounded-2xl p-5">
+            <h2 class="font-bold text-white mb-3 flex items-center gap-2">📝 รายละเอียด</h2>
+            <p class="text-gray-300 leading-relaxed whitespace-pre-wrap">{{ $work->description }}</p>
+
+            {{-- Details JSON table --}}
+            @if(is_array($work->details) && count($work->details) > 0)
+                <div class="mt-4 pt-4 border-t border-gray-800">
+                    <h3 class="text-sm font-semibold text-gray-400 mb-2">📋 ข้อมูลเพิ่มเติม</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        @foreach($work->details as $key => $value)
+                            <div class="bg-gray-800/50 rounded-lg px-3 py-2">
+                                <span class="text-gray-500 text-[11px]">{{ $key }}</span>
+                                <p class="text-white text-sm font-medium">{{ is_array($value) ? implode(', ', $value) : $value }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+        </div>
+
+        {{-- ═══════════════════════════════════════════════════════════════════
+             6. BOOKING CTA + CALENDAR (most actionable section)
+        ═══════════════════════════════════════════════════════════════════ --}}
+        <div class="bg-gray-900 rounded-2xl p-5"
              x-data="{
                  bookedDates: @js($bookedDates),
                  currentMonth: new Date().getMonth(),
@@ -63,27 +185,15 @@
                      const months = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
                      return months[this.currentMonth] + ' ' + (this.currentYear + 543);
                  },
-                 get daysInMonth() {
-                     return new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
-                 },
-                 get firstDayOfWeek() {
-                     return new Date(this.currentYear, this.currentMonth, 1).getDay();
-                 },
+                 get daysInMonth() { return new Date(this.currentYear, this.currentMonth + 1, 0).getDate(); },
+                 get firstDayOfWeek() { return new Date(this.currentYear, this.currentMonth, 1).getDay(); },
                  dateStr(day) {
                      return this.currentYear + '-' + String(this.currentMonth + 1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
                  },
-                 isBooked(day) {
-                     return this.bookedDates.includes(this.dateStr(day));
-                 },
-                 isToday(day) {
-                     return this.dateStr(day) === this.today;
-                 },
-                 isPast(day) {
-                     return this.dateStr(day) < this.today;
-                 },
-                 isAvailable(day) {
-                     return !this.isBooked(day) && !this.isPast(day);
-                 },
+                 isBooked(day) { return this.bookedDates.includes(this.dateStr(day)); },
+                 isToday(day) { return this.dateStr(day) === this.today; },
+                 isPast(day) { return this.dateStr(day) < this.today; },
+                 isAvailable(day) { return !this.isBooked(day) && !this.isPast(day); },
                  selectDate(day) {
                      if (!this.isAvailable(day)) return;
                      const ds = this.dateStr(day);
@@ -91,20 +201,15 @@
                      $wire.set('bookingDate', ds);
                      $wire.set('showBookingForm', true);
                      setTimeout(() => {
-                         document.getElementById('booking-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                         document.getElementById('booking-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                      }, 150);
                  },
-                 prevMonth() {
-                     if (this.currentMonth === 0) { this.currentMonth = 11; this.currentYear--; }
-                     else { this.currentMonth--; }
-                 },
-                 nextMonth() {
-                     if (this.currentMonth === 11) { this.currentMonth = 0; this.currentYear++; }
-                     else { this.currentMonth++; }
-                 }
+                 prevMonth() { if (this.currentMonth === 0) { this.currentMonth = 11; this.currentYear--; } else { this.currentMonth--; } },
+                 nextMonth() { if (this.currentMonth === 11) { this.currentMonth = 0; this.currentYear++; } else { this.currentMonth++; } }
              }">
+
             <div class="flex items-center justify-between mb-4">
-                <h2 class="font-bold text-white">📅 ตารางว่าง / ไม่ว่าง</h2>
+                <h2 class="font-bold text-white">📅 เลือกวันจอง</h2>
                 <div class="flex items-center gap-2">
                     <button @click="prevMonth()" class="w-8 h-8 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm flex items-center justify-center transition">‹</button>
                     <span class="text-white font-semibold text-sm min-w-[140px] text-center" x-text="monthName"></span>
@@ -121,12 +226,9 @@
 
             {{-- Day cells --}}
             <div class="grid grid-cols-7 gap-1">
-                {{-- Empty cells for offset --}}
                 <template x-for="i in firstDayOfWeek" :key="'e'+i">
                     <div class="aspect-square"></div>
                 </template>
-
-                {{-- Actual days --}}
                 <template x-for="day in daysInMonth" :key="day">
                     <div @click="selectDate(day)"
                          class="aspect-square rounded-lg text-xs font-semibold flex items-center justify-center transition"
@@ -143,179 +245,90 @@
             </div>
 
             {{-- Legend --}}
-            <div class="flex items-center gap-3 mt-4 pt-3 border-t border-gray-800 flex-wrap">
-                <span class="flex items-center gap-1.5 text-[11px]">
-                    <span class="w-3 h-3 rounded bg-green-500/20 ring-1 ring-green-500/30 inline-block"></span>
-                    <span class="text-gray-400">ว่าง (กดจอง)</span>
-                </span>
-                <span class="flex items-center gap-1.5 text-[11px]">
-                    <span class="w-3 h-3 rounded bg-red-500/20 ring-1 ring-red-500/30 inline-block"></span>
-                    <span class="text-gray-400">ถูกจอง</span>
-                </span>
-                <span class="flex items-center gap-1.5 text-[11px]">
-                    <span class="w-3 h-3 rounded bg-blue-500 inline-block"></span>
-                    <span class="text-gray-400">วันที่เลือก</span>
-                </span>
-                <span class="flex items-center gap-1.5 text-[11px]">
-                    <span class="w-3 h-3 rounded bg-orange-500 inline-block"></span>
-                    <span class="text-gray-400">วันนี้</span>
-                </span>
-                <span class="text-gray-600 text-[11px]">
-                    📊 {{ count($bookedDates) }} วันถูกจอง
-                </span>
+            <div class="flex items-center gap-3 mt-3 pt-3 border-t border-gray-800 flex-wrap text-[11px]">
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-green-500/30 inline-block"></span> <span class="text-gray-500">ว่าง</span></span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-red-500/30 inline-block"></span> <span class="text-gray-500">ถูกจอง</span></span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-blue-500 inline-block"></span> <span class="text-gray-500">เลือกอยู่</span></span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-orange-500 inline-block"></span> <span class="text-gray-500">วันนี้</span></span>
             </div>
-        </div>
 
-        {{-- Map Location --}}
-        @if($work->latitude && $work->longitude)
-            <div class="bg-gray-900 rounded-xl p-4">
-                <h2 class="font-bold text-white mb-3">📍 ตำแหน่งงาน</h2>
-                <div id="work-map" class="w-full h-64 md:h-80 rounded-xl overflow-hidden"></div>
-            </div>
-        @endif
+            {{-- Inline Booking Form --}}
+            <div id="booking-form" class="mt-4 pt-4 border-t border-gray-800">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-bold text-white text-sm">📋 จองงานนี้</h3>
+                    @auth
+                        <button wire:click="$toggle('showBookingForm')"
+                                class="px-4 py-1.5 bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-lg text-xs transition">
+                            {{ $showBookingForm ? 'ยกเลิก' : 'จองเลย' }}
+                        </button>
+                    @else
+                        <a href="{{ route('login') }}" class="px-4 py-1.5 bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-lg text-xs transition">
+                            เข้าสู่ระบบเพื่อจอง
+                        </a>
+                    @endauth
+                </div>
 
-        {{-- ═══ Owner Actions ═══ --}}
-        @if($isOwner)
-        <div class="bg-gradient-to-r from-orange-500/10 to-orange-600/5 border border-orange-500/30 rounded-2xl p-4">
-            <div class="flex items-center gap-2 mb-3">
-                <span class="text-orange-400 text-sm font-bold">👑 คุณเป็นเจ้าของงานนี้</span>
-            </div>
-            <div class="flex flex-wrap gap-2">
-                <a href="{{ route('frontend.works.edit', $work->id) }}"
-                   class="px-4 py-2 bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-xl text-sm transition flex items-center gap-1.5">
-                    ✏️ แก้ไขงาน
-                </a>
-                <a href="{{ route('frontend.works.bookings', $work->id) }}"
-                   class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl text-sm transition flex items-center gap-1.5 ring-1 ring-gray-700">
-                    📋 รายการจอง ({{ count($bookings) }})
-                </a>
-            </div>
-        </div>
+                @if($bookingMessage2)
+                    <div class="bg-green-500/10 border border-green-500/30 text-green-400 rounded-lg px-4 py-3 text-sm">
+                        {{ $bookingMessage2 }}
+                    </div>
+                @endif
 
-        {{-- ═══ Bookings List (Owner Only) ═══ --}}
-        @if($showBookings)
-        <div class="bg-gray-900 rounded-2xl p-4">
-            <h2 class="font-bold text-white mb-4">📋 รายการคนจอง ({{ count($bookings) }})</h2>
-
-            @if(count($bookings) === 0)
-                <p class="text-gray-500 text-sm text-center py-6">ยังไม่มีการจอง</p>
-            @else
-                <div class="space-y-3">
-                    @foreach($bookings as $booking)
-                        <div class="bg-gray-800 rounded-xl p-4 {{ $booking['status'] === 'waiting-to-confirm' ? 'ring-1 ring-orange-500/30' : '' }}">
-                            <div class="flex items-start gap-3">
-                                <img src="{{ $booking['author_avatar'] }}" class="w-10 h-10 rounded-full object-cover flex-shrink-0" alt="">
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center justify-between mb-1">
-                                        <span class="text-white font-semibold text-sm">{{ $booking['author_name'] }}</span>
-                                        @php
-                                            $statusConfig = match($booking['status']) {
-                                                'waiting-to-confirm' => ['bg-yellow-500/15 text-yellow-400 ring-yellow-500/30', '⏳ รอยืนยัน'],
-                                                'confirm'            => ['bg-green-500/15 text-green-400 ring-green-500/30', '✅ ยืนยันแล้ว'],
-                                                'close'              => ['bg-blue-500/15 text-blue-400 ring-blue-500/30', '🔒 ปิดแล้ว'],
-                                                'cancel'             => ['bg-red-500/15 text-red-400 ring-red-500/30', '❌ ยกเลิก'],
-                                                default              => ['bg-gray-500/15 text-gray-400 ring-gray-500/30', $booking['status']],
-                                            };
-                                        @endphp
-                                        <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full ring-1 {{ $statusConfig[0] }}">
-                                            {{ $statusConfig[1] }}
-                                        </span>
-                                    </div>
-
-                                    <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-400 mt-1">
-                                        <span>📅 {{ $booking['date'] ?? '-' }}</span>
-                                        <span>📞 {{ $booking['phone'] ?? '-' }}</span>
-                                    </div>
-
-                                    @if($booking['message'])
-                                        <p class="text-gray-300 text-xs mt-2 bg-gray-900/60 rounded-lg px-3 py-2">
-                                            💬 {{ $booking['message'] }}
-                                        </p>
-                                    @endif
-
-                                    <p class="text-gray-600 text-[10px] mt-1">{{ $booking['created_at'] }}</p>
-
-                                    {{-- Actions for waiting bookings --}}
-                                    @if($booking['status'] === 'waiting-to-confirm')
-                                        <div class="flex gap-2 mt-3">
-                                            <button wire:click="confirmBooking({{ $booking['id'] }})"
-                                                    wire:confirm="ยืนยันการจองนี้?"
-                                                    class="px-4 py-1.5 bg-green-600 hover:bg-green-500 text-white text-xs font-bold rounded-lg transition">
-                                                ✅ ยืนยัน
-                                            </button>
-                                            <button wire:click="cancelBooking({{ $booking['id'] }})"
-                                                    wire:confirm="ต้องการยกเลิกการจองนี้?"
-                                                    class="px-4 py-1.5 bg-red-600/20 hover:bg-red-600/40 text-red-400 text-xs font-bold rounded-lg transition ring-1 ring-red-500/30">
-                                                ❌ ยกเลิก
-                                            </button>
-                                        </div>
-                                    @endif
-                                </div>
+                @if($showBookingForm)
+                    <form wire:submit="submitBooking" class="space-y-3">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-gray-400 text-xs mb-1">เบอร์โทร *</label>
+                                <input wire:model="bookingPhone" type="tel" placeholder="08x-xxx-xxxx"
+                                       class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
+                                @error('bookingPhone')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+                            </div>
+                            <div>
+                                <label class="block text-gray-400 text-xs mb-1">วันที่ *</label>
+                                <input wire:model="bookingDate" type="date"
+                                       class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
+                                @error('bookingDate')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
                         </div>
-                    @endforeach
-                </div>
-            @endif
-        </div>
-        @endif
-        @endif
-
-        {{-- Booking Form --}}
-        <div id="booking-section" class="bg-gray-900 rounded-xl p-4">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="font-bold text-white">📋 จองงานนี้</h2>
-                @auth
-                    <button wire:click="$toggle('showBookingForm')"
-                            class="px-4 py-2 bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-full text-sm transition">
-                        {{ $showBookingForm ? 'ยกเลิก' : 'จองเลย' }}
-                    </button>
-                @else
-                    <a href="{{ route('login') }}"
-                       class="px-4 py-2 bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-full text-sm transition">
-                        เข้าสู่ระบบเพื่อจอง
-                    </a>
-                @endauth
+                        <div>
+                            <label class="block text-gray-400 text-xs mb-1">ข้อความเพิ่มเติม</label>
+                            <textarea wire:model="bookingMessage" rows="2" placeholder="บอกรายละเอียดที่ต้องการ..."
+                                      class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500 resize-none"></textarea>
+                        </div>
+                        <button type="submit"
+                                class="w-full py-2.5 bg-orange-500 hover:bg-orange-400 text-white font-bold rounded-lg transition">
+                            ✅ ยืนยันการจอง
+                        </button>
+                    </form>
+                @endif
             </div>
-
-            @if($bookingMessage2)
-                <div class="bg-green-500/10 border border-green-500/30 text-green-400 rounded-lg px-4 py-3 text-sm">
-                    {{ $bookingMessage2 }}
-                </div>
-            @endif
-
-            @if($showBookingForm)
-                <form wire:submit="submitBooking" class="space-y-3">
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-gray-400 text-xs mb-1">เบอร์โทรติดต่อ *</label>
-                            <input wire:model="bookingPhone" type="tel" placeholder="08x-xxx-xxxx"
-                                   class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
-                            @error('bookingPhone')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label class="block text-gray-400 text-xs mb-1">วันที่ต้องการ *</label>
-                            <input wire:model="bookingDate" type="date"
-                                   class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
-                            @error('bookingDate')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-gray-400 text-xs mb-1">ข้อความ (ถ้ามี)</label>
-                        <textarea wire:model="bookingMessage" rows="3" placeholder="รายละเอียดเพิ่มเติม..."
-                                  class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500 resize-none"></textarea>
-                    </div>
-                    <button type="submit"
-                            class="w-full py-2.5 bg-orange-500 hover:bg-orange-400 text-white font-bold rounded-lg transition">
-                        ✅ ยืนยันการจอง
-                    </button>
-                </form>
-            @endif
         </div>
 
-        {{-- Reviews --}}
-        <div class="bg-gray-900 rounded-xl p-4">
+        {{-- ═══════════════════════════════════════════════════════════════════
+             7. MAP
+        ═══════════════════════════════════════════════════════════════════ --}}
+        @if($work->latitude && $work->longitude)
+        <div class="bg-gray-900 rounded-2xl p-5">
+            <h2 class="font-bold text-white mb-3">📍 ตำแหน่งงาน</h2>
+            <div id="work-map" class="w-full h-64 md:h-72 rounded-xl overflow-hidden"></div>
+            <p class="text-gray-600 text-[11px] mt-2">{{ $work->latitude }}, {{ $work->longitude }}</p>
+        </div>
+        @endif
+
+        {{-- ═══════════════════════════════════════════════════════════════════
+             8. REVIEWS
+        ═══════════════════════════════════════════════════════════════════ --}}
+        <div class="bg-gray-900 rounded-2xl p-5">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="font-bold text-white">⭐ รีวิว ({{ count($reviews ?? []) }})</h2>
+                <div class="flex items-center gap-3">
+                    <h2 class="font-bold text-white">⭐ รีวิว</h2>
+                    @if($work->avg_review_rating > 0)
+                        <span class="text-yellow-400 font-bold text-sm">{{ number_format($work->avg_review_rating, 1) }}</span>
+                        <span class="text-gray-500 text-sm">({{ count($reviews ?? []) }})</span>
+                    @else
+                        <span class="text-gray-500 text-sm">({{ count($reviews ?? []) }})</span>
+                    @endif
+                </div>
                 @auth
                     <button wire:click="$toggle('showReviewForm')"
                             class="px-3 py-1.5 border border-gray-700 rounded-full text-sm text-gray-400 hover:border-orange-500 hover:text-orange-400 transition">
@@ -361,7 +374,7 @@
                             <div class="flex items-center gap-2 mb-1">
                                 <span class="font-semibold text-sm text-white">{{ $review['author']['name'] ?? '-' }}</span>
                                 @if(($review['rating'] ?? 0) > 0)
-                                    <span class="text-yellow-400 text-xs">{{ str_repeat('★', $review['rating']) }}</span>
+                                    <span class="text-yellow-400 text-xs">{{ str_repeat('★', $review['rating']) }}{{ str_repeat('☆', 5 - $review['rating']) }}</span>
                                 @endif
                             </div>
                             @if($review['title'] ?? null)
@@ -373,7 +386,7 @@
                     </div>
                 </div>
             @empty
-                <p class="text-gray-500 text-sm text-center py-4">ยังไม่มีรีวิว</p>
+                <p class="text-gray-500 text-sm text-center py-4">ยังไม่มีรีวิว ให้คะแนนเป็นคนแรก!</p>
             @endforelse
         </div>
 
@@ -412,7 +425,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     map.addControl(new maplibregl.NavigationControl(), 'top-right');
 
-    // Custom orange marker
     const markerEl = document.createElement('div');
     markerEl.innerHTML = `
         <svg width="36" height="48" viewBox="0 0 36 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -439,4 +451,3 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 @endpush
 @endif
-

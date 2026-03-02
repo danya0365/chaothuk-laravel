@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\WorkBooking;
 use App\Models\WorkLike;
 use App\Models\WorkReview;
+use App\Models\UserReputation;
 use Livewire\Component;
 
 class WorkDetail extends Component
@@ -17,6 +18,9 @@ class WorkDetail extends Component
     public bool $showBookings = false;
     public array $bookings = [];
     public array $bookedDates = [];
+
+    // Provider reputation summary
+    public ?array $providerStats = null;
 
     // Reviews
     public ?array $reviews = null;
@@ -42,9 +46,35 @@ class WorkDetail extends Component
         $this->isOwner = auth()->check() && auth()->id() === $this->work->author_id;
         $this->loadReviews();
         $this->loadBookedDates();
+        $this->loadProviderStats();
         if ($this->isOwner) {
             $this->loadBookings();
         }
+    }
+
+    public function loadProviderStats(): void
+    {
+        $authorId = $this->work->author_id;
+
+        // Total works by this provider
+        $totalWorks = Work::where('author_id', $authorId)->count();
+        $workIds = Work::where('author_id', $authorId)->pluck('id');
+        $completedJobs = WorkBooking::whereIn('work_id', $workIds)
+            ->whereIn('booking_status', ['confirm', 'close'])->count();
+        $totalBookings = WorkBooking::whereIn('work_id', $workIds)->count();
+
+        // Reputation
+        $rep = UserReputation::where('user_id', $authorId)->first();
+
+        $this->providerStats = [
+            'total_works'     => $totalWorks,
+            'completed_jobs'  => $completedJobs,
+            'total_bookings'  => $totalBookings,
+            'completion_rate' => $totalBookings > 0 ? round(($completedJobs / $totalBookings) * 100) : 0,
+            'trust_level'     => $rep?->trust_level ?? null,
+            'trust_label'     => $rep?->trust_level_label ?? null,
+            'overall_score'   => $rep?->overall_score ? round($rep->overall_score, 1) : null,
+        ];
     }
 
     public function loadBookedDates(): void
@@ -177,6 +207,7 @@ class WorkDetail extends Component
         $this->bookingDate = '';
         $this->bookingMessage = '';
         $this->showBookingForm = false;
+        $this->loadBookedDates();
     }
 
     public function render()
