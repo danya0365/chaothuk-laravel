@@ -1,7 +1,7 @@
-<div class="max-w-6xl mx-auto px-4 py-6">
+<div class="max-w-6xl mx-auto px-4 py-6" x-data="{ viewMode: 'grid' }">
 
     {{-- Filters --}}
-    <div class="flex flex-col sm:flex-row gap-3 mb-6">
+    <div class="flex flex-col sm:flex-row gap-3 mb-4">
         <input wire:model.live.debounce.400ms="search" type="text"
                placeholder="🔍 ค้นหางาน..."
                class="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 transition">
@@ -30,11 +30,28 @@
         </select>
     </div>
 
+    {{-- View Toggle --}}
+    <div class="flex items-center justify-between mb-4">
+        <p class="text-gray-400 text-sm">{{ $works->total() }} งาน</p>
+        <div class="flex gap-1 bg-gray-800 rounded-lg p-1">
+            <button @click="viewMode = 'grid'"
+                    :class="viewMode === 'grid' ? 'bg-orange-500 text-white' : 'text-gray-400 hover:text-white'"
+                    class="px-3 py-1.5 rounded-md text-xs font-semibold transition">
+                ☷ รายการ
+            </button>
+            <button @click="viewMode = 'map'; $nextTick(() => window.dispatchEvent(new Event('init-browse-map')))"
+                    :class="viewMode === 'map' ? 'bg-orange-500 text-white' : 'text-gray-400 hover:text-white'"
+                    class="px-3 py-1.5 rounded-md text-xs font-semibold transition">
+                🗺️ แผนที่
+            </button>
+        </div>
+    </div>
+
     {{-- Loading --}}
     <div wire:loading class="text-center py-8 text-gray-400">กำลังโหลด...</div>
 
-    {{-- Grid --}}
-    <div wire:loading.remove>
+    {{-- Grid View --}}
+    <div wire:loading.remove x-show="viewMode === 'grid'">
         @if($works->isEmpty())
             <div class="text-center py-20">
                 <div class="text-6xl mb-4">📭</div>
@@ -76,4 +93,82 @@
         @endif
     </div>
 
+    {{-- Map View --}}
+    <div x-show="viewMode === 'map'" x-cloak>
+        <div id="browse-map" class="w-full rounded-2xl overflow-hidden" style="height: 65vh;"></div>
+    </div>
+
 </div>
+
+@push('scripts')
+<script>
+(function() {
+    let browseMapInitialized = false;
+
+    window.addEventListener('init-browse-map', function() {
+        if (browseMapInitialized) return;
+        browseMapInitialized = true;
+
+        const mapEl = document.getElementById('browse-map');
+        if (!mapEl) return;
+
+        const map = new maplibregl.Map({
+            container: 'browse-map',
+            style: {
+                version: 8,
+                sources: {
+                    'osm-tiles': {
+                        type: 'raster',
+                        tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+                        tileSize: 256,
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                    }
+                },
+                layers: [{
+                    id: 'osm-tiles-layer',
+                    type: 'raster',
+                    source: 'osm-tiles',
+                    minzoom: 0,
+                    maxzoom: 19
+                }]
+            },
+            center: [100.5018, 13.7563],
+            zoom: 6
+        });
+
+        map.addControl(new maplibregl.NavigationControl(), 'top-right');
+
+        const works = @json($works->items());
+        const bounds = new maplibregl.LngLatBounds();
+        let hasPoints = false;
+
+        works.forEach(function(work) {
+            if (!work.latitude || !work.longitude) return;
+            hasPoints = true;
+
+            const markerEl = document.createElement('div');
+            markerEl.innerHTML = '<svg width="28" height="38" viewBox="0 0 36 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 0C8.07 0 0 8.07 0 18c0 13.5 18 30 18 30s18-16.5 18-30C36 8.07 27.93 0 18 0z" fill="#F97316"/><circle cx="18" cy="18" r="8" fill="white"/><circle cx="18" cy="18" r="4" fill="#F97316"/></svg>';
+            markerEl.style.cursor = 'pointer';
+
+            const popup = new maplibregl.Popup({ offset: 25, closeButton: false })
+                .setHTML('<div style="padding:8px;font-family:sans-serif;max-width:200px;">' +
+                    '<a href="/frontend/works/' + work.id + '" style="font-weight:700;font-size:13px;color:#111;text-decoration:none;">' + work.title + '</a>' +
+                    '<p style="color:#666;font-size:11px;margin:4px 0 0;">\ud83d\udccd ' + (work.province ? work.province.name_th : '-') + '</p>' +
+                    '<p style="color:#F97316;font-weight:700;font-size:13px;margin:4px 0 0;">฿' + Number(work.price || 0).toLocaleString() + '</p>' +
+                '</div>');
+
+            new maplibregl.Marker({ element: markerEl })
+                .setLngLat([work.longitude, work.latitude])
+                .setPopup(popup)
+                .addTo(map);
+
+            bounds.extend([work.longitude, work.latitude]);
+        });
+
+        if (hasPoints) {
+            map.fitBounds(bounds, { padding: 50, maxZoom: 12 });
+        }
+    });
+})();
+</script>
+@endpush

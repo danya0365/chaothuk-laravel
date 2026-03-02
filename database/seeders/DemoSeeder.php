@@ -152,7 +152,7 @@ class DemoSeeder extends Seeder
         ];
 
         foreach ($recruitData as $data) {
-            Recruit::firstOrCreate(
+            $recruit = Recruit::firstOrCreate(
                 ['title' => $data['title'], 'author_id' => $data['author_id']],
                 [
                     'author_id'      => $data['author_id'],
@@ -165,6 +165,7 @@ class DemoSeeder extends Seeder
                     'recruit_status' => 'stand-by',
                 ]
             );
+            $recruit->categories()->sync(array_slice($categoryIds, 0, 2));
         }
 
         $this->command->info('✅ DemoSeeder complete: 4 demo users, 4 works, 2 recruits');

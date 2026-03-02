@@ -55,7 +55,7 @@ class Work extends Model
      *
      * @var array
      */
-    protected $fillable = ['code', 'title', 'description', 'details', 'primary_image', 'images', 'price', 'avg_review_rating', 'display_priority', 'work_status', 'province_id', 'work_type_id', 'author_id'];
+    protected $fillable = ['code', 'title', 'description', 'details', 'primary_image', 'images', 'price', 'avg_review_rating', 'display_priority', 'latitude', 'longitude', 'work_status', 'province_id', 'work_type_id', 'author_id'];
 
     public function author(): BelongsTo
     {

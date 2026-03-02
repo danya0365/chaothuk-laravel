@@ -4,16 +4,21 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\BarcodeController;
 use App\Http\Controllers\Api\BarcodePreviewController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ConfigurationController;
+use App\Http\Controllers\Api\DistrictController;
+use App\Http\Controllers\Api\GeographyController;
 use App\Http\Controllers\Api\UserLogController;
 use App\Http\Controllers\Api\IssuePointController;
 use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\MessengerController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\RecruitBookingController;
 use App\Http\Controllers\Api\RecruitController;
+use App\Http\Controllers\Api\SubDistrictController;
 use App\Http\Controllers\Api\UploadController;
 use App\Http\Controllers\Api\WorkBookingController;
 use App\Http\Controllers\Api\WorkController;
@@ -59,8 +64,24 @@ Route::group(['prefix' => 'configurations', 'as' => 'api.configurations.'], func
     Route::get('/', [ConfigurationController::class, 'all'])->name('all');
 });
 
+Route::group(['prefix' => 'geographies', 'as' => 'api.geographies.'], function () {
+    Route::get('/', [GeographyController::class, 'all'])->name('all');
+});
+
 Route::group(['prefix' => 'provinces', 'as' => 'api.provinces.'], function () {
     Route::get('/', [ProvinceController::class, 'all'])->name('all');
+});
+
+Route::group(['prefix' => 'districts', 'as' => 'api.districts.'], function () {
+    Route::get('/{provinceId}', [DistrictController::class, 'byProvince'])->name('by-province');
+});
+
+Route::group(['prefix' => 'sub-districts', 'as' => 'api.sub-districts.'], function () {
+    Route::get('/{districtId}', [SubDistrictController::class, 'byDistrict'])->name('by-district');
+});
+
+Route::group(['prefix' => 'categories', 'as' => 'api.categories.'], function () {
+    Route::get('/', [CategoryController::class, 'all'])->name('all');
 });
 
 Route::group(['prefix' => 'works', 'as' => 'api.works.'], function () {

@@ -2,13 +2,25 @@
 
 namespace Database\Seeders;
 
+use App\Enums\BannerType;
+use App\Enums\MessengerConversationType;
+use App\Enums\NotificationType;
+use App\Enums\UserActivityType;
+use App\Models\Banner;
 use App\Models\Category;
+use App\Models\IssuePoint;
+use App\Models\MessengerChannel;
+use App\Models\MessengerConversation;
+use App\Models\MessengerParticipant;
 use App\Models\Notification;
 use App\Models\Post;
 use App\Models\PostLike;
 use App\Models\Recruit;
 use App\Models\RecruitReview;
 use App\Models\User;
+use App\Models\UserActivityLog;
+use App\Models\UserNotification;
+use App\Models\UserPoint;
 use App\Models\Work;
 use App\Models\WorkBooking;
 use App\Models\WorkLike;
@@ -55,6 +67,15 @@ class MockSeeder extends Seeder
         DB::table('work_bookings')->truncate();
         DB::table('recruit_bookings')->truncate();
         DB::table('posts')->truncate();
+        DB::table('banners')->truncate();
+        DB::table('messenger_conversations')->truncate();
+        DB::table('messenger_participants')->truncate();
+        DB::table('messenger_channels')->truncate();
+        DB::table('user_point_logs')->truncate();
+        DB::table('user_points')->truncate();
+        DB::table('issue_point_status_logs')->truncate();
+        DB::table('issue_points')->truncate();
+        DB::table('user_activity_logs')->truncate();
         Notification::truncate();
 
         // Delete mock works/recruits and their mock authors
@@ -139,6 +160,13 @@ class MockSeeder extends Seeder
             ])
             ->create();
 
+        // Attach random categories to each recruit
+        $recruits->each(function (Recruit $recruit) use ($categoryIds) {
+            $recruit->categories()->sync(
+                array_slice($categoryIds, 0, rand(1, min(3, count($categoryIds))))
+            );
+        });
+
         $recruitIds = $recruits->pluck('id')->toArray();
 
         // ─── 5. Work Bookings (200) ────────────────────────────────────────────
@@ -222,19 +250,144 @@ class MockSeeder extends Seeder
             ])
             ->create();
 
+        // ─── 11. Banners (5) ──────────────────────────────────────────────────
+        $this->command->info('Creating 5 banners...');
+        $bannerNames = [
+            'โปรโมชั่นขนส่งราคาพิเศษ',
+            'สมัครสมาชิกวันนี้ รับส่วนลด',
+            'บริการขนส่งทั่วประเทศ',
+            'แนะนำเพื่อน รับเครดิตฟรี',
+            'อัปเดตแอปเวอร์ชั่นใหม่',
+        ];
+        foreach ($bannerNames as $i => $name) {
+            Banner::create([
+                'name'         => $name,
+                'type'         => BannerType::EXTERNAL_URL->value,
+                'image_url'    => 'https://picsum.photos/seed/banner' . ($i + 1) . '/1200/400',
+                'external_url' => 'https://chaothuk.com/promo/' . ($i + 1),
+                'is_public'    => true,
+                'is_pinned'    => $i < 2,
+                'expired_at'   => now()->addMonths(3),
+            ]);
+        }
+
+        // ─── 12. User Notifications (200) ─────────────────────────────────────
+        $this->command->info('Creating 200 user notifications...');
+        $notifTypes = NotificationType::values();
+        for ($i = 0; $i < 200; $i++) {
+            $targetUser = $userIds[array_rand($userIds)];
+            $notifType  = $notifTypes[array_rand($notifTypes)];
+            UserNotification::create([
+                'title'              => 'แจ้งเตือน #' . ($i + 1),
+                'details'            => ['message' => 'รายละเอียดการแจ้งเตือน ' . ($i + 1)],
+                'notification_type'  => $notifType,
+                'is_read'            => rand(0, 1),
+                'author_id'          => $targetUser,
+                'notificationable_type' => Work::class,
+                'notificationable_id'   => $workIds[array_rand($workIds)],
+            ]);
+        }
+
+        // ─── 13. Messenger (10 channels, conversations) ───────────────────────
+        $this->command->info('Creating 10 messenger channels with conversations...');
+        for ($i = 0; $i < 10; $i++) {
+            $user1 = $workerIds[array_rand($workerIds)];
+            $user2 = $employerIds[array_rand($employerIds)];
+
+            $channel = MessengerChannel::create([
+                'slug'               => 'channel-mock-' . ($i + 1),
+                'title'              => 'แชท #' . ($i + 1),
+                'is_direct'          => true,
+                'is_public'          => false,
+                'total_participants'  => 2,
+            ]);
+
+            MessengerParticipant::create([
+                'user_id'     => $user1,
+                'channel_id'  => $channel->id,
+                'is_customer' => false,
+            ]);
+            MessengerParticipant::create([
+                'user_id'     => $user2,
+                'channel_id'  => $channel->id,
+                'is_customer' => true,
+            ]);
+
+            // 5 messages per channel
+            for ($j = 0; $j < 5; $j++) {
+                MessengerConversation::create([
+                    'type'          => MessengerConversationType::TEXT->value,
+                    'content'       => 'ข้อความทดสอบ ' . ($j + 1) . ' ในแชท #' . ($i + 1),
+                    'local_code_id' => 'mock-' . $channel->id . '-' . ($j + 1),
+                    'user_id'       => ($j % 2 === 0) ? $user1 : $user2,
+                    'channel_id'    => $channel->id,
+                ]);
+            }
+        }
+
+        // ─── 14. Issue Points + User Points (5 issues, 50 user_points) ────────
+        $this->command->info('Creating issue points and user points...');
+        $issueSlugs = [
+            ['slug' => 'daily-login',       'name' => 'เข้าสู่ระบบรายวัน',    'points' => 10],
+            ['slug' => 'first-work-post',   'name' => 'โพสต์งานแรก',        'points' => 50],
+            ['slug' => 'first-review',      'name' => 'รีวิวแรก',            'points' => 20],
+            ['slug' => 'refer-friend',      'name' => 'แนะนำเพื่อน',        'points' => 100],
+            ['slug' => 'complete-profile',  'name' => 'กรอกโปรไฟล์ครบ',    'points' => 30],
+        ];
+        $supervisorId = User::first()->id;
+        foreach ($issueSlugs as $issueData) {
+            $issue = IssuePoint::create([
+                'slug'    => $issueData['slug'],
+                'name'    => $issueData['name'],
+                'desc'    => 'รายละเอียด: ' . $issueData['name'],
+                'points'  => $issueData['points'],
+                'type'    => 'one_time',
+                'status'  => 'approve',
+                'user_id' => $supervisorId,
+            ]);
+
+            // Give points to 10 random users per issue
+            $luckyUsers = array_rand(array_flip($userIds), min(10, count($userIds)));
+            foreach ((array) $luckyUsers as $luckyUserId) {
+                UserPoint::create([
+                    'point_received'  => $issueData['points'],
+                    'point_available' => $issueData['points'],
+                    'user_id'         => $luckyUserId,
+                    'issue_point_id'  => $issue->id,
+                ]);
+            }
+        }
+
+        // ─── 15. User Activity Logs (100) ─────────────────────────────────────
+        $this->command->info('Creating 100 user activity logs...');
+        $activityTypes = UserActivityType::values();
+        for ($i = 0; $i < 100; $i++) {
+            UserActivityLog::create([
+                'activity_type'  => $activityTypes[array_rand($activityTypes)],
+                'activity_value' => 'mock activity ' . ($i + 1),
+                'user_id'        => $userIds[array_rand($userIds)],
+            ]);
+        }
+
         Model::reguard();
 
         $this->command->info('✅ MockSeeder complete!');
         $this->command->table(
             ['Table', 'Count'],
             [
-                ['users (mock)',        50],
-                ['works',              100],
-                ['recruits',            50],
-                ['work_bookings',      200],
-                ['recruit_bookings',   100],
-                ['posts (reviews)',    450],
-                ['notifications',      500],
+                ['users (mock)',          50],
+                ['works',                100],
+                ['recruits',              50],
+                ['work_bookings',        200],
+                ['recruit_bookings',     100],
+                ['posts (reviews)',      450],
+                ['notifications',        500],
+                ['banners',                5],
+                ['user_notifications',   200],
+                ['messenger_channels',    10],
+                ['issue_points',           5],
+                ['user_points',           50],
+                ['user_activity_logs',   100],
             ]
         );
     }

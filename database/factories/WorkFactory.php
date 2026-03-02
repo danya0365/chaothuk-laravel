@@ -49,6 +49,8 @@ class WorkFactory extends Factory
             'like_count'       => $this->faker->numberBetween(0, 500),
             'reply_count'      => $this->faker->numberBetween(0, 50),
             'display_priority' => $this->faker->numberBetween(0, 100),
+            'latitude'         => $this->faker->latitude(13.0, 19.5),
+            'longitude'        => $this->faker->longitude(98.0, 104.5),
         ];
     }
 }

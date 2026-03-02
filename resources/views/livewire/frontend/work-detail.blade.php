@@ -49,6 +49,14 @@
             </div>
         </div>
 
+        {{-- Map Location --}}
+        @if($work->latitude && $work->longitude)
+            <div class="bg-gray-900 rounded-xl p-4">
+                <h2 class="font-bold text-white mb-3">📍 ตำแหน่งงาน</h2>
+                <div id="work-map" class="w-full h-64 md:h-80 rounded-xl overflow-hidden"></div>
+            </div>
+        @endif
+
         {{-- Booking Form --}}
         <div class="bg-gray-900 rounded-xl p-4">
             <div class="flex items-center justify-between mb-4">
@@ -170,3 +178,62 @@
     @endif
 
 </div>
+
+@if($work && $work->latitude && $work->longitude)
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const map = new maplibregl.Map({
+        container: 'work-map',
+        style: {
+            version: 8,
+            sources: {
+                'osm-tiles': {
+                    type: 'raster',
+                    tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+                    tileSize: 256,
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                }
+            },
+            layers: [{
+                id: 'osm-tiles-layer',
+                type: 'raster',
+                source: 'osm-tiles',
+                minzoom: 0,
+                maxzoom: 19
+            }]
+        },
+        center: [{{ $work->longitude }}, {{ $work->latitude }}],
+        zoom: 13
+    });
+
+    map.addControl(new maplibregl.NavigationControl(), 'top-right');
+
+    // Custom orange marker
+    const markerEl = document.createElement('div');
+    markerEl.innerHTML = `
+        <svg width="36" height="48" viewBox="0 0 36 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 0C8.07 0 0 8.07 0 18c0 13.5 18 30 18 30s18-16.5 18-30C36 8.07 27.93 0 18 0z" fill="#F97316"/>
+            <circle cx="18" cy="18" r="8" fill="white"/>
+            <circle cx="18" cy="18" r="4" fill="#F97316"/>
+        </svg>`;
+    markerEl.style.cursor = 'pointer';
+
+    const popup = new maplibregl.Popup({ offset: 25, closeButton: false })
+        .setHTML(`
+            <div style="padding:8px;font-family:sans-serif;">
+                <p style="font-weight:700;font-size:14px;margin:0;">{{ addslashes($work->title) }}</p>
+                <p style="color:#666;font-size:12px;margin:4px 0 0;">📍 {{ $work->province?->name_th ?? '-' }}</p>
+                <p style="color:#F97316;font-weight:700;font-size:14px;margin:4px 0 0;">฿{{ number_format($work->price) }}</p>
+            </div>
+        `);
+
+    new maplibregl.Marker({ element: markerEl })
+        .setLngLat([{{ $work->longitude }}, {{ $work->latitude }}])
+        .setPopup(popup)
+        .addTo(map);
+});
+</script>
+@endpush
+@endif
+

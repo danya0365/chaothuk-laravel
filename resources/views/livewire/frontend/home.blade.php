@@ -19,6 +19,29 @@
         <div class="absolute right-0 top-0 bottom-0 w-1/3 opacity-10 text-[120px] flex items-center justify-center">🚛</div>
     </section>
 
+    {{-- Banners --}}
+    @if(count($banners) > 0)
+        <section>
+            <div class="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
+                @foreach($banners as $banner)
+                    <a href="{{ $banner['external_url'] ?? '#' }}"
+                       target="{{ $banner['external_url'] ? '_blank' : '_self' }}"
+                       class="snap-start flex-shrink-0 w-full md:w-[calc(50%-6px)] rounded-2xl overflow-hidden relative group">
+                        <img src="{{ $banner['image_url'] ?? 'https://picsum.photos/seed/b'.$banner['id'].'/1200/400' }}"
+                             class="w-full h-40 md:h-48 object-cover group-hover:scale-105 transition duration-500" alt="{{ $banner['name'] }}">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-4">
+                            <p class="text-white font-bold text-sm drop-shadow">{{ $banner['name'] }}</p>
+                            @if($banner['is_pinned'] ?? false)
+                                <span class="text-[10px] bg-orange-500/80 text-white px-2 py-0.5 rounded-full">📌 แนะนำ</span>
+                            @endif
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        </section>
+    @endif
+
     {{-- Latest Works --}}
     <section>
         <div class="flex items-center justify-between mb-4">

@@ -44,6 +44,8 @@ class RecruitFactory extends Factory
                 'https://picsum.photos/seed/' . $this->faker->numberBetween(201, 400) . '/800/600',
             ]),
             'recruit_status' => $this->faker->randomElement(['stand-by', 'busy', 'close']),
+            'latitude'       => $this->faker->latitude(13.0, 19.5),
+            'longitude'      => $this->faker->longitude(98.0, 104.5),
         ];
     }
 }

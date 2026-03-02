@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('configurations', function (Blueprint $table) {
             $table->id();
-            $table->string('slug')->uniqid();
+            $table->string('slug')->unique();
             $table->string('name');
             $table->enum('value_type', ConfigurationValueType::values());
             $table->longText('value');

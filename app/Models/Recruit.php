@@ -62,7 +62,7 @@ class Recruit extends Model
      *
      * @var array
      */
-    protected $fillable = ['title', 'description', 'details', 'primary_image', 'images', 'budget', 'display_priority', 'recruit_status', 'province_id', 'work_type_id', 'author_id'];
+    protected $fillable = ['title', 'description', 'details', 'primary_image', 'images', 'budget', 'display_priority', 'latitude', 'longitude', 'recruit_status', 'province_id', 'work_type_id', 'author_id'];
 
     public function author(): BelongsTo
     {

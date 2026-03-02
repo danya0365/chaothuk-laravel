@@ -1,6 +1,10 @@
 <?php
 
+use App\Livewire\Frontend\Calendar;
+use App\Livewire\Frontend\CategoryBrowse;
 use App\Livewire\Frontend\Home;
+use App\Livewire\Frontend\Messenger;
+use App\Livewire\Frontend\MyBookings;
 use App\Livewire\Frontend\WorkBrowse;
 use App\Livewire\Frontend\WorkDetail;
 use App\Livewire\Frontend\RecruitBrowse;
@@ -29,10 +33,15 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
     Route::get('/recruits',      RecruitBrowse::class)->name('recruits');
     Route::get('/recruits/{id}', RecruitDetail::class)->name('recruits.show');
     Route::get('/search',        Search::class)->name('search');
+    Route::get('/categories',    CategoryBrowse::class)->name('categories');
 
     // ─── Auth Required ─────────────────────────────────────────────────
     Route::middleware('auth')->group(function () {
         Route::get('/profile',       Profile::class)->name('profile');
         Route::get('/notifications', Notifications::class)->name('notifications');
+        Route::get('/calendar',      Calendar::class)->name('calendar');
+        Route::get('/bookings',      MyBookings::class)->name('bookings');
+        Route::get('/messenger',     Messenger::class)->name('messenger');
     });
 });
+
