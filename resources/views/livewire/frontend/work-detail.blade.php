@@ -51,6 +51,121 @@
             <span class="text-gray-500 text-sm group-hover:text-orange-400 transition">ดูโปรไฟล์ →</span>
         </a>
 
+        {{-- ═══ Availability Calendar ═══ --}}
+        <div class="bg-gray-900 rounded-xl p-4"
+             x-data="{
+                 bookedDates: @js($bookedDates),
+                 currentMonth: new Date().getMonth(),
+                 currentYear: new Date().getFullYear(),
+                 today: new Date().toISOString().slice(0,10),
+                 selectedDate: null,
+                 get monthName() {
+                     const months = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+                     return months[this.currentMonth] + ' ' + (this.currentYear + 543);
+                 },
+                 get daysInMonth() {
+                     return new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
+                 },
+                 get firstDayOfWeek() {
+                     return new Date(this.currentYear, this.currentMonth, 1).getDay();
+                 },
+                 dateStr(day) {
+                     return this.currentYear + '-' + String(this.currentMonth + 1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+                 },
+                 isBooked(day) {
+                     return this.bookedDates.includes(this.dateStr(day));
+                 },
+                 isToday(day) {
+                     return this.dateStr(day) === this.today;
+                 },
+                 isPast(day) {
+                     return this.dateStr(day) < this.today;
+                 },
+                 isAvailable(day) {
+                     return !this.isBooked(day) && !this.isPast(day);
+                 },
+                 selectDate(day) {
+                     if (!this.isAvailable(day)) return;
+                     const ds = this.dateStr(day);
+                     this.selectedDate = ds;
+                     $wire.set('bookingDate', ds);
+                     $wire.set('showBookingForm', true);
+                     setTimeout(() => {
+                         document.getElementById('booking-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                     }, 150);
+                 },
+                 prevMonth() {
+                     if (this.currentMonth === 0) { this.currentMonth = 11; this.currentYear--; }
+                     else { this.currentMonth--; }
+                 },
+                 nextMonth() {
+                     if (this.currentMonth === 11) { this.currentMonth = 0; this.currentYear++; }
+                     else { this.currentMonth++; }
+                 }
+             }">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-bold text-white">📅 ตารางว่าง / ไม่ว่าง</h2>
+                <div class="flex items-center gap-2">
+                    <button @click="prevMonth()" class="w-8 h-8 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm flex items-center justify-center transition">‹</button>
+                    <span class="text-white font-semibold text-sm min-w-[140px] text-center" x-text="monthName"></span>
+                    <button @click="nextMonth()" class="w-8 h-8 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm flex items-center justify-center transition">›</button>
+                </div>
+            </div>
+
+            {{-- Day headers --}}
+            <div class="grid grid-cols-7 gap-1 mb-1">
+                <template x-for="d in ['อา','จ','อ','พ','พฤ','ศ','ส']" :key="d">
+                    <div class="text-center text-gray-500 text-xs font-semibold py-1" x-text="d"></div>
+                </template>
+            </div>
+
+            {{-- Day cells --}}
+            <div class="grid grid-cols-7 gap-1">
+                {{-- Empty cells for offset --}}
+                <template x-for="i in firstDayOfWeek" :key="'e'+i">
+                    <div class="aspect-square"></div>
+                </template>
+
+                {{-- Actual days --}}
+                <template x-for="day in daysInMonth" :key="day">
+                    <div @click="selectDate(day)"
+                         class="aspect-square rounded-lg text-xs font-semibold flex items-center justify-center transition"
+                         :class="{
+                             'bg-red-500/20 text-red-400 ring-1 ring-red-500/30 cursor-not-allowed': isBooked(day),
+                             'bg-green-500/10 text-green-400 hover:bg-green-500/30 hover:ring-2 hover:ring-green-400 cursor-pointer': isAvailable(day) && !isToday(day) && selectedDate !== dateStr(day),
+                             'bg-orange-500 text-white ring-2 ring-orange-400 font-black hover:bg-orange-400 cursor-pointer': isToday(day) && !isBooked(day),
+                             'bg-gray-800/50 text-gray-600 cursor-not-allowed': isPast(day) && !isBooked(day) && !isToday(day),
+                             'bg-blue-500 text-white ring-2 ring-blue-400 font-black': selectedDate === dateStr(day),
+                         }"
+                         x-text="day">
+                    </div>
+                </template>
+            </div>
+
+            {{-- Legend --}}
+            <div class="flex items-center gap-3 mt-4 pt-3 border-t border-gray-800 flex-wrap">
+                <span class="flex items-center gap-1.5 text-[11px]">
+                    <span class="w-3 h-3 rounded bg-green-500/20 ring-1 ring-green-500/30 inline-block"></span>
+                    <span class="text-gray-400">ว่าง (กดจอง)</span>
+                </span>
+                <span class="flex items-center gap-1.5 text-[11px]">
+                    <span class="w-3 h-3 rounded bg-red-500/20 ring-1 ring-red-500/30 inline-block"></span>
+                    <span class="text-gray-400">ถูกจอง</span>
+                </span>
+                <span class="flex items-center gap-1.5 text-[11px]">
+                    <span class="w-3 h-3 rounded bg-blue-500 inline-block"></span>
+                    <span class="text-gray-400">วันที่เลือก</span>
+                </span>
+                <span class="flex items-center gap-1.5 text-[11px]">
+                    <span class="w-3 h-3 rounded bg-orange-500 inline-block"></span>
+                    <span class="text-gray-400">วันนี้</span>
+                </span>
+                <span class="text-gray-600 text-[11px]">
+                    📊 {{ count($bookedDates) }} วันถูกจอง
+                </span>
+            </div>
+        </div>
+
         {{-- Map Location --}}
         @if($work->latitude && $work->longitude)
             <div class="bg-gray-900 rounded-xl p-4">
@@ -146,7 +261,7 @@
         @endif
 
         {{-- Booking Form --}}
-        <div class="bg-gray-900 rounded-xl p-4">
+        <div id="booking-section" class="bg-gray-900 rounded-xl p-4">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="font-bold text-white">📋 จองงานนี้</h2>
                 @auth

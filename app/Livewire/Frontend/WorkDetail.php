@@ -16,6 +16,7 @@ class WorkDetail extends Component
     public bool $isOwner = false;
     public bool $showBookings = false;
     public array $bookings = [];
+    public array $bookedDates = [];
 
     // Reviews
     public ?array $reviews = null;
@@ -40,9 +41,22 @@ class WorkDetail extends Component
         $this->work = Work::with(['author', 'province', 'workType', 'categories'])->findOrFail($id);
         $this->isOwner = auth()->check() && auth()->id() === $this->work->author_id;
         $this->loadReviews();
+        $this->loadBookedDates();
         if ($this->isOwner) {
             $this->loadBookings();
         }
+    }
+
+    public function loadBookedDates(): void
+    {
+        $this->bookedDates = WorkBooking::where('work_id', $this->id)
+            ->whereIn('booking_status', ['waiting-to-confirm', 'confirm'])
+            ->whereNotNull('booking_date')
+            ->pluck('booking_date')
+            ->map(fn($d) => \Carbon\Carbon::parse($d)->format('Y-m-d'))
+            ->unique()
+            ->values()
+            ->toArray();
     }
 
     public function loadBookings(): void
