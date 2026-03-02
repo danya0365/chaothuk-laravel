@@ -369,6 +369,23 @@ class MockSeeder extends Seeder
             ]);
         }
 
+        // ─── 16. Backfill lat/lng for works/recruits missing coordinates ──────
+        $this->command->info('Backfilling lat/lng for works and recruits...');
+        $missingWorks = Work::whereNull('latitude')->orWhereNull('longitude')->get();
+        foreach ($missingWorks as $w) {
+            $w->update([
+                'latitude'  => fake()->latitude(13.0, 19.5),
+                'longitude' => fake()->longitude(98.0, 104.5),
+            ]);
+        }
+        $missingRecruits = Recruit::whereNull('latitude')->orWhereNull('longitude')->get();
+        foreach ($missingRecruits as $r) {
+            $r->update([
+                'latitude'  => fake()->latitude(13.0, 19.5),
+                'longitude' => fake()->longitude(98.0, 104.5),
+            ]);
+        }
+
         Model::reguard();
 
         $this->command->info('✅ MockSeeder complete!');

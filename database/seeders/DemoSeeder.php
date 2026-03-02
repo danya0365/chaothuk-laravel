@@ -91,6 +91,8 @@ class DemoSeeder extends Seeder
                 'description' => 'ให้บริการขนส่งสินค้าทุกประเภท รวดเร็ว ตรงเวลา ราคาสมเหตุสมผล',
                 'price'       => 1500,
                 'img_seed'    => 10,
+                'latitude'    => 13.7563,  // กรุงเทพ
+                'longitude'   => 100.5018,
             ],
             [
                 'author_id'   => $worker1->id,
@@ -98,6 +100,8 @@ class DemoSeeder extends Seeder
                 'description' => 'ย้ายบ้านครบชุด มีทีมงาน 3 คน รถกะบะ 1 คัน บริการครบ',
                 'price'       => 3500,
                 'img_seed'    => 20,
+                'latitude'    => 13.8451,  // ดอนเมือง
+                'longitude'   => 100.5681,
             ],
             [
                 'author_id'   => $worker2->id,
@@ -105,6 +109,8 @@ class DemoSeeder extends Seeder
                 'description' => 'รับงานขนส่งสินค้าต่างจังหวัด สินค้าปลอดภัย จัดส่งรวดเร็ว',
                 'price'       => 5000,
                 'img_seed'    => 30,
+                'latitude'    => 18.7883,  // เชียงใหม่
+                'longitude'   => 98.9853,
             ],
             [
                 'author_id'   => $worker2->id,
@@ -112,6 +118,8 @@ class DemoSeeder extends Seeder
                 'description' => 'ส่งของด่วนในกรุงเทพ ระยะเวลา 1 ชั่วโมงถึงปลายทาง',
                 'price'       => 200,
                 'img_seed'    => 40,
+                'latitude'    => 13.7248,  // สีลม
+                'longitude'   => 100.5230,
             ],
         ];
 
@@ -128,6 +136,8 @@ class DemoSeeder extends Seeder
                     'work_type_id'     => 1,
                     'primary_image'    => 'https://picsum.photos/seed/' . $data['img_seed'] . '/800/600',
                     'avg_review_rating' => 0,
+                    'latitude'         => $data['latitude'],
+                    'longitude'        => $data['longitude'],
                 ]
             );
             $work->categories()->sync(array_slice($categoryIds, 0, 2));
@@ -141,6 +151,8 @@ class DemoSeeder extends Seeder
                 'description' => 'รับสมัครคนขับรถบรรทุก 10 ล้อ มีใบขับขี่ประเภท 2 สวัสดิการดี',
                 'budget'      => 25000,
                 'img_seed'    => 50,
+                'latitude'    => 13.6900,  // สมุทรปราการ
+                'longitude'   => 100.7501,
             ],
             [
                 'author_id'   => $employer2->id,
@@ -148,6 +160,8 @@ class DemoSeeder extends Seeder
                 'description' => 'ต้องการพนักงานขับรถตู้ มีอาหาร สวัสดิการครบ',
                 'budget'      => 18000,
                 'img_seed'    => 60,
+                'latitude'    => 13.8621,  // นนทบุรี
+                'longitude'   => 100.5144,
             ],
         ];
 
@@ -163,6 +177,8 @@ class DemoSeeder extends Seeder
                     'work_type_id'   => 1,
                     'primary_image'  => 'https://picsum.photos/seed/' . $data['img_seed'] . '/800/600',
                     'recruit_status' => 'stand-by',
+                    'latitude'       => $data['latitude'],
+                    'longitude'      => $data['longitude'],
                 ]
             );
             $recruit->categories()->sync(array_slice($categoryIds, 0, 2));

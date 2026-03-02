@@ -309,4 +309,36 @@ class User extends Authenticatable
         return $this->belongsToMany(Post::class, 'post_likes', 'author_id', 'post_id')->withTimestamps();
     }
 
+    // ─── Reputation ─────────────────────────────────────────────────────
+
+    public function reputation(): HasOne
+    {
+        return $this->hasOne(UserReputation::class);
+    }
+
+    public function badges(): HasMany
+    {
+        return $this->hasMany(UserBadge::class);
+    }
+
+    public function verifications(): HasMany
+    {
+        return $this->hasMany(UserVerification::class);
+    }
+
+    public function reputationReviews(): HasMany
+    {
+        return $this->hasMany(UserReputationReview::class, 'reviewee_id');
+    }
+
+    public function givenReviews(): HasMany
+    {
+        return $this->hasMany(UserReputationReview::class, 'reviewer_id');
+    }
+
+    public function reports(): HasMany
+    {
+        return $this->hasMany(UserReport::class, 'reported_user_id');
+    }
+
 }

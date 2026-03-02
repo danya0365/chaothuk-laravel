@@ -3,8 +3,10 @@
 use App\Livewire\Frontend\Calendar;
 use App\Livewire\Frontend\CategoryBrowse;
 use App\Livewire\Frontend\Home;
+use App\Livewire\Frontend\MapExplore;
 use App\Livewire\Frontend\Messenger;
 use App\Livewire\Frontend\MyBookings;
+use App\Livewire\Frontend\ReputationProfile;
 use App\Livewire\Frontend\WorkBrowse;
 use App\Livewire\Frontend\WorkDetail;
 use App\Livewire\Frontend\RecruitBrowse;
@@ -34,6 +36,8 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
     Route::get('/recruits/{id}', RecruitDetail::class)->name('recruits.show');
     Route::get('/search',        Search::class)->name('search');
     Route::get('/categories',    CategoryBrowse::class)->name('categories');
+    Route::get('/reputation/{id?}', ReputationProfile::class)->name('reputation');
+    Route::get('/map',           MapExplore::class)->name('map');
 
     // ─── Auth Required ─────────────────────────────────────────────────
     Route::middleware('auth')->group(function () {

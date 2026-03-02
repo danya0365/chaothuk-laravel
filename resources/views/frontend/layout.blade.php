@@ -58,6 +58,7 @@
             ['icon'=>'📦','label'=>'งาน','route'=>'frontend.works'],
             ['icon'=>'👷','label'=>'หา คน','route'=>'frontend.recruits'],
             ['icon'=>'🏷️','label'=>'หมวดหมู่','route'=>'frontend.categories'],
+            ['icon'=>'🗺️','label'=>'แผนที่','route'=>'frontend.map'],
             ['icon'=>'🔍','label'=>'ค้นหา','route'=>'frontend.search'],
         ];
         $authNavItems = [
