@@ -1,0 +1,86 @@
+<?php
+
+namespace App\Livewire\Frontend;
+
+use App\Models\Work;
+use App\Models\Province;
+use App\Models\WorkType;
+use App\Models\Category;
+use Livewire\Component;
+
+class WorkEdit extends Component
+{
+    public int $id;
+    public ?Work $work = null;
+
+    // Form fields
+    public string $title = '';
+    public string $description = '';
+    public float $price = 0;
+    public ?int $provinceId = null;
+    public ?int $workTypeId = null;
+    public ?string $primaryImage = null;
+    public ?float $latitude = null;
+    public ?float $longitude = null;
+    public string $workStatus = '';
+    public array $selectedCategories = [];
+
+    public ?string $successMessage = null;
+
+    public function mount(int $id): void
+    {
+        $this->id = $id;
+        $this->work = Work::with('categories')->findOrFail($id);
+
+        // Only owner can edit
+        if (!auth()->check() || auth()->id() !== $this->work->author_id) {
+            abort(403);
+        }
+
+        $this->title = $this->work->title ?? '';
+        $this->description = $this->work->description ?? '';
+        $this->price = $this->work->price ?? 0;
+        $this->provinceId = $this->work->province_id;
+        $this->workTypeId = $this->work->work_type_id;
+        $this->primaryImage = $this->work->primary_image;
+        $this->latitude = $this->work->latitude;
+        $this->longitude = $this->work->longitude;
+        $this->workStatus = $this->work->work_status ?? '';
+        $this->selectedCategories = $this->work->categories->pluck('id')->toArray();
+    }
+
+    public function save(): void
+    {
+        $this->validate([
+            'title'       => 'required|min:5|max:255',
+            'description' => 'required|min:10',
+            'price'       => 'required|numeric|min:0',
+            'provinceId'  => 'required',
+            'workTypeId'  => 'required',
+        ]);
+
+        $this->work->update([
+            'title'        => $this->title,
+            'description'  => $this->description,
+            'price'        => $this->price,
+            'province_id'  => $this->provinceId,
+            'work_type_id' => $this->workTypeId,
+            'primary_image'=> $this->primaryImage,
+            'latitude'     => $this->latitude,
+            'longitude'    => $this->longitude,
+            'work_status'  => $this->workStatus,
+        ]);
+
+        $this->work->categories()->sync($this->selectedCategories);
+        $this->successMessage = '✅ บันทึกเรียบร้อยแล้ว';
+    }
+
+    public function render()
+    {
+        return view('livewire.frontend.work-edit', [
+            'provinces'  => Province::orderBy('name_th')->get(),
+            'workTypes'  => WorkType::all(),
+            'categories' => Category::all(),
+        ])->layout('frontend.layout', ['title' => 'แก้ไขงาน — Chaothuk']);
+    }
+}

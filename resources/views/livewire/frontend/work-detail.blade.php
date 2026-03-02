@@ -57,6 +57,92 @@
             </div>
         @endif
 
+        {{-- ═══ Owner Actions ═══ --}}
+        @if($isOwner)
+        <div class="bg-gradient-to-r from-orange-500/10 to-orange-600/5 border border-orange-500/30 rounded-2xl p-4">
+            <div class="flex items-center gap-2 mb-3">
+                <span class="text-orange-400 text-sm font-bold">👑 คุณเป็นเจ้าของงานนี้</span>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ route('frontend.works.edit', $work->id) }}"
+                   class="px-4 py-2 bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-xl text-sm transition flex items-center gap-1.5">
+                    ✏️ แก้ไขงาน
+                </a>
+                <a href="{{ route('frontend.works.bookings', $work->id) }}"
+                   class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl text-sm transition flex items-center gap-1.5 ring-1 ring-gray-700">
+                    📋 รายการจอง ({{ count($bookings) }})
+                </a>
+            </div>
+        </div>
+
+        {{-- ═══ Bookings List (Owner Only) ═══ --}}
+        @if($showBookings)
+        <div class="bg-gray-900 rounded-2xl p-4">
+            <h2 class="font-bold text-white mb-4">📋 รายการคนจอง ({{ count($bookings) }})</h2>
+
+            @if(count($bookings) === 0)
+                <p class="text-gray-500 text-sm text-center py-6">ยังไม่มีการจอง</p>
+            @else
+                <div class="space-y-3">
+                    @foreach($bookings as $booking)
+                        <div class="bg-gray-800 rounded-xl p-4 {{ $booking['status'] === 'waiting-to-confirm' ? 'ring-1 ring-orange-500/30' : '' }}">
+                            <div class="flex items-start gap-3">
+                                <img src="{{ $booking['author_avatar'] }}" class="w-10 h-10 rounded-full object-cover flex-shrink-0" alt="">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <span class="text-white font-semibold text-sm">{{ $booking['author_name'] }}</span>
+                                        @php
+                                            $statusConfig = match($booking['status']) {
+                                                'waiting-to-confirm' => ['bg-yellow-500/15 text-yellow-400 ring-yellow-500/30', '⏳ รอยืนยัน'],
+                                                'confirm'            => ['bg-green-500/15 text-green-400 ring-green-500/30', '✅ ยืนยันแล้ว'],
+                                                'close'              => ['bg-blue-500/15 text-blue-400 ring-blue-500/30', '🔒 ปิดแล้ว'],
+                                                'cancel'             => ['bg-red-500/15 text-red-400 ring-red-500/30', '❌ ยกเลิก'],
+                                                default              => ['bg-gray-500/15 text-gray-400 ring-gray-500/30', $booking['status']],
+                                            };
+                                        @endphp
+                                        <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full ring-1 {{ $statusConfig[0] }}">
+                                            {{ $statusConfig[1] }}
+                                        </span>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-400 mt-1">
+                                        <span>📅 {{ $booking['date'] ?? '-' }}</span>
+                                        <span>📞 {{ $booking['phone'] ?? '-' }}</span>
+                                    </div>
+
+                                    @if($booking['message'])
+                                        <p class="text-gray-300 text-xs mt-2 bg-gray-900/60 rounded-lg px-3 py-2">
+                                            💬 {{ $booking['message'] }}
+                                        </p>
+                                    @endif
+
+                                    <p class="text-gray-600 text-[10px] mt-1">{{ $booking['created_at'] }}</p>
+
+                                    {{-- Actions for waiting bookings --}}
+                                    @if($booking['status'] === 'waiting-to-confirm')
+                                        <div class="flex gap-2 mt-3">
+                                            <button wire:click="confirmBooking({{ $booking['id'] }})"
+                                                    wire:confirm="ยืนยันการจองนี้?"
+                                                    class="px-4 py-1.5 bg-green-600 hover:bg-green-500 text-white text-xs font-bold rounded-lg transition">
+                                                ✅ ยืนยัน
+                                            </button>
+                                            <button wire:click="cancelBooking({{ $booking['id'] }})"
+                                                    wire:confirm="ต้องการยกเลิกการจองนี้?"
+                                                    class="px-4 py-1.5 bg-red-600/20 hover:bg-red-600/40 text-red-400 text-xs font-bold rounded-lg transition ring-1 ring-red-500/30">
+                                                ❌ ยกเลิก
+                                            </button>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+        @endif
+        @endif
+
         {{-- Booking Form --}}
         <div class="bg-gray-900 rounded-xl p-4">
             <div class="flex items-center justify-between mb-4">

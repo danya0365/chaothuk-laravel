@@ -13,6 +13,9 @@ class WorkDetail extends Component
 {
     public int $id;
     public ?Work $work = null;
+    public bool $isOwner = false;
+    public bool $showBookings = false;
+    public array $bookings = [];
 
     // Reviews
     public ?array $reviews = null;
@@ -35,7 +38,46 @@ class WorkDetail extends Component
     {
         $this->id = $id;
         $this->work = Work::with(['author', 'province', 'workType', 'categories'])->findOrFail($id);
+        $this->isOwner = auth()->check() && auth()->id() === $this->work->author_id;
         $this->loadReviews();
+        if ($this->isOwner) {
+            $this->loadBookings();
+        }
+    }
+
+    public function loadBookings(): void
+    {
+        $this->bookings = WorkBooking::with('author')
+            ->where('work_id', $this->id)
+            ->latest()
+            ->get()
+            ->map(fn($b) => [
+                'id'              => $b->id,
+                'author_name'     => $b->author?->name ?? 'ผู้ใช้',
+                'author_avatar'   => $b->author?->getAvatar(48) ?? '',
+                'phone'           => $b->mobile_phone,
+                'message'         => $b->customer_message,
+                'date'            => $b->booking_date ? \Carbon\Carbon::parse($b->booking_date)->format('d/m/Y') : '-',
+                'status'          => $b->booking_status,
+                'created_at'      => $b->created_at?->diffForHumans(),
+            ])
+            ->toArray();
+    }
+
+    public function confirmBooking(int $bookingId): void
+    {
+        if (!$this->isOwner) return;
+        $booking = WorkBooking::where('work_id', $this->id)->findOrFail($bookingId);
+        $booking->update(['booking_status' => 'confirm', 'worker_confirm_status' => 'confirm']);
+        $this->loadBookings();
+    }
+
+    public function cancelBooking(int $bookingId): void
+    {
+        if (!$this->isOwner) return;
+        $booking = WorkBooking::where('work_id', $this->id)->findOrFail($bookingId);
+        $booking->update(['booking_status' => 'cancel']);
+        $this->loadBookings();
     }
 
     public function loadReviews(): void

@@ -9,6 +9,8 @@ use App\Livewire\Frontend\MyBookings;
 use App\Livewire\Frontend\ReputationProfile;
 use App\Livewire\Frontend\WorkBrowse;
 use App\Livewire\Frontend\WorkDetail;
+use App\Livewire\Frontend\WorkEdit;
+use App\Livewire\Frontend\WorkBookings;
 use App\Livewire\Frontend\RecruitBrowse;
 use App\Livewire\Frontend\RecruitDetail;
 use App\Livewire\Frontend\Search;
@@ -46,6 +48,8 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
         Route::get('/calendar',      Calendar::class)->name('calendar');
         Route::get('/bookings',      MyBookings::class)->name('bookings');
         Route::get('/messenger',     Messenger::class)->name('messenger');
+        Route::get('/works/{id}/edit',     WorkEdit::class)->name('works.edit');
+        Route::get('/works/{id}/bookings', WorkBookings::class)->name('works.bookings');
     });
 });
 
