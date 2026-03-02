@@ -40,14 +40,16 @@
         </div>
 
         {{-- Provider --}}
-        <div class="bg-gray-900 rounded-xl p-4 flex items-center gap-4">
+        <a href="{{ route('frontend.reputation', $work->author_id) }}"
+           class="bg-gray-900 rounded-xl p-4 flex items-center gap-4 hover:ring-2 hover:ring-orange-500/40 transition block group">
             <img src="{{ $work->author?->profile_image ?? 'https://ui-avatars.com/api/?name='.urlencode($work->author?->name ?? 'U') }}"
                  class="w-12 h-12 rounded-full object-cover ring-2 ring-orange-500/30" alt="">
-            <div>
-                <p class="font-semibold text-white">{{ $work->author?->name }}</p>
+            <div class="flex-1">
+                <p class="font-semibold text-white group-hover:text-orange-400 transition">{{ $work->author?->name }}</p>
                 <p class="text-gray-400 text-sm">ผู้ให้บริการ</p>
             </div>
-        </div>
+            <span class="text-gray-500 text-sm group-hover:text-orange-400 transition">ดูโปรไฟล์ →</span>
+        </a>
 
         {{-- Map Location --}}
         @if($work->latitude && $work->longitude)
