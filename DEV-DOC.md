@@ -60,14 +60,67 @@ exceute following cmd when create public folder on first deployment on local or 
 Run db migration
 `sail php artisan migrate`
 
-Seed data
-`sail php artisan db:seed`
-
-Specific Seeder class
-`sail php artisan db:seed --class=MockSeeder`
-
-Refresh Database (Delete all data) and seed new data
+Refresh Database (delete all data) and seed reference data
 `sail php artisan migrate:fresh --seed`
+
+---
+
+#### 🌱 Seeder Overview
+
+| Seeder | ประเภท | รันเมื่อไหร่ |
+|---|---|---|
+| `DatabaseSeeder` | Reference data เท่านั้น | `migrate:fresh --seed` |
+| `StarterSeeder` | WorkType + Category | เรียกผ่าน DatabaseSeeder |
+| `DemoSeeder` | Demo users + works + recruits | dev / staging |
+| `MockSeeder` | Large volume test data | local testing |
+
+#### 📋 ข้อมูลที่ seed แต่ละ class
+
+**`DatabaseSeeder`** (production-safe)
+- Geography, Province, District, SubDistrict
+- Permission, Role
+- Admin/Supervisor user (จาก `config/auth.php`)
+- Configuration
+- WorkType (รถกะบะ, รถบรรทุก, ฯลฯ)
+- Category (15 หมวดหมู่)
+
+**`DemoSeeder`** (dev/staging only)
+- 4 demo accounts — password ทั้งหมดคือ `password`
+
+| Email | บทบาท |
+|---|---|
+| `worker1@chaothuk.test` | สมชาย ขับรถดี (ผู้รับงาน) |
+| `worker2@chaothuk.test` | มานะ ทำงานดี (ผู้รับงาน) |
+| `employer1@chaothuk.test` | บริษัท ขนส่งไทย (ผู้จ้าง) |
+| `employer2@chaothuk.test` | ห้างหุ้นส่วน โลจิสติกส์ดี (ผู้จ้าง) |
+
+- 4 demo works + 2 demo recruits
+
+**`MockSeeder`** (large volume)
+- 50 users, 100 works, 50 recruits
+- 200 work bookings, 100 recruit bookings
+- ~450 reviews/posts (with 30% reply rate on work reviews)
+- 500 notifications
+
+#### ⚙️ Factories (ใช้กับ MockSeeder / Testing)
+
+`WorkFactory`, `RecruitFactory`, `PostFactory`, `WorkBookingFactory`, `RecruitBookingFactory`, `UserFactory`, `NotificationFactory`
+
+#### 🚀 คำสั่งที่ใช้บ่อย
+
+```bash
+# Fresh start พร้อม reference data
+sail php artisan migrate:fresh --seed
+
+# เพิ่ม demo accounts สำหรับ dev
+sail php artisan db:seed --class=DemoSeeder
+
+# โหลด test data จำนวนมาก
+sail php artisan db:seed --class=MockSeeder
+
+# Specific seeder อื่นๆ
+sail php artisan db:seed --class=CategorySeeder
+```
 
 ### Database Management
 
