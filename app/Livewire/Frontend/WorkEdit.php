@@ -21,6 +21,7 @@ class WorkEdit extends Component
     public ?int $provinceId = null;
     public ?int $workTypeId = null;
     public ?string $primaryImage = null;
+    public array $galleryImages = [];
     public ?float $latitude = null;
     public ?float $longitude = null;
     public string $workStatus = '';
@@ -49,6 +50,26 @@ class WorkEdit extends Component
         $this->longitude = $this->work->longitude;
         $this->workStatus = $this->work->work_status ?? '';
         $this->selectedCategories = $this->work->categories->pluck('id')->toArray();
+
+        // Load gallery images
+        $raw = $this->work->images;
+        if (is_array($raw)) {
+            $this->galleryImages = $raw;
+        } elseif (is_string($raw)) {
+            $this->galleryImages = json_decode($raw, true) ?? [];
+        }
+    }
+
+    public function removePrimaryImage(): void
+    {
+        $this->primaryImage = null;
+    }
+
+    public function removeGalleryImage(int $index): void
+    {
+        $images = $this->galleryImages;
+        array_splice($images, $index, 1);
+        $this->galleryImages = $images;
     }
 
     public function save(): void
@@ -70,6 +91,7 @@ class WorkEdit extends Component
             'province_id'  => $this->provinceId,
             'work_type_id' => $this->workTypeId,
             'primary_image'=> $this->primaryImage,
+            'images'       => !empty($this->galleryImages) ? $this->galleryImages : null,
             'latitude'     => $this->latitude,
             'longitude'    => $this->longitude,
             'work_status'  => $this->workStatus,
