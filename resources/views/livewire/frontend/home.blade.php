@@ -257,7 +257,7 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="font-semibold text-white line-clamp-1 group-hover:text-orange-400 transition">{{ $recruit['title'] }}</p>
-                        <p class="text-green-400 font-bold text-sm">฿{{ number_format($recruit['budget'] ?? 0) }}/เดือน</p>
+                        <p class="text-green-400 font-bold text-sm">฿{{ number_format($recruit['budget'] ?? 0) }}/ครั้ง</p>
                         <p class="text-gray-500 text-xs">📍 {{ $recruit['province']['name_th'] ?? '-' }}</p>
                     </div>
                 </a>

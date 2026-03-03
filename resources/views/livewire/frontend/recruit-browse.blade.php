@@ -127,7 +127,7 @@
                                 <p class="font-semibold text-white line-clamp-1 group-hover:text-green-400 transition">
                                     {{ $recruit->title }}
                                 </p>
-                                <p class="text-green-400 font-bold text-sm">฿{{ number_format($recruit->budget) }}/เดือน</p>
+                                <p class="text-green-400 font-bold text-sm">฿{{ number_format($recruit->budget) }}/ครั้ง</p>
                                 <div class="flex items-center gap-2 mt-1 flex-wrap">
                                     <p class="text-gray-500 text-xs">📍 {{ $recruit->province?->name_th ?? '-' }}</p>
                                     @if(isset($recruit->distance))

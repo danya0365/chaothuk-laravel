@@ -21,7 +21,7 @@
                 <span class="text-gray-400">🚛 {{ $recruit->workType?->title ?? '-' }}</span>
             </div>
             <h1 class="text-2xl font-bold text-white">{{ $recruit->title }}</h1>
-            <p class="text-3xl font-black text-green-400 mt-1">฿{{ number_format($recruit->budget) }}<span class="text-sm font-normal text-gray-400">/เดือน</span></p>
+            <p class="text-3xl font-black text-green-400 mt-1">฿{{ number_format($recruit->budget) }}<span class="text-sm font-normal text-gray-400">/ครั้ง</span></p>
         </div>
 
         {{-- Owner Bar --}}

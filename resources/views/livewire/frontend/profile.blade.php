@@ -120,7 +120,7 @@
                     </div>
                     <div class="min-w-0">
                         <p class="font-semibold text-white group-hover:text-orange-400 transition truncate text-sm">{{ $recruit['title'] }}</p>
-                        <p class="text-green-400 font-bold text-sm">฿{{ number_format($recruit['budget'] ?? 0) }}/เดือน</p>
+                        <p class="text-green-400 font-bold text-sm">฿{{ number_format($recruit['budget'] ?? 0) }}/ครั้ง</p>
                     </div>
                 </a>
             @empty
