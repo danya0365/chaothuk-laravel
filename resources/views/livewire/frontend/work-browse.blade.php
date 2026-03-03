@@ -211,7 +211,7 @@
 
     {{-- Map View --}}
     <div x-show="viewMode === 'map'" x-cloak>
-        <div id="browse-map" class="w-full rounded-2xl overflow-hidden" style="height: 65vh;"></div>
+        <div wire:ignore id="browse-map" class="w-full rounded-2xl overflow-hidden" style="height: 65vh;"></div>
     </div>
 
 </div>

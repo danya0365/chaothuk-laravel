@@ -420,7 +420,7 @@
              7. MAP
         ═══════════════════════════════════════════════════════════════════ --}}
         @if($work->latitude && $work->longitude)
-        <div class="bg-gray-900 rounded-2xl p-5">
+        <div wire:ignore class="bg-gray-900 rounded-2xl p-5">
             <h2 class="font-bold text-white mb-3">📍 ตำแหน่งงาน</h2>
             <div id="work-map" class="w-full h-64 md:h-72 rounded-xl overflow-hidden"></div>
             <p class="text-gray-600 text-[11px] mt-2">{{ $work->latitude }}, {{ $work->longitude }}</p>

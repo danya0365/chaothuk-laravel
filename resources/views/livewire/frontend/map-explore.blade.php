@@ -33,7 +33,7 @@
     </div>
 
     {{-- Map --}}
-    <div id="explore-map" class="w-full" style="height: calc(100vh - 72px);"></div>
+    <div wire:ignore id="explore-map" class="w-full" style="height: calc(100vh - 72px);"></div>
 
     {{-- Side List Panel --}}
     <div x-show="showList" x-transition:enter="transition ease-out duration-200"
