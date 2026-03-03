@@ -16,11 +16,25 @@ class WorkCreate extends Component
     public ?float $price = null;
     public string $provinceId = '';
     public string $workTypeId = '';
-    public string $primaryImage = '';
     public ?float $latitude = null;
     public ?float $longitude = null;
     public array $selectedCategories = [];
-    public ?string $successMessage = null;
+
+    // Image URLs (set via JS after upload to /api/upload/image)
+    public ?string $primaryImage = null;
+    public array $galleryImages = [];
+
+    public function removePrimaryImage(): void
+    {
+        $this->primaryImage = null;
+    }
+
+    public function removeGalleryImage(int $index): void
+    {
+        $images = $this->galleryImages;
+        array_splice($images, $index, 1);
+        $this->galleryImages = $images;
+    }
 
     public function submit(): void
     {
@@ -41,7 +55,8 @@ class WorkCreate extends Component
             'province_id'     => $this->provinceId,
             'work_type_id'    => $this->workTypeId,
             'author_id'       => auth()->id(),
-            'primary_image'   => $this->primaryImage ?: null,
+            'primary_image'   => $this->primaryImage,
+            'images'          => !empty($this->galleryImages) ? $this->galleryImages : null,
             'latitude'        => $this->latitude,
             'longitude'       => $this->longitude,
             'work_status'     => 'stand-by',
@@ -51,7 +66,6 @@ class WorkCreate extends Component
             $work->categories()->sync($this->selectedCategories);
         }
 
-        $this->successMessage = '✅ สร้างงานสำเร็จ!';
         $this->redirect(route('frontend.works.show', $work->id));
     }
 
