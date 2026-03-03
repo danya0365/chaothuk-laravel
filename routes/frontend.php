@@ -30,6 +30,7 @@ use App\Livewire\Frontend\RecruitEdit;
 use App\Livewire\Frontend\RecruitBookings;
 use App\Livewire\Frontend\Search;
 use App\Livewire\Frontend\Profile;
+use App\Livewire\Frontend\ProfileEdit;
 use App\Livewire\Frontend\Notifications;
 use Illuminate\Support\Facades\Route;
 
@@ -77,6 +78,7 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
     // ─── Auth Required ─────────────────────────────────────────────────
     Route::middleware('auth')->group(function () {
         Route::get('/profile',       Profile::class)->name('profile');
+        Route::get('/profile/edit',  ProfileEdit::class)->name('profile.edit');
         Route::get('/notifications', Notifications::class)->name('notifications');
         Route::get('/calendar',      Calendar::class)->name('calendar');
         Route::get('/bookings',      MyBookings::class)->name('bookings');

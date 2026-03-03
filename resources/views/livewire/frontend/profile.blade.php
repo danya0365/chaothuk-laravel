@@ -1,31 +1,4 @@
-<div class="max-w-4xl mx-auto px-4 py-6"
-     x-data="{
-         uploading: false,
-         uploadError: '',
-         async uploadAvatar(file) {
-             this.uploading = true;
-             this.uploadError = '';
-             const formData = new FormData();
-             formData.append('image', file);
-             try {
-                 const res = await fetch('/api/upload/avatar', {
-                     method: 'POST',
-                     headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '' },
-                     body: formData,
-                 });
-                 const json = await res.json();
-                 if (json.status && json.data) {
-                     const url = json.data.resize || json.data.original;
-                     @this.set('profileImage', url);
-                 } else {
-                     this.uploadError = json.message || 'อัพโหลดไม่สำเร็จ';
-                 }
-             } catch (e) {
-                 this.uploadError = 'เกิดข้อผิดพลาดในการอัพโหลด';
-             }
-             this.uploading = false;
-         }
-     }">
+<div class="max-w-4xl mx-auto px-4 py-6">
 
     {{-- ═══════════════════════════════════════════════════════════════════
          HERO PROFILE CARD
@@ -33,18 +6,9 @@
     <div class="bg-gradient-to-br from-gray-900 via-gray-900 to-orange-500/5 rounded-2xl p-6 mb-6 border border-gray-800/50">
         <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5">
             {{-- Avatar --}}
-            <div class="relative group flex-shrink-0">
-                <img src="{{ $profileImage ?: 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()->name ?? 'U').'&background=f97316&color=fff&size=200' }}"
+            <div class="relative flex-shrink-0">
+                <img src="{{ auth()->user()->profile_image ?: 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()->name ?? 'U').'&background=f97316&color=fff&size=200' }}"
                      class="w-24 h-24 rounded-2xl object-cover ring-4 ring-orange-500/30 shadow-lg shadow-orange-500/10" alt="Avatar">
-                @if($editing)
-                <label class="absolute inset-0 flex items-center justify-center bg-black/60 rounded-2xl cursor-pointer opacity-0 group-hover:opacity-100 transition"
-                       :class="uploading ? 'opacity-100' : ''">
-                    <template x-if="!uploading"><span class="text-white text-xs font-semibold">📷 เปลี่ยน</span></template>
-                    <template x-if="uploading"><span class="text-orange-400 text-xs">⏳</span></template>
-                    <input type="file" accept="image/*" class="hidden"
-                           @change="if ($event.target.files[0]) { uploadAvatar($event.target.files[0]); $event.target.value = '' }">
-                </label>
-                @endif
             </div>
 
             {{-- Name & Info --}}
@@ -67,104 +31,17 @@
 
             {{-- Actions --}}
             <div class="flex items-center gap-2 flex-shrink-0">
-                @if(!$editing)
-                <button wire:click="toggleEdit"
-                        class="px-4 py-2 text-sm font-semibold text-orange-400 bg-orange-500/10 border border-orange-500/30 rounded-xl hover:bg-orange-500/20 transition">
+                <a href="{{ route('frontend.profile.edit') }}"
+                   class="px-4 py-2 text-sm font-semibold text-orange-400 bg-orange-500/10 border border-orange-500/30 rounded-xl hover:bg-orange-500/20 transition">
                     ✏️ แก้ไขโปรไฟล์
-                </button>
-                @endif
+                </a>
                 <a href="{{ route('frontend.reputation', auth()->id()) }}"
                    class="px-4 py-2 text-sm text-gray-400 border border-gray-700 rounded-xl hover:border-orange-500/50 hover:text-white transition">
                     📊 ชื่อเสียง
                 </a>
             </div>
         </div>
-
-        {{-- Upload error --}}
-        <template x-if="uploadError"><p class="text-red-400 text-xs mt-2" x-text="uploadError"></p></template>
-
-        {{-- Save message --}}
-        @if($saveMessage)
-            <div class="mt-4 bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-lg px-4 py-2">{{ $saveMessage }}</div>
-        @endif
     </div>
-
-    {{-- ═══════════════════════════════════════════════════════════════════
-         EDIT PROFILE FORM
-    ═══════════════════════════════════════════════════════════════════ --}}
-    @if($editing)
-    <div class="bg-gray-900 rounded-2xl p-5 mb-6 border border-orange-500/20">
-        <h2 class="font-bold text-white mb-4 flex items-center gap-2">✏️ แก้ไขข้อมูลส่วนตัว</h2>
-
-        <form wire:submit="saveProfile" class="space-y-4">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-gray-400 text-xs mb-1">ชื่อจริง <span class="text-red-400">*</span></label>
-                    <input wire:model="firstName" type="text" placeholder="ชื่อ"
-                           class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-orange-500 transition">
-                    @error('firstName')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
-                </div>
-                <div>
-                    <label class="block text-gray-400 text-xs mb-1">นามสกุล <span class="text-red-400">*</span></label>
-                    <input wire:model="lastName" type="text" placeholder="นามสกุล"
-                           class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-orange-500 transition">
-                    @error('lastName')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-gray-400 text-xs mb-1">ชื่อที่แสดง <span class="text-red-400">*</span></label>
-                <input wire:model="name" type="text" placeholder="ชื่อที่จะแสดงในระบบ"
-                       class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-orange-500 transition">
-                @error('name')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-gray-400 text-xs mb-1">📱 เบอร์โทรศัพท์</label>
-                    <input wire:model="mobilePhone" type="tel" placeholder="0xx-xxx-xxxx"
-                           class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-orange-500 transition">
-                    @error('mobilePhone')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
-                </div>
-                <div>
-                    <label class="block text-gray-400 text-xs mb-1">📍 ที่อยู่ / จังหวัด</label>
-                    <input wire:model="location" type="text" placeholder="เช่น กรุงเทพฯ"
-                           class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-orange-500 transition">
-                    @error('location')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-gray-400 text-xs mb-1">📝 แนะนำตัว</label>
-                <textarea wire:model="biography" rows="3" placeholder="เล่าเกี่ยวกับตัวคุณ ทักษะ ประสบการณ์..."
-                          class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-orange-500 resize-none transition"></textarea>
-                @error('biography')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
-            </div>
-
-            {{-- Preview uploaded avatar --}}
-            @if($profileImage)
-            <div class="flex items-center gap-3">
-                <img src="{{ $profileImage }}" class="w-12 h-12 rounded-xl object-cover ring-2 ring-orange-500/30" alt="preview">
-                <span class="text-gray-500 text-xs">รูปโปรไฟล์ปัจจุบัน</span>
-            </div>
-            @endif
-
-            <div class="flex items-center gap-3 pt-2">
-                <button type="submit"
-                        wire:loading.attr="disabled"
-                        wire:loading.class="opacity-50"
-                        class="px-6 py-2.5 bg-orange-500 hover:bg-orange-400 text-white font-bold rounded-xl transition text-sm">
-                    <span wire:loading.remove wire:target="saveProfile">💾 บันทึก</span>
-                    <span wire:loading wire:target="saveProfile">⏳ กำลังบันทึก...</span>
-                </button>
-                <button type="button" wire:click="toggleEdit"
-                        class="px-6 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl transition text-sm ring-1 ring-gray-700">
-                    ยกเลิก
-                </button>
-            </div>
-        </form>
-    </div>
-    @endif
 
     {{-- ═══════════════════════════════════════════════════════════════════
          TABS
