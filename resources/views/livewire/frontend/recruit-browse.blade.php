@@ -134,6 +134,10 @@
                                class="flex-1 text-center text-xs py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition">
                                 👁 ดู
                             </a>
+                            <a href="{{ route('frontend.recruits.edit', $recruit->id) }}"
+                               class="flex-1 text-center text-xs py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition">
+                                ✏️ แก้ไข
+                            </a>
                             <button wire:click="deleteRecruit({{ $recruit->id }})"
                                     wire:confirm="ลบประกาศนี้?"
                                     class="text-xs py-1.5 px-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg transition">
