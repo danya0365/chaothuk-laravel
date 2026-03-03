@@ -7,11 +7,14 @@ use App\Enums\NotificationType;
 use App\Enums\Permission;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\WorkRequest;
+use App\Http\Resources\PostCollection;
+use App\Http\Resources\PostResource;
 use App\Http\Resources\TopHitWorkCollection;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\WorkBookingCollection;
 use App\Http\Resources\WorkCollection;
 use App\Http\Resources\WorkResource;
+use App\Models\Post;
 use App\Models\UserNotification;
 use App\Models\Work;
 use App\Models\WorkBooking;
@@ -442,5 +445,123 @@ class WorkController extends Controller
             'status' => true,
             'data' => new WorkBookingCollection($data),
         ], 200);
+    }
+
+    /**
+     * Get Work Reviews
+     */
+    public function getWorkReviews(Request $request, $workId)
+    {
+        $work = Work::find($workId);
+        if (!$work) {
+            return response()->json(['status' => false, 'data' => null], 200);
+        }
+
+        $data = $work->reviews()
+            ->with(['author', 'replies.author'])
+            ->orderBy('works_reviews.created_at', 'desc')
+            ->limitOffset(request()->all())->get();
+
+        return response()->json([
+            'status' => true,
+            'data'   => new PostCollection($data),
+        ], 200);
+    }
+
+    /**
+     * Get Work Review Count
+     */
+    public function getWorkReviewCount(Request $request, $workId)
+    {
+        $work = Work::find($workId);
+        if (!$work) {
+            return response()->json(['status' => false, 'data' => 0], 200);
+        }
+
+        return response()->json([
+            'status' => true,
+            'data'   => $work->reviews()->count(),
+        ], 200);
+    }
+
+    /**
+     * Create Work Review
+     */
+    public function createWorkReview(Request $request, int $workId)
+    {
+        /** @var \App\Models\User $user */
+        $user = auth('sanctum')->user();
+
+        $post = $request->only(['title', 'content', 'images', 'rating']);
+        $post['author_id'] = $user->id;
+
+        $validatedRequest = Validator::make(array_merge($post, ['work_id' => $workId]), [
+            'work_id' => 'required|exists:works,id',
+            'content' => 'required',
+            'rating'  => 'required|integer|min:1|max:5',
+        ]);
+
+        if ($validatedRequest->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => implode(',', $validatedRequest->messages()->all()),
+                'errors'  => $validatedRequest->errors(),
+            ], 401);
+        }
+
+        if (isset($post['images']) && is_array($post['images'])) {
+            $post['images'] = array_filter(array_map('trim', $post['images']));
+        } else {
+            $post['images'] = [];
+        }
+
+        try {
+            $work = Work::with('author')->find($workId);
+
+            $review = Post::create($post);
+            $work->reviews()->attach($review->id);
+
+            // Update avg_review_rating
+            $avgRating = $work->reviews()->avg('rating');
+            $work->avg_review_rating = round($avgRating, 2);
+            $work->save();
+
+            // Notify work owner
+            $userNotification = UserNotification::whereHasMorph(
+                'notificationable',
+                [Work::class],
+                function (Builder $query) use ($work) {
+                    $query->where('id', $work->id);
+                }
+            )
+                ->where('notification_type', NotificationType::WORK_REVIEW->value)
+                ->whereBelongsTo($work->author, 'author')
+                ->first();
+
+            if ($userNotification) {
+                $details = $userNotification->details;
+                $details['count'] = $details['count'] + 1;
+                $userNotification->details = $details;
+                $userNotification->is_read = false;
+                $userNotification->save();
+            } else {
+                $userNotification = new UserNotification();
+                $userNotification->title = "มีคนรีวิวงานของคุณ";
+                $userNotification->details = ['count' => 1];
+                $userNotification->notification_type = NotificationType::WORK_REVIEW->value;
+                $userNotification->notificationable()->associate($work);
+                $work->author->notifications()->save($userNotification);
+            }
+
+            return response()->json([
+                'status' => true,
+                'data'   => new PostResource($review->load('author')),
+            ], 201);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status'  => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
     }
 }

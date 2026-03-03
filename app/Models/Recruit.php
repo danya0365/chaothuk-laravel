@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Scopes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,8 +33,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Recruit extends Model
 {
-    use SoftDeletes;
-    use Scopes;
+    use HasFactory, SoftDeletes, Scopes;
 
     public static $rules = [
       'title' => 'required',
@@ -62,7 +62,7 @@ class Recruit extends Model
      *
      * @var array
      */
-    protected $fillable = ['title', 'description', 'details', 'primary_image', 'images', 'budget', 'display_priority', 'recruit_status', 'province_id', 'work_type_id', 'author_id'];
+    protected $fillable = ['title', 'description', 'details', 'primary_image', 'images', 'budget', 'display_priority', 'latitude', 'longitude', 'recruit_status', 'province_id', 'work_type_id', 'author_id'];
 
     public function author(): BelongsTo
     {
@@ -92,5 +92,10 @@ class Recruit extends Model
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class, 'recruits_categories');
+    }
+
+    public function reviews(): BelongsToMany
+    {
+        return $this->belongsToMany(Post::class, 'recruits_reviews', 'recruit_id', 'post_id')->withTimestamps();
     }
 }

@@ -19,7 +19,7 @@ class MessengerParticipant extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['channel_id', 'user_id', 'last_seen_at'];
+    protected $fillable = ['channel_id', 'user_id', 'last_seen_at', 'is_customer'];
 
     static $rules = [
         'channel_id' => 'required',

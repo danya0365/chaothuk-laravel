@@ -4,19 +4,26 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\BarcodeController;
 use App\Http\Controllers\Api\BarcodePreviewController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ConfigurationController;
+use App\Http\Controllers\Api\DistrictController;
+use App\Http\Controllers\Api\GeographyController;
 use App\Http\Controllers\Api\UserLogController;
 use App\Http\Controllers\Api\IssuePointController;
 use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\MessengerController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\RecruitBookingController;
 use App\Http\Controllers\Api\RecruitController;
+use App\Http\Controllers\Api\SubDistrictController;
 use App\Http\Controllers\Api\UploadController;
 use App\Http\Controllers\Api\WorkBookingController;
 use App\Http\Controllers\Api\WorkController;
 use App\Http\Controllers\Api\WorkTypeController;
+use App\Http\Controllers\Api\SessionController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +49,9 @@ Route::group(['prefix' => 'me', 'as' => 'api.me.', 'middleware' => ['auth:sanctu
     Route::get('/work-bookings', [MeController::class, 'getWorkBookings']);
     Route::get('/recruits', [MeController::class, 'getRecruits']);
     Route::get('/recruit-bookings', [MeController::class, 'getRecruitBookings']);
+    Route::get('/posts', [MeController::class, 'getPosts']);
+    Route::get('/post-likes', [MeController::class, 'getLikedPosts']);
+    Route::get('/post-likes/post/{postId}', [MeController::class, 'getIsLikePost']);
 });
 
 Route::group(['prefix' => 'upload', 'as' => 'api.upload.'], function () {
@@ -55,8 +65,24 @@ Route::group(['prefix' => 'configurations', 'as' => 'api.configurations.'], func
     Route::get('/', [ConfigurationController::class, 'all'])->name('all');
 });
 
+Route::group(['prefix' => 'geographies', 'as' => 'api.geographies.'], function () {
+    Route::get('/', [GeographyController::class, 'all'])->name('all');
+});
+
 Route::group(['prefix' => 'provinces', 'as' => 'api.provinces.'], function () {
     Route::get('/', [ProvinceController::class, 'all'])->name('all');
+});
+
+Route::group(['prefix' => 'districts', 'as' => 'api.districts.'], function () {
+    Route::get('/{provinceId}', [DistrictController::class, 'byProvince'])->name('by-province');
+});
+
+Route::group(['prefix' => 'sub-districts', 'as' => 'api.sub-districts.'], function () {
+    Route::get('/{districtId}', [SubDistrictController::class, 'byDistrict'])->name('by-district');
+});
+
+Route::group(['prefix' => 'categories', 'as' => 'api.categories.'], function () {
+    Route::get('/', [CategoryController::class, 'all'])->name('all');
 });
 
 Route::group(['prefix' => 'works', 'as' => 'api.works.'], function () {
@@ -67,11 +93,14 @@ Route::group(['prefix' => 'works', 'as' => 'api.works.'], function () {
     Route::get('/{workId}/likes/count', [WorkController::class, 'getWorkLikeCount']);
     Route::get('/{workId}/bookings', [WorkController::class, 'getWorkBookings']);
     Route::get('/{workId}/confirm-bookings', [WorkController::class, 'getConfirmWorkBookings']);
+    Route::get('/{workId}/reviews', [WorkController::class, 'getWorkReviews']);
+    Route::get('/{workId}/reviews/count', [WorkController::class, 'getWorkReviewCount']);
 
     Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/', [WorkController::class, 'createWork']);
         Route::post('/{workId}/bookings', [WorkController::class, 'createWorkBooking']);
         Route::post('/{workId}/likes', [WorkController::class, 'createWorkLike']);
+        Route::post('/{workId}/reviews', [WorkController::class, 'createWorkReview']);
     });
 });
 
@@ -92,10 +121,13 @@ Route::group(['prefix' => 'recruits', 'as' => 'api.recruits.'], function () {
     Route::get('/', [RecruitController::class, 'getRecruits']);
     Route::get('/{recruitId}', [RecruitController::class, 'getRecruit']);
     Route::get('/{recruitId}/bookings', [RecruitController::class, 'getRecruitBookings']);
+    Route::get('/{recruitId}/reviews', [RecruitController::class, 'getRecruitReviews']);
+    Route::get('/{recruitId}/reviews/count', [RecruitController::class, 'getRecruitReviewCount']);
 
     Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/', [RecruitController::class, 'createRecruit']);
         Route::post('/{recruitId}/bookings', [RecruitController::class, 'createRecruitBooking']);
+        Route::post('/{recruitId}/reviews', [RecruitController::class, 'createRecruitReview']);
     });
 });
 
@@ -168,6 +200,20 @@ Route::group(['prefix' => 'user-logs', 'as' => 'api.customer-logs.', 'middleware
     Route::get('/point-transaction-logs', [UserLogController::class, 'getPointTransactionLogs'])->name('point-transaction-logs');
 });
 
+Route::group(['prefix' => 'posts', 'as' => 'api.posts.'], function () {
+    Route::get('/', [PostController::class, 'getPosts'])->name('list');
+    Route::get('/{id}', [PostController::class, 'getPost'])->name('show');
+    Route::get('/{id}/likes', [PostController::class, 'getPostLikes'])->name('likes');
+    Route::get('/{id}/likes/count', [PostController::class, 'getPostLikeCount'])->name('likes.count');
+
+    Route::group(['middleware' => ['auth:sanctum']], function () {
+        Route::post('/', [PostController::class, 'createPost'])->name('create');
+        Route::post('/{id}', [PostController::class, 'updatePost'])->name('update');
+        Route::delete('/{id}', [PostController::class, 'deletePost'])->name('delete');
+        Route::post('/{id}/likes', [PostController::class, 'createPostLike'])->name('likes.toggle');
+    });
+});
+
 Route::group(['prefix' => 'auth', 'as' => 'api.auth.'], function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/register', [AuthController::class, 'register'])->name('register');
@@ -178,4 +224,14 @@ Route::group(['prefix' => 'auth', 'as' => 'api.auth.'], function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         Route::post('/revoke-token', [AuthController::class, 'revokeToken'])->name('revokeToken');
     });
+});
+
+Route::group(['prefix' => 'sessions', 'as' => 'api.sessions.', 'middleware' => ['auth:sanctum']], function () {
+    Route::get('/', [SessionController::class, 'index'])->name('index');
+    Route::post('/start', [SessionController::class, 'start'])->name('start');
+    Route::get('/{id}', [SessionController::class, 'show'])->name('show');
+    Route::get('/{id}/locations', [SessionController::class, 'getLocations'])->name('locations');
+    Route::post('/{id}/location', [SessionController::class, 'logLocation'])->name('location.log');
+    Route::post('/{id}/stop', [SessionController::class, 'stop'])->name('stop');
+    Route::post('/{id}/confirm', [SessionController::class, 'confirm'])->name('confirm');
 });
