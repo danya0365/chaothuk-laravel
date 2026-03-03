@@ -1,6 +1,6 @@
-import defaultTheme from "tailwindcss/defaultTheme";
 import forms from "@tailwindcss/forms";
 import flowbite from "flowbite/plugin";
+import defaultTheme from "tailwindcss/defaultTheme";
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -15,8 +15,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ["Figtree", ...defaultTheme.fontFamily.sans],
-                kanit: ["Kanit", ...defaultTheme.fontFamily.sans],
+                sans: ["'Noto Sans Thai'", ...defaultTheme.fontFamily.sans],
             },
         },
     },

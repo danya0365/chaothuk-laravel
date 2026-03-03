@@ -1,5 +1,6 @@
 @import 'cropperjs/dist/cropper.css';
 @import 'maplibre-gl/dist/maplibre-gl.css';
+@import '@fontsource/noto-sans-thai';
 
 @tailwind base;
 @tailwind components;
