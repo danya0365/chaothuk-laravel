@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PostCollection;
 use App\Http\Resources\RecruitBookingCollection;
 use App\Http\Resources\UserLikeWorkCollection;
 use App\Http\Resources\UserNotificationCollection;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\WorkBookingCollection;
 use App\Http\Resources\WorkCollection;
+use App\Models\Post;
 use App\Models\Recruit;
 use App\Models\RecruitBooking;
 use App\Models\User;
@@ -279,6 +281,61 @@ class MeController extends Controller
         return response()->json([
             'status' => true,
             'data' => new RecruitBookingCollection($data),
+        ], 200);
+    }
+
+    /**
+     * Get My Posts / Reviews
+     */
+    public function getPosts(Request $request)
+    {
+        $query = $request->user()->posts()->whereNull('parent_id');
+
+        $keyword = trim($request->get('keyword'));
+        if ($keyword) {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('title', 'LIKE', "%{$keyword}%")
+                    ->orWhere('content', 'LIKE', "%{$keyword}%");
+            });
+        }
+
+        $data = $query->with(['author'])
+            ->orderBy('created_at', 'desc')
+            ->limitOffset(request()->all())->get();
+
+        return response()->json([
+            'status' => true,
+            'data'   => new PostCollection($data),
+        ], 200);
+    }
+
+    /**
+     * Get My Liked Posts
+     */
+    public function getLikedPosts(Request $request)
+    {
+        $data = $request->user()->likedPosts()
+            ->with('author')
+            ->orderBy('post_likes.created_at', 'desc')
+            ->limitOffset(request()->all())->get();
+
+        return response()->json([
+            'status' => true,
+            'data'   => new PostCollection($data),
+        ], 200);
+    }
+
+    /**
+     * Check if current user liked a specific post
+     */
+    public function getIsLikePost(Request $request, $postId)
+    {
+        $data = $request->user()->likedPosts()
+            ->where('posts.id', $postId)->get();
+
+        return response()->json([
+            'status' => true,
+            'data'   => count($data) ? true : false,
         ], 200);
     }
 }

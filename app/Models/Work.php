@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Scopes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -35,8 +36,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Work extends Model
 {
-    use SoftDeletes;
-    use Scopes;
+    use HasFactory, SoftDeletes, Scopes;
 
     /**
      * The attributes that should be cast.
@@ -55,7 +55,7 @@ class Work extends Model
      *
      * @var array
      */
-    protected $fillable = ['code', 'title', 'description', 'details', 'primary_image', 'images', 'price', 'avg_review_rating', 'display_priority', 'work_status', 'province_id', 'work_type_id', 'author_id'];
+    protected $fillable = ['code', 'title', 'description', 'details', 'primary_image', 'images', 'price', 'avg_review_rating', 'display_priority', 'latitude', 'longitude', 'work_status', 'province_id', 'work_type_id', 'author_id'];
 
     public function author(): BelongsTo
     {
@@ -106,6 +106,11 @@ class Work extends Model
             return  $category['name'];
         }, $this->categories?->toArray() ?? []);
         return implode(', ', $roleNames);
+    }
+
+    public function reviews(): BelongsToMany
+    {
+        return $this->belongsToMany(Post::class, 'works_reviews', 'work_id', 'post_id')->withTimestamps();
     }
 
     public function syncCategories($worksCategories)

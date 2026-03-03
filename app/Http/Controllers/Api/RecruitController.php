@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Enums\NotificationType;
 use App\Enums\Permission;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PostCollection;
+use App\Http\Resources\PostResource;
 use App\Http\Resources\RecruitBookingCollection;
 use App\Http\Resources\RecruitCollection;
 use App\Http\Resources\RecruitResource;
+use App\Models\Post;
 use App\Models\Recruit;
 use App\Models\UserNotification;
 use Illuminate\Database\Eloquent\Builder;
@@ -250,5 +253,118 @@ class RecruitController extends Controller
             'status' => true,
             'data' => new RecruitBookingCollection($data),
         ], 200);
+    }
+
+    /**
+     * Get Recruit Reviews
+     */
+    public function getRecruitReviews(Request $request, $recruitId)
+    {
+        $recruit = Recruit::find($recruitId);
+        if (!$recruit) {
+            return response()->json(['status' => false, 'data' => null], 200);
+        }
+
+        $data = $recruit->reviews()
+            ->with(['author', 'replies.author'])
+            ->orderBy('recruits_reviews.created_at', 'desc')
+            ->limitOffset(request()->all())->get();
+
+        return response()->json([
+            'status' => true,
+            'data'   => new PostCollection($data),
+        ], 200);
+    }
+
+    /**
+     * Get Recruit Review Count
+     */
+    public function getRecruitReviewCount(Request $request, $recruitId)
+    {
+        $recruit = Recruit::find($recruitId);
+        if (!$recruit) {
+            return response()->json(['status' => false, 'data' => 0], 200);
+        }
+
+        return response()->json([
+            'status' => true,
+            'data'   => $recruit->reviews()->count(),
+        ], 200);
+    }
+
+    /**
+     * Create Recruit Review
+     */
+    public function createRecruitReview(Request $request, int $recruitId)
+    {
+        /** @var \App\Models\User $user */
+        $user = auth('sanctum')->user();
+
+        $post = $request->only(['title', 'content', 'images', 'rating']);
+        $post['author_id'] = $user->id;
+
+        $validatedRequest = Validator::make(array_merge($post, ['recruit_id' => $recruitId]), [
+            'recruit_id' => 'required|exists:recruits,id',
+            'content'    => 'required',
+            'rating'     => 'required|integer|min:1|max:5',
+        ]);
+
+        if ($validatedRequest->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => implode(',', $validatedRequest->messages()->all()),
+                'errors'  => $validatedRequest->errors(),
+            ], 401);
+        }
+
+        if (isset($post['images']) && is_array($post['images'])) {
+            $post['images'] = array_filter(array_map('trim', $post['images']));
+        } else {
+            $post['images'] = [];
+        }
+
+        try {
+            $recruit = Recruit::with('author')->find($recruitId);
+
+            $review = Post::create($post);
+            $recruit->reviews()->attach($review->id);
+
+            // Notify recruit owner
+            $userNotification = UserNotification::whereHasMorph(
+                'notificationable',
+                [Recruit::class],
+                function (Builder $query) use ($recruit) {
+                    $query->where('id', $recruit->id);
+                }
+            )
+                ->where('notification_type', NotificationType::WORK_REVIEW->value)
+                ->whereBelongsTo($recruit->author, 'author')
+                ->first();
+
+            if ($userNotification) {
+                $details = $userNotification->details;
+                $details['count'] = $details['count'] + 1;
+                $userNotification->details = $details;
+                $userNotification->is_read = false;
+                $userNotification->save();
+            } else {
+                $userNotification = new UserNotification();
+                $userNotification->title = "มีคนรีวิวโพสต์หางานของคุณ";
+                $userNotification->details = ['count' => 1];
+                $userNotification->notification_type = NotificationType::WORK_REVIEW->value;
+                $userNotification->notificationable()->associate($recruit);
+                $recruit->author->notifications()->save($userNotification);
+            }
+
+            return response()->json([
+                'status' => true,
+                'data'   => new PostResource($review->load('author')),
+            ], 201);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status'  => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
     }
 }

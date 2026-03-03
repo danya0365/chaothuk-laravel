@@ -60,14 +60,73 @@ exceute following cmd when create public folder on first deployment on local or 
 Run db migration
 `sail php artisan migrate`
 
-Seed data
-`sail php artisan db:seed`
-
-Specific Seeder class
-`sail php artisan db:seed --class=MockSeeder`
-
-Refresh Database (Delete all data) and seed new data
+Refresh Database (delete all data) and seed reference data
 `sail php artisan migrate:fresh --seed`
+
+---
+
+#### 🌱 Seeder Map
+
+| Seeder | ประเภท | สิ่งที่ทำ | ENV |
+|---|---|---|---|
+| `DatabaseSeeder` | Master data | Geography, Provinces, WorkTypes, Categories, Roles | ทุก env |
+| `DemoSeeder` | Demo accounts | 4 users + sample works/recruits | dev, staging |
+| `MockSeeder` | Volume data | 50 users, 100 works, 450 posts, 500 notifications | dev เท่านั้น |
+| `ProductionSeeder` | Admin accounts | Super admin จาก `.env` | prod เท่านั้น |
+
+> **Note:** `MockSeeder` เรียก `DemoSeeder` อัตโนมัติ — ไม่ต้องรัน Demo แยก
+
+---
+
+#### 🔑 Demo Accounts (`DemoSeeder`)
+
+Password ทุก account คือ **`password`**
+
+| Email | ชื่อ | บทบาท |
+|---|---|---|
+| `worker1@chaothuk.test` | สมชาย ขับรถดี | ผู้รับงาน |
+| `worker2@chaothuk.test` | มานะ ทำงานดี | ผู้รับงาน |
+| `employer1@chaothuk.test` | บริษัท ขนส่งไทย | ผู้จ้าง |
+| `employer2@chaothuk.test` | ห้างหุ้นส่วน โลจิสติกส์ดี | ผู้จ้าง |
+
+---
+
+#### 🚀 Commands per Environment
+
+**[DEV] — ข้อมูลครบสำหรับเทส**
+```bash
+sail artisan migrate:fresh --seed
+sail artisan db:seed --class=MockSeeder   # ← รัน DemoSeeder ภายในอัตโนมัติ
+```
+
+**[STAGING] — demo accounts + reference data เท่านั้น**
+```bash
+sail artisan migrate:fresh --seed
+sail artisan db:seed --class=DemoSeeder
+```
+
+**[PRODUCTION] — master data + admin เท่านั้น**
+```bash
+# .env ต้องมี:
+# ADMIN_EMAIL=admin@chaothuk.app
+# ADMIN_PASSWORD=your-secure-password
+
+sail artisan migrate --force
+sail artisan db:seed --force                          # StarterSeeder (master data)
+sail artisan db:seed --class=ProductionSeeder --force # admin user
+```
+
+**[ลำดับ seeder ถ้ารันแยก]**
+```bash
+1. migrate:fresh --seed     # DatabaseSeeder ก่อนเสมอ
+2. DemoSeeder               # demo accounts (ถ้าต้องการ)
+3. MockSeeder               # volume data (dev only)
+```
+
+#### ⚙️ Factories
+
+`WorkFactory` · `RecruitFactory` · `PostFactory` · `WorkBookingFactory` · `RecruitBookingFactory` · `UserFactory` · `NotificationFactory`
+
 
 ### Database Management
 

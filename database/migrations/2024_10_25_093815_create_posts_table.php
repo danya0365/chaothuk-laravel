@@ -6,14 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class () extends Migration {
     /**
-     * Run the migrations.
+     * Run the migrations
      */
     public function up(): void
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable()->index();
-            $table->string('content')->nullable()->index();
+            $table->longText('content')->nullable();
             $table->jsonb('images')->nullable();
             $table->tinyInteger('rating')->default(0);
             $table->unsignedBigInteger('author_id')->index();
