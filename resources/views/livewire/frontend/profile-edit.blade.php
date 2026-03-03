@@ -4,7 +4,12 @@
          uploadProgress: 0,
          uploadError: '',
          dragOver: false,
-         async uploadAvatar(file) {
+         showCropModal: false,
+         cropImageUrl: '',
+         cropperObj: null,
+
+         onFileSelect(file) {
+             if (!file) return;
              if (!file.type.startsWith('image/')) {
                  this.uploadError = 'กรุณาเลือกไฟล์รูปภาพเท่านั้น';
                  return;
@@ -13,12 +18,58 @@
                  this.uploadError = 'ไฟล์ต้องมีขนาดไม่เกิน 10MB';
                  return;
              }
+             this.uploadError = '';
+             const reader = new FileReader();
+             reader.onload = (e) => {
+                 this.cropImageUrl = e.target.result;
+                 this.showCropModal = true;
+                 this.$nextTick(() => {
+                     if (this.cropperObj) this.cropperObj.destroy();
+                     const imgEl = document.getElementById('cropper-image');
+                     this.cropperObj = new Cropper(imgEl, {
+                         aspectRatio: 1,
+                         viewMode: 1,
+                         dragMode: 'move',
+                         autoCropArea: 1,
+                         restore: false,
+                         guides: true,
+                         center: true,
+                         highlight: false,
+                         cropBoxMovable: true,
+                         cropBoxResizable: true,
+                         toggleDragModeOnDblclick: false,
+                     });
+                 });
+             };
+             reader.readAsDataURL(file);
+         },
+
+         doCropAndUpload() {
+             if (!this.cropperObj) return;
+             this.cropperObj.getCroppedCanvas({
+                 width: 600,
+                 height: 600,
+                 imageSmoothingEnabled: true,
+                 imageSmoothingQuality: 'high',
+             }).toBlob((blob) => {
+                 this.showCropModal = false;
+                 this.cropperObj.destroy();
+                 this.cropperObj = null;
+                 this.uploadAvatar(blob);
+             }, 'image/webp', 0.9);
+         },
+
+         zoomCropper(ratio) {
+             if (this.cropperObj) this.cropperObj.zoom(ratio);
+         },
+
+         async uploadAvatar(blob) {
              this.uploading = true;
              this.uploadProgress = 0;
              this.uploadError = '';
 
              const formData = new FormData();
-             formData.append('avatar', file);
+             formData.append('avatar', blob, 'avatar.webp');
 
              try {
                  const xhr = new XMLHttpRequest();
@@ -52,9 +103,31 @@
          handleDrop(e) {
              this.dragOver = false;
              const file = e.dataTransfer?.files?.[0];
-             if (file) this.uploadAvatar(file);
+             if (file) this.onFileSelect(file);
          }
      }">
+
+    @push('styles')
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
+    <style>
+        .cropper-view-box,
+        .cropper-face {
+            border-radius: 50%;
+        }
+        .cropper-view-box {
+            outline: 2px solid #f97316;
+            outline-color: rgba(249, 115, 22, 0.75);
+        }
+        #cropper-image {
+            display: block;
+            max-width: 100%;
+        }
+    </style>
+    @endpush
+
+    @push('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    @endpush
 
     {{-- Header --}}
     <div class="flex items-center gap-3 mb-8">
@@ -116,7 +189,7 @@
                                 </div>
                             </template>
                             <input type="file" accept="image/jpeg,image/png,image/webp" class="hidden"
-                                   @change="if ($event.target.files[0]) { uploadAvatar($event.target.files[0]); $event.target.value = '' }">
+                                   @change="if ($event.target.files[0]) { onFileSelect($event.target.files[0]); $event.target.value = '' }">
                         </label>
                     </div>
 
@@ -245,5 +318,73 @@
         </div>
 
     </form>
+
+    {{-- ═══════════════════════════════════════════════════════════════════
+         CROP MODAL
+    ═══════════════════════════════════════════════════════════════════ --}}
+    <div x-show="showCropModal" style="display: none;"
+         class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+        
+        {{-- Backdrop --}}
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-sm"
+             x-transition:enter="transition-opacity ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"></div>
+
+        {{-- Modal --}}
+        <div class="relative bg-gray-900 border border-gray-800 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col"
+             style="max-height: 90vh;"
+             x-transition:enter="transition ease-out duration-300 transform"
+             x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-200 transform"
+             x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+             x-transition:leave-end="opacity-0 scale-95 translate-y-4">
+            
+            {{-- Header --}}
+            <div class="px-6 py-4 border-b border-gray-800 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-white">จัดการรูปโปรไฟล์</h3>
+                <button type="button" @click="showCropModal = false; if(cropperObj) cropperObj.destroy();"
+                        class="text-gray-400 hover:text-white transition">✕</button>
+            </div>
+            
+            {{-- Cropper Area --}}
+            <div class="flex-1 min-h-[300px] h-[50vh] bg-black">
+                <img id="cropper-image" :src="cropImageUrl" class="block max-w-full">
+            </div>
+
+            {{-- Controls --}}
+            <div class="p-6 bg-gray-900 border-t border-gray-800">
+                <div class="flex items-center justify-center gap-4 mb-6">
+                    <button type="button" @click="zoomCropper(-0.1)"
+                            class="w-10 h-10 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white flex items-center justify-center transition ring-1 ring-gray-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"/>
+                        </svg>
+                    </button>
+                    <button type="button" @click="zoomCropper(0.1)"
+                            class="w-10 h-10 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white flex items-center justify-center transition ring-1 ring-gray-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="flex gap-3">
+                    <button type="button" @click="showCropModal = false; if(cropperObj) cropperObj.destroy();"
+                            class="flex-1 py-3 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl transition">
+                        ยกเลิก
+                    </button>
+                    <button type="button" @click="doCropAndUpload"
+                            class="flex-1 py-3 bg-orange-500 hover:bg-orange-400 text-white font-bold rounded-xl transition shadow-lg shadow-orange-500/20">
+                        ครอบตัด & อัพโหลด
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
