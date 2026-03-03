@@ -6,9 +6,11 @@ use App\Models\Post;
 use App\Models\WorkReview;
 use App\Models\RecruitReview;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class ReviewSection extends Component
 {
+    use WithPagination;
     // Props — set by parent
     public string $entityType;   // 'work' or 'recruit'
     public int $entityId;
@@ -96,7 +98,7 @@ class ReviewSection extends Component
             ->whereIn('id', $postIds)
             ->whereNull('parent_id')
             ->latest()
-            ->get();
+            ->paginate(5);
 
         return view('livewire.frontend.review-section', [
             'reviews' => $reviews,

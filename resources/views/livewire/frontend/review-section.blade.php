@@ -50,5 +50,9 @@
         @empty
             <p class="text-gray-500 text-sm text-center py-4">ยังไม่มีรีวิว ให้คะแนนเป็นคนแรก!</p>
         @endforelse
+
+        <div class="mt-4">
+            {{ $reviews->links() }}
+        </div>
     </div>
 </div>

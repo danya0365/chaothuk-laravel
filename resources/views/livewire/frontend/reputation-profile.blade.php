@@ -221,39 +221,39 @@
     {{-- ═══════════════════════════════════════════════════════════════════
          LATEST REVIEWS
     ═══════════════════════════════════════════════════════════════════ --}}
-    @if(count($reviews) > 0)
+    @if($paginatedReviews->count() > 0)
     <div class="bg-gray-900 rounded-2xl p-5">
         <h2 class="text-white font-bold mb-4">💬 รีวิวล่าสุด</h2>
         <div class="space-y-4">
-            @foreach($reviews as $review)
+            @foreach($paginatedReviews as $review)
                 <div class="border-b border-gray-800 pb-4 last:border-0 last:pb-0">
                     <div class="flex items-center gap-3 mb-2">
-                        <x-avatar :src="$review['reviewer_avatar'] ?? null" :name="$review['reviewer_name'] ?? 'U'" size="w-9 h-9" :border="false" />
+                        <x-avatar :src="$review->reviewer_avatar ?? null" :name="$review->reviewer_name ?? 'U'" size="w-9 h-9" :border="false" />
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-2">
-                                <span class="text-white text-sm font-semibold">{{ $review['reviewer_name'] }}</span>
-                                @if($review['verified'])
+                                <span class="text-white text-sm font-semibold">{{ $review->reviewer_name }}</span>
+                                @if($review->verified ?? false)
                                     <span class="text-green-400 text-[10px] bg-green-500/10 px-1.5 py-0.5 rounded-full">✅ งานจริง</span>
                                 @endif
                             </div>
-                            <span class="text-gray-600 text-xs">{{ $review['date'] }}</span>
+                            <span class="text-gray-600 text-xs">{{ $review->date ?? ($review->created_at ? $review->created_at->diffForHumans() : '') }}</span>
                         </div>
                         <div class="flex items-center gap-0.5 flex-shrink-0">
                             @for($i = 1; $i <= 5; $i++)
-                                <span class="text-sm {{ $i <= $review['overall_rating'] ? 'text-yellow-400' : 'text-gray-700' }}">★</span>
+                                <span class="text-sm {{ $i <= ($review->overall_rating ?? 0) ? 'text-yellow-400' : 'text-gray-700' }}">★</span>
                             @endfor
                         </div>
                     </div>
 
                     {{-- Mini dimension bars (only if multi-dim data) --}}
-                    @if($review['quality'] > 0)
+                    @if(($review->quality ?? 0) > 0)
                     <div class="grid grid-cols-4 gap-2 mb-2">
                         @php
                             $miniDims = [
-                                ['l' => 'คุณภาพ', 'v' => $review['quality'], 'c' => 'bg-orange-500'],
-                                ['l' => 'เวลา', 'v' => $review['timeliness'], 'c' => 'bg-blue-500'],
-                                ['l' => 'สื่อสาร', 'v' => $review['communication'], 'c' => 'bg-green-500'],
-                                ['l' => 'มืออาชีพ', 'v' => $review['professionalism'], 'c' => 'bg-purple-500'],
+                                ['l' => 'คุณภาพ', 'v' => $review->quality, 'c' => 'bg-orange-500'],
+                                ['l' => 'เวลา', 'v' => $review->timeliness, 'c' => 'bg-blue-500'],
+                                ['l' => 'สื่อสาร', 'v' => $review->communication, 'c' => 'bg-green-500'],
+                                ['l' => 'มืออาชีพ', 'v' => $review->professionalism, 'c' => 'bg-purple-500'],
                             ];
                         @endphp
                         @foreach($miniDims as $md)
@@ -267,17 +267,21 @@
                     </div>
                     @endif
 
-                    @if($review['comment'])
-                        <p class="text-gray-300 text-sm">{{ $review['comment'] }}</p>
+                    @if($review->comment ?? null)
+                        <p class="text-gray-300 text-sm">{{ $review->comment }}</p>
                     @endif
-                    @if($review['response'])
+                    @if($review->response ?? null)
                         <div class="mt-2 ml-4 pl-3 border-l-2 border-orange-500/30">
                             <p class="text-orange-400 text-[11px] font-semibold mb-0.5">ตอบกลับ:</p>
-                            <p class="text-gray-400 text-sm">{{ $review['response'] }}</p>
+                            <p class="text-gray-400 text-sm">{{ $review->response }}</p>
                         </div>
                     @endif
                 </div>
             @endforeach
+        </div>
+        
+        <div class="mt-4">
+            {{ $paginatedReviews->links() }}
         </div>
     </div>
     @endif
