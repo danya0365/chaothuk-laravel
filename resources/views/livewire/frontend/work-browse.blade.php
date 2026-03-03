@@ -70,12 +70,21 @@
                 @this.set('userLng', e.detail.lng);
                 @this.set('sortBy', 'distance');
             }
-        }" @location-picked.window="handleLocationPicked">
+        }" @location-picked.window="handleLocationPicked" class="flex gap-2">
+            
             <x-location-picker
                 wire:model.lat="userLat"
                 wire:model.lng="userLng"
                 label="📍 ใกล้ฉัน"
                 class="h-[46px] {{ $sortBy === 'distance' ? 'bg-orange-500/20 text-orange-400 border-orange-500/50 ring-1 ring-orange-500/50' : '' }}" />
+                
+            @if($userLat && $userLng)
+                <button type="button" wire:click="$set('userLat', null); $set('userLng', null); $set('sortBy', 'latest')"
+                        class="h-[46px] px-4 bg-gray-800 border border-gray-700 hover:bg-red-500/20 hover:text-red-400 hover:border-red-500/50 text-gray-400 rounded-xl transition flex items-center justify-center font-bold"
+                        title="ยกเลิกระยะทาง">
+                    ✕
+                </button>
+            @endif
         </div>
     </div>
 
