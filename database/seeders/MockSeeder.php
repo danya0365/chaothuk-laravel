@@ -8,6 +8,7 @@ use App\Enums\NotificationType;
 use App\Enums\UserActivityType;
 use App\Models\Banner;
 use App\Models\Category;
+use App\Models\Dispute;
 use App\Models\Favorite;
 use App\Models\IssuePoint;
 use App\Models\MessengerChannel;
@@ -82,6 +83,7 @@ class MockSeeder extends Seeder
         DB::table('issue_point_status_logs')->truncate();
         DB::table('issue_points')->truncate();
         DB::table('user_activity_logs')->truncate();
+        DB::table('disputes')->truncate();
         DB::table('favorites')->truncate();
         DB::table('portfolios')->truncate();
         DB::table('session_location_logs')->truncate();
@@ -543,6 +545,45 @@ class MockSeeder extends Seeder
             }
         }
 
+        // ─── 23. Disputes (30) ───────────────────────────────────────────────
+        $this->command->info('Creating 30 disputes...');
+        $disputeStatuses = ['open', 'investigating', 'resolved', 'closed'];
+        $disputeReasons  = [
+            'งานไม่ตรงตามที่ตกลง',
+            'ช่างไม่มาตามนัด',
+            'ราคาไม่ตรงตามที่ตกลง',
+            'คุณภาพงานต่ำกว่ามาตรฐาน',
+            'ไม่สามารถติดต่อได้',
+            'ข้อมูลไม่ตรงกับที่ลงประกาศ',
+            'เลื่อนนัดหลายครั้ง',
+            'ความเสียหายระหว่างทำงาน',
+        ];
+        $resolutions = [
+            'คืนเงินเต็มจำนวน', 'คืนเงินบางส่วน',
+            'ทำงานซ่อมใหม่', 'ตกลงยุติกันฉันท์มิตร',
+            'ระงับบัญชีผู้ให้บริการ', null,
+        ];
+        $adminId = User::first()?->id;
+        for ($i = 0; $i < 30; $i++) {
+            $reporter   = $employerIds[array_rand($employerIds)];
+            $respondent = $workerIds[array_rand($workerIds)];
+            $dStatus    = $disputeStatuses[array_rand($disputeStatuses)];
+            $hasBooking = rand(0, 1);
+
+            Dispute::create([
+                'bookingable_type' => $hasBooking ? WorkBooking::class : null,
+                'bookingable_id'   => $hasBooking ? rand(1, 200) : null,
+                'reporter_id'      => $reporter,
+                'respondent_id'    => $respondent,
+                'reason'           => $disputeReasons[array_rand($disputeReasons)],
+                'description'      => 'รายละเอียดข้อพิพาท #' . ($i + 1) . ': ' . fake()->sentence(),
+                'evidence'         => rand(0, 1) ? ['https://picsum.photos/seed/ev' . $i . '/400/300'] : null,
+                'status'           => $dStatus,
+                'resolution'       => in_array($dStatus, ['resolved', 'closed']) ? $resolutions[array_rand($resolutions)] : null,
+                'admin_id'         => in_array($dStatus, ['investigating', 'resolved', 'closed']) ? $adminId : null,
+            ]);
+        }
+
         Model::reguard();
 
         $this->command->info('✅ MockSeeder complete!');
@@ -567,6 +608,7 @@ class MockSeeder extends Seeder
                 ['work_availabilities',  '~600'],
                 ['work_sessions',         80],
                 ['session_location_logs','~800'],
+                ['disputes',              30],
             ]
         );
     }
