@@ -7,6 +7,7 @@ use App\Models\WorkBooking;
 use App\Models\WorkLike;
 use App\Models\WorkSession;
 use App\Models\UserReputation;
+use App\Models\Favorite;
 use Livewire\Component;
 
 class WorkDetail extends Component
@@ -140,7 +141,7 @@ class WorkDetail extends Component
 
     public function toggleLike(): void
     {
-        if (!auth()->check()) { $this->redirect(route('login')); return; }
+        if (!auth()->check()) { $this->redirect(route('frontend.auth.login')); return; }
         $existing = WorkLike::where('author_id', auth()->id())->where('work_id', $this->id)->first();
         if ($existing) {
             $existing->delete();
@@ -152,9 +153,27 @@ class WorkDetail extends Component
         $this->work->refresh();
     }
 
+    public function toggleFavorite(): void
+    {
+        if (!auth()->check()) { $this->redirect(route('frontend.auth.login')); return; }
+        $existing = Favorite::where('user_id', auth()->id())
+            ->where('favoritable_type', Work::class)
+            ->where('favoritable_id', $this->id)
+            ->first();
+        if ($existing) {
+            $existing->delete();
+        } else {
+            Favorite::create([
+                'user_id'          => auth()->id(),
+                'favoritable_type' => Work::class,
+                'favoritable_id'   => $this->id,
+            ]);
+        }
+    }
+
     public function submitBooking(): void
     {
-        if (!auth()->check()) { $this->redirect(route('login')); return; }
+        if (!auth()->check()) { $this->redirect(route('frontend.auth.login')); return; }
 
         $this->validate([
             'bookingPhone'   => 'required|min:9',
@@ -219,7 +238,11 @@ class WorkDetail extends Component
             ? WorkLike::where('author_id', auth()->id())->where('work_id', $this->id)->exists()
             : false;
 
-        return view('livewire.frontend.work-detail', compact('isLiked'))
+        $isFavorited = auth()->check()
+            ? Favorite::where('user_id', auth()->id())->where('favoritable_type', Work::class)->where('favoritable_id', $this->id)->exists()
+            : false;
+
+        return view('livewire.frontend.work-detail', compact('isLiked', 'isFavorited'))
             ->layout('frontend.layout', ['title' => ($this->work->title ?? 'Work') . ' — Chaothuk']);
     }
 }
