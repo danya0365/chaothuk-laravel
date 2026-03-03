@@ -3,10 +3,8 @@
 namespace App\Livewire\Frontend;
 
 use App\Models\Work;
-use App\Models\Post;
 use App\Models\WorkBooking;
 use App\Models\WorkLike;
-use App\Models\WorkReview;
 use App\Models\UserReputation;
 use Livewire\Component;
 
@@ -22,16 +20,6 @@ class WorkDetail extends Component
     // Provider reputation summary
     public ?array $providerStats = null;
 
-    // Reviews
-    public ?array $reviews = null;
-
-    // Review form
-    public bool $showReviewForm = false;
-    public int $reviewRating = 5;
-    public string $reviewTitle = '';
-    public string $reviewContent = '';
-    public ?string $reviewMessage = null;
-
     // Booking form
     public bool $showBookingForm = false;
     public string $bookingMessage = '';
@@ -44,7 +32,6 @@ class WorkDetail extends Component
         $this->id = $id;
         $this->work = Work::with(['author', 'province', 'workType', 'categories'])->findOrFail($id);
         $this->isOwner = auth()->check() && auth()->id() === $this->work->author_id;
-        $this->loadReviews();
         $this->loadBookedDates();
         $this->loadProviderStats();
         if ($this->isOwner) {
@@ -124,17 +111,6 @@ class WorkDetail extends Component
         $this->loadBookings();
     }
 
-    public function loadReviews(): void
-    {
-        $postIds = \DB::table('works_reviews')->where('work_id', $this->id)->pluck('post_id');
-        $this->reviews = Post::with(['author', 'replies.author'])
-            ->whereIn('id', $postIds)
-            ->whereNull('parent_id')
-            ->latest()
-            ->get()
-            ->toArray();
-    }
-
     public function toggleLike(): void
     {
         if (!auth()->check()) { $this->redirect(route('login')); return; }
@@ -147,40 +123,6 @@ class WorkDetail extends Component
             $this->work->increment('like_count');
         }
         $this->work->refresh();
-    }
-
-    public function submitReview(): void
-    {
-        if (!auth()->check()) { $this->redirect(route('login')); return; }
-
-        $this->validate([
-            'reviewContent' => 'required|min:5',
-            'reviewRating'  => 'required|integer|min:1|max:5',
-        ]);
-
-        $post = Post::create([
-            'author_id' => auth()->id(),
-            'title'     => $this->reviewTitle ?: null,
-            'content'   => $this->reviewContent,
-            'rating'    => $this->reviewRating,
-            'images'    => json_encode([]),
-        ]);
-
-        WorkReview::create(['work_id' => $this->id, 'post_id' => $post->id]);
-
-        // Update avg rating
-        $avg = \DB::table('works_reviews')
-            ->join('posts', 'posts.id', '=', 'works_reviews.post_id')
-            ->where('works_reviews.work_id', $this->id)
-            ->whereNull('posts.parent_id')
-            ->avg('posts.rating');
-        $this->work->update(['avg_review_rating' => round($avg, 1), 'reply_count' => \DB::table('works_reviews')->where('work_id', $this->id)->count()]);
-
-        $this->reviewMessage = '✅ รีวิวของคุณถูกบันทึกแล้ว';
-        $this->reviewContent = '';
-        $this->reviewTitle = '';
-        $this->showReviewForm = false;
-        $this->loadReviews();
     }
 
     public function submitBooking(): void

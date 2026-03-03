@@ -2,25 +2,16 @@
 
 namespace App\Livewire\Frontend;
 
-use App\Models\Post;
 use App\Models\Recruit;
 use App\Models\RecruitBooking;
-use App\Models\RecruitReview;
 use Livewire\Component;
 
 class RecruitDetail extends Component
 {
     public int $id;
     public ?Recruit $recruit = null;
-    public ?array $reviews = null;
     public bool $isOwner = false;
     public int $bookingsCount = 0;
-
-    // Review form
-    public bool $showReviewForm = false;
-    public int $reviewRating = 5;
-    public string $reviewContent = '';
-    public ?string $reviewMessage = null;
 
     // Apply (booking) form
     public bool $showApplyForm = false;
@@ -35,36 +26,6 @@ class RecruitDetail extends Component
         $this->recruit = Recruit::with(['author', 'province', 'workType', 'categories'])->findOrFail($id);
         $this->isOwner = auth()->check() && auth()->id() === $this->recruit->author_id;
         $this->bookingsCount = RecruitBooking::where('recruit_id', $this->id)->count();
-        $this->loadReviews();
-    }
-
-    public function loadReviews(): void
-    {
-        $postIds = \DB::table('recruits_reviews')->where('recruit_id', $this->id)->pluck('post_id');
-        $this->reviews = Post::with(['author'])
-            ->whereIn('id', $postIds)
-            ->whereNull('parent_id')
-            ->latest()
-            ->get()->toArray();
-    }
-
-    public function submitReview(): void
-    {
-        if (!auth()->check()) { $this->redirect(route('login')); return; }
-        $this->validate(['reviewContent' => 'required|min:5', 'reviewRating' => 'required|integer|min:1|max:5']);
-
-        $post = Post::create([
-            'author_id' => auth()->id(),
-            'content'   => $this->reviewContent,
-            'rating'    => $this->reviewRating,
-            'images'    => json_encode([]),
-        ]);
-        RecruitReview::create(['recruit_id' => $this->id, 'post_id' => $post->id]);
-
-        $this->reviewMessage = '✅ รีวิวของคุณถูกบันทึกแล้ว';
-        $this->reviewContent = '';
-        $this->showReviewForm = false;
-        $this->loadReviews();
     }
 
     public function submitApply(): void
