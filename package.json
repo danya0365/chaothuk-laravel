@@ -19,6 +19,7 @@
         "vite": "^5.0"
     },
     "dependencies": {
+        "cropperjs": "^1.6.1",
         "dayjs": "^1.11.11",
         "dayjs-plugin-utc": "^0.1.2",
         "flatpickr": "^4.6.13",

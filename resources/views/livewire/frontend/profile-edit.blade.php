@@ -108,7 +108,6 @@
      }">
 
     @push('styles')
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
     <style>
         .cropper-view-box,
         .cropper-face {
@@ -123,10 +122,6 @@
             max-width: 100%;
         }
     </style>
-    @endpush
-
-    @push('scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     @endpush
 
     {{-- Header --}}

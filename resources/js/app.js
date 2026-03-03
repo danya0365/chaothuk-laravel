@@ -1,4 +1,6 @@
+import Cropper from "cropperjs";
 import "./bootstrap";
+window.Cropper = Cropper;
 
 // ─── Livewire v3 ships with its own Alpine.js ────────────────────────────────
 // DO NOT import Alpine separately or call Alpine.start() — it causes
