@@ -32,7 +32,7 @@
                 <div id="map-{{ $attributes->wire('model.lat')->value() ?? 'picker' }}" class="w-full h-full"></div>
 
                 {{-- Find Me Button overlay --}}
-                <button @click="detectLocation()"
+                <button type="button" @click="detectLocation()"
                         class="absolute bottom-4 right-4 bg-white text-gray-900 px-4 py-2 rounded-xl font-bold shadow-lg hover:bg-gray-100 flex items-center gap-2 transition"
                         title="ดึงตำแหน่งปัจจุบัน">
                     <span x-show="!loadingLoc">🎯 ตำแหน่งฉัน</span>
