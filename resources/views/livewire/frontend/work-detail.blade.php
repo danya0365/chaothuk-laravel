@@ -99,7 +99,11 @@
         <div class="bg-gradient-to-r from-orange-500/10 to-orange-600/5 border border-orange-500/30 rounded-2xl p-4">
             <div class="flex items-center justify-between flex-wrap gap-2">
                 <span class="text-orange-400 text-sm font-bold">👑 คุณเป็นเจ้าของงานนี้</span>
-                <div class="flex gap-2">
+                <div class="flex gap-2 flex-wrap">
+                    <button wire:click="$toggle('showStartSession')"
+                            class="px-4 py-2 bg-green-500 hover:bg-green-400 text-white font-semibold rounded-xl text-sm transition">
+                        🟢 เริ่มงาน
+                    </button>
                     <a href="{{ route('frontend.works.edit', $work->id) }}"
                        class="px-4 py-2 bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-xl text-sm transition">
                         ✏️ แก้ไข
@@ -108,8 +112,64 @@
                        class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl text-sm transition ring-1 ring-gray-700">
                         📋 จัดการจอง ({{ count($bookings) }})
                     </a>
+                    <a href="{{ route('frontend.works.availability', $work->id) }}"
+                       class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl text-sm transition ring-1 ring-gray-700">
+                        📅 ตารางว่าง
+                    </a>
                 </div>
             </div>
+
+            {{-- Start Session Form --}}
+            @if($showStartSession)
+            <div class="mt-4 pt-4 border-t border-orange-500/20 space-y-3">
+                <h3 class="text-white font-semibold text-sm">🟢 เริ่มเซสชันงาน</h3>
+
+                {{-- Walk-in toggle --}}
+                <label class="flex items-center gap-2 text-sm cursor-pointer">
+                    <input type="checkbox" wire:model.live="isWalkIn" class="rounded bg-gray-800 border-gray-600 text-orange-500 focus:ring-orange-500">
+                    <span class="text-gray-300">Walk-in (ไม่ได้จองล่วงหน้า)</span>
+                </label>
+
+                @if(!$isWalkIn)
+                    {{-- From booking --}}
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">เลือกจากการจองที่ยืนยันแล้ว</label>
+                        @if(count($confirmedBookings) > 0)
+                            <select wire:model="selectedBookingId"
+                                    class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
+                                <option value="">-- เลือกการจอง --</option>
+                                @foreach($confirmedBookings as $cb)
+                                    <option value="{{ $cb['id'] }}">{{ $cb['author_name'] }} — {{ $cb['date'] }}</option>
+                                @endforeach
+                            </select>
+                        @else
+                            <p class="text-gray-500 text-xs">ยังไม่มีการจองที่ยืนยัน — สลับเป็น Walk-in ได้</p>
+                        @endif
+                        @error('selectedBookingId') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+                @else
+                    {{-- Walk-in customer --}}
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">User ID ของลูกค้า</label>
+                        <input type="number" wire:model="selectedCustomerId" placeholder="เช่น 5"
+                               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
+                        @error('selectedCustomerId') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+                @endif
+
+                {{-- Price --}}
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">ราคาตกลง (บาท)</label>
+                    <input type="number" wire:model="sessionPrice" placeholder="{{ $work->price }}"
+                           class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
+                </div>
+
+                <button wire:click="startSession" wire:confirm="ยืนยันเริ่มงาน?"
+                        class="px-6 py-2.5 bg-green-500 hover:bg-green-400 text-white font-bold rounded-lg transition text-sm">
+                    ▶️ เริ่มงานเดี๋ยวนี้
+                </button>
+            </div>
+            @endif
         </div>
         @endif
 

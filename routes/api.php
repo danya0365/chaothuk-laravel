@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\UploadController;
 use App\Http\Controllers\Api\WorkBookingController;
 use App\Http\Controllers\Api\WorkController;
 use App\Http\Controllers\Api\WorkTypeController;
+use App\Http\Controllers\Api\SessionController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -223,4 +224,14 @@ Route::group(['prefix' => 'auth', 'as' => 'api.auth.'], function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         Route::post('/revoke-token', [AuthController::class, 'revokeToken'])->name('revokeToken');
     });
+});
+
+Route::group(['prefix' => 'sessions', 'as' => 'api.sessions.', 'middleware' => ['auth:sanctum']], function () {
+    Route::get('/', [SessionController::class, 'index'])->name('index');
+    Route::post('/start', [SessionController::class, 'start'])->name('start');
+    Route::get('/{id}', [SessionController::class, 'show'])->name('show');
+    Route::get('/{id}/locations', [SessionController::class, 'getLocations'])->name('locations');
+    Route::post('/{id}/location', [SessionController::class, 'logLocation'])->name('location.log');
+    Route::post('/{id}/stop', [SessionController::class, 'stop'])->name('stop');
+    Route::post('/{id}/confirm', [SessionController::class, 'confirm'])->name('confirm');
 });

@@ -65,6 +65,9 @@
             ['icon'=>'📅','label'=>'ปฏิทิน','route'=>'frontend.calendar'],
             ['icon'=>'📋','label'=>'การจอง','route'=>'frontend.bookings'],
             ['icon'=>'💬','label'=>'แชท','route'=>'frontend.messenger'],
+            ['icon'=>'⭐','label'=>'โปรด','route'=>'frontend.favorites'],
+            ['icon'=>'🎨','label'=>'ผลงาน','route'=>'frontend.portfolios'],
+            ['icon'=>'🕐','label'=>'เซสชัน','route'=>'frontend.sessions'],
         ];
     @endphp
     <a href="{{ route('frontend.home') }}" class="mb-4 text-xl font-black text-orange-400">C</a>
@@ -119,8 +122,8 @@
         $bottomItems = [
             ['icon'=>'🏠','label'=>'หน้าแรก','route'=>'frontend.home'],
             ['icon'=>'📦','label'=>'งาน','route'=>'frontend.works'],
-            ['icon'=>'�','label'=>'ปฏิทิน','route'=>'frontend.calendar','auth'=>true],
-            ['icon'=>'�','label'=>'แชท','route'=>'frontend.messenger','auth'=>true],
+            ['icon'=>'⭐','label'=>'โปรด','route'=>'frontend.favorites','auth'=>true],
+            ['icon'=>'💬','label'=>'แชท','route'=>'frontend.messenger','auth'=>true],
             auth()->check()
                 ? ['icon'=>'👤','label'=>'โปรไฟล์','route'=>'frontend.profile']
                 : ['icon'=>'🔑','label'=>'เข้าสู่ระบบ','route'=>'login'],

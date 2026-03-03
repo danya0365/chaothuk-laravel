@@ -5,6 +5,7 @@ namespace App\Livewire\Frontend;
 use App\Models\Work;
 use App\Models\WorkBooking;
 use App\Models\WorkLike;
+use App\Models\WorkSession;
 use App\Models\UserReputation;
 use Livewire\Component;
 
@@ -27,6 +28,14 @@ class WorkDetail extends Component
     public string $bookingDate = '';
     public ?string $bookingMessage2 = null;
 
+    // Start session form
+    public bool $showStartSession = false;
+    public array $confirmedBookings = [];
+    public ?int $selectedBookingId = null;
+    public ?int $selectedCustomerId = null;
+    public ?float $sessionPrice = null;
+    public bool $isWalkIn = false;
+
     public function mount(int $id): void
     {
         $this->id = $id;
@@ -36,6 +45,7 @@ class WorkDetail extends Component
         $this->loadProviderStats();
         if ($this->isOwner) {
             $this->loadBookings();
+            $this->loadConfirmedBookings();
         }
     }
 
@@ -95,12 +105,29 @@ class WorkDetail extends Component
             ->toArray();
     }
 
+    protected function loadConfirmedBookings(): void
+    {
+        $this->confirmedBookings = WorkBooking::with('author')
+            ->where('work_id', $this->id)
+            ->where('booking_status', 'confirm')
+            ->latest()
+            ->get()
+            ->map(fn($b) => [
+                'id'          => $b->id,
+                'author_id'   => $b->author_id,
+                'author_name' => $b->author?->name ?? 'ผู้ใช้',
+                'date'        => $b->booking_date ? \Carbon\Carbon::parse($b->booking_date)->format('d/m/Y') : '-',
+            ])
+            ->toArray();
+    }
+
     public function confirmBooking(int $bookingId): void
     {
         if (!$this->isOwner) return;
         $booking = WorkBooking::where('work_id', $this->id)->findOrFail($bookingId);
         $booking->update(['booking_status' => 'confirm', 'worker_confirm_status' => 'confirm']);
         $this->loadBookings();
+        $this->loadConfirmedBookings();
     }
 
     public function cancelBooking(int $bookingId): void
@@ -152,6 +179,40 @@ class WorkDetail extends Component
         $this->loadBookedDates();
     }
 
+    public function startSession(): void
+    {
+        if (!$this->isOwner) return;
+
+        // Walk-in mode: customer selected manually
+        if ($this->isWalkIn) {
+            $this->validate(['selectedCustomerId' => 'required|exists:users,id']);
+            $customerId = $this->selectedCustomerId;
+            $bookingId = null;
+        } else {
+            $this->validate(['selectedBookingId' => 'required']);
+            $booking = WorkBooking::where('work_id', $this->id)
+                ->where('booking_status', 'confirm')
+                ->findOrFail($this->selectedBookingId);
+            $customerId = $booking->author_id;
+            $bookingId = $booking->id;
+        }
+
+        $session = WorkSession::create([
+            'sessionable_type' => Work::class,
+            'sessionable_id'   => $this->id,
+            'worker_id'        => auth()->id(),
+            'customer_id'      => $customerId,
+            'bookingable_type' => $bookingId ? WorkBooking::class : null,
+            'bookingable_id'   => $bookingId,
+            'started_at'       => now(),
+            'price_agreed'     => $this->sessionPrice,
+            'status'           => 'active',
+            'worker_confirm'   => 'confirmed',
+        ]);
+
+        $this->redirect(route('frontend.sessions.show', $session->id), navigate: true);
+    }
+
     public function render()
     {
         $isLiked = auth()->check()
@@ -162,3 +223,4 @@ class WorkDetail extends Component
             ->layout('frontend.layout', ['title' => ($this->work->title ?? 'Work') . ' — Chaothuk']);
     }
 }
+

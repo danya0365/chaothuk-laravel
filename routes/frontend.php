@@ -2,11 +2,18 @@
 
 use App\Livewire\Frontend\Calendar;
 use App\Livewire\Frontend\CategoryBrowse;
+use App\Livewire\Frontend\Favorites;
 use App\Livewire\Frontend\Home;
 use App\Livewire\Frontend\MapExplore;
 use App\Livewire\Frontend\Messenger;
 use App\Livewire\Frontend\MyBookings;
+use App\Livewire\Frontend\MyPortfolios;
+use App\Livewire\Frontend\MySessions;
+use App\Livewire\Frontend\PortfolioCreate;
+use App\Livewire\Frontend\PortfolioEdit;
 use App\Livewire\Frontend\ReputationProfile;
+use App\Livewire\Frontend\SessionDetail;
+use App\Livewire\Frontend\WorkAvailabilityManage;
 use App\Livewire\Frontend\WorkBrowse;
 use App\Livewire\Frontend\WorkDetail;
 use App\Livewire\Frontend\WorkEdit;
@@ -54,10 +61,24 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
         Route::get('/calendar',      Calendar::class)->name('calendar');
         Route::get('/bookings',      MyBookings::class)->name('bookings');
         Route::get('/messenger',     Messenger::class)->name('messenger');
-        Route::get('/works/{id}/edit',     WorkEdit::class)->name('works.edit');
-        Route::get('/works/{id}/bookings', WorkBookings::class)->name('works.bookings');
+        Route::get('/favorites',     Favorites::class)->name('favorites');
+        Route::get('/sessions',      MySessions::class)->name('sessions');
+        Route::get('/sessions/{id}',  SessionDetail::class)->name('sessions.show');
+
+        // Works management
+        Route::get('/works/{id}/edit',         WorkEdit::class)->name('works.edit');
+        Route::get('/works/{id}/bookings',     WorkBookings::class)->name('works.bookings');
+        Route::get('/works/{id}/availability', WorkAvailabilityManage::class)->name('works.availability');
+
+        // Recruits management
         Route::get('/recruits/{id}/edit',     RecruitEdit::class)->name('recruits.edit');
         Route::get('/recruits/{id}/bookings', RecruitBookings::class)->name('recruits.bookings');
+
+        // Portfolios
+        Route::get('/portfolios',          MyPortfolios::class)->name('portfolios');
+        Route::get('/portfolios/create',   PortfolioCreate::class)->name('portfolios.create');
+        Route::get('/portfolios/{id}/edit', PortfolioEdit::class)->name('portfolios.edit');
     });
 });
+
 
