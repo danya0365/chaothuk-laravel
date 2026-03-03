@@ -23,6 +23,15 @@
             @error('title')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
         </div>
 
+        {{-- Code --}}
+        <div>
+            <label class="block text-gray-300 text-sm font-semibold mb-1">รหัสงาน (Code) * <span class="text-gray-500 text-xs font-normal">เช่น ทะเบียนรถ</span></label>
+            <input wire:model="code" type="text"
+                   class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 transition uppercase"
+                   placeholder="เช่น กก-1234">
+            @error('code')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+        </div>
+
         {{-- Description --}}
         <div>
             <label class="block text-gray-300 text-sm font-semibold mb-1">รายละเอียด *</label>

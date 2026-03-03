@@ -60,7 +60,9 @@
                     <span class="bg-gray-800 text-gray-400 px-2 py-0.5 rounded-full text-[11px]">{{ $cat->name }}</span>
                 @endforeach
                 <span class="text-gray-600 text-[11px]">📍 {{ $work->province?->name_th ?? '-' }}</span>
-                <span class="text-gray-700 text-[11px]">#{{ $work->code ?? 'W'.$work->id }}</span>
+                @if($work->code)
+                    <span class="bg-gray-800 text-gray-300 px-2 py-0.5 rounded-full text-[11px] font-mono">🔖 {{ $work->code }}</span>
+                @endif
             </div>
 
             {{-- Title + Like --}}

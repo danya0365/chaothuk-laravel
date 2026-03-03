@@ -15,6 +15,7 @@ class WorkEdit extends Component
 
     // Form fields
     public string $title = '';
+    public string $code = '';
     public string $description = '';
     public float $price = 0;
     public ?int $provinceId = null;
@@ -38,6 +39,7 @@ class WorkEdit extends Component
         }
 
         $this->title = $this->work->title ?? '';
+        $this->code = $this->work->code ?? '';
         $this->description = $this->work->description ?? '';
         $this->price = $this->work->price ?? 0;
         $this->provinceId = $this->work->province_id;
@@ -53,6 +55,7 @@ class WorkEdit extends Component
     {
         $this->validate([
             'title'       => 'required|min:5|max:255',
+            'code'        => 'required|max:50|unique:works,code,' . $this->work->id,
             'description' => 'required|min:10',
             'price'       => 'required|numeric|min:0',
             'provinceId'  => 'required',
@@ -61,6 +64,7 @@ class WorkEdit extends Component
 
         $this->work->update([
             'title'        => $this->title,
+            'code'         => $this->code,
             'description'  => $this->description,
             'price'        => $this->price,
             'province_id'  => $this->provinceId,

@@ -1,5 +1,37 @@
 <div class="max-w-6xl mx-auto px-4 py-6" x-data="{ viewMode: 'grid' }">
 
+    {{-- Header with Tabs + Create Button --}}
+    <div class="flex items-center justify-between mb-5">
+        <div>
+            <h1 class="text-2xl font-bold text-white">📦 งาน</h1>
+        </div>
+        @auth
+        <a href="{{ route('frontend.works.create') }}"
+           class="px-5 py-2.5 bg-orange-500 hover:bg-orange-400 text-white font-bold rounded-xl text-sm transition flex items-center gap-1.5">
+            ＋ สร้างงานใหม่
+        </a>
+        @endauth
+    </div>
+
+    {{-- Tabs --}}
+    <div class="flex items-center gap-1 mb-5 bg-gray-900 rounded-xl p-1 w-fit">
+        <button wire:click="$set('tab', 'all')"
+                class="px-5 py-2 rounded-lg text-sm font-semibold transition
+                    {{ $tab === 'all' ? 'bg-orange-500 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800' }}">
+            📦 งานทั้งหมด
+        </button>
+        @auth
+        <button wire:click="$set('tab', 'my')"
+                class="px-5 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5
+                    {{ $tab === 'my' ? 'bg-orange-500 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800' }}">
+            👤 งานของฉัน
+            @if($myWorksCount > 0)
+                <span class="bg-white/20 text-[10px] px-1.5 py-0.5 rounded-full font-bold">{{ $myWorksCount }}</span>
+            @endif
+        </button>
+        @endauth
+    </div>
+
     {{-- Filters --}}
     <div class="flex flex-col sm:flex-row gap-3 mb-4">
         <input wire:model.live.debounce.400ms="search" type="text"
@@ -27,12 +59,19 @@
             <option value="latest">ล่าสุด</option>
             <option value="popular">ยอดนิยม</option>
             <option value="rating">คะแนนสูงสุด</option>
+            <option value="price_asc">ราคาต่ำ → สูง</option>
+            <option value="price_desc">ราคาสูง → ต่ำ</option>
         </select>
     </div>
 
-    {{-- View Toggle --}}
+    {{-- View Toggle + Count --}}
     <div class="flex items-center justify-between mb-4">
-        <p class="text-gray-400 text-sm">{{ $works->total() }} งาน</p>
+        <p class="text-gray-400 text-sm">
+            {{ $works->total() }} งาน
+            @if($tab === 'my')
+                <span class="text-orange-400 text-xs">(ของฉัน)</span>
+            @endif
+        </p>
         <div class="flex gap-1 bg-gray-800 rounded-lg p-1">
             <button @click="viewMode = 'grid'"
                     :class="viewMode === 'grid' ? 'bg-orange-500 text-white' : 'text-gray-400 hover:text-white'"
@@ -54,13 +93,36 @@
     <div wire:loading.remove x-show="viewMode === 'grid'">
         @if($works->isEmpty())
             <div class="text-center py-20">
-                <div class="text-6xl mb-4">📭</div>
-                <p class="text-gray-400">ไม่พบผลลัพธ์</p>
+                <div class="text-6xl mb-4">{{ $tab === 'my' ? '📭' : '📭' }}</div>
+                @if($tab === 'my')
+                    <p class="text-gray-400 mb-4">คุณยังไม่มีงาน</p>
+                    <a href="{{ route('frontend.works.create') }}"
+                       class="inline-block px-6 py-2.5 bg-orange-500 hover:bg-orange-400 text-white font-bold rounded-xl transition">
+                        ＋ สร้างงานแรกของคุณ
+                    </a>
+                @else
+                    <p class="text-gray-400">ไม่พบผลลัพธ์</p>
+                @endif
             </div>
         @else
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
                 @foreach($works as $work)
-                    <div class="group bg-gray-900 rounded-xl overflow-hidden hover:ring-2 hover:ring-orange-500/40 transition">
+                    <div class="group bg-gray-900 rounded-xl overflow-hidden hover:ring-2 hover:ring-orange-500/40 transition relative">
+                        {{-- Owner badge --}}
+                        @if($tab === 'my' || (auth()->check() && auth()->id() === $work->author_id))
+                            <div class="absolute top-2 right-2 z-10 flex gap-1">
+                                @php
+                                    $statusColor = match($work->work_status) {
+                                        'stand-by' => 'bg-green-500',
+                                        'busy' => 'bg-yellow-500',
+                                        'close' => 'bg-red-500',
+                                        default => 'bg-gray-500',
+                                    };
+                                @endphp
+                                <span class="{{ $statusColor }} w-2.5 h-2.5 rounded-full"></span>
+                            </div>
+                        @endif
+
                         <a href="{{ route('frontend.works.show', $work->id) }}">
                             <div class="aspect-video bg-gray-800 overflow-hidden">
                                 <img src="{{ $work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/400/300' }}"
@@ -85,6 +147,25 @@
                                     </button>
                                 </div>
                             </div>
+
+                            {{-- Owner quick actions --}}
+                            @if($tab === 'my' && auth()->check() && auth()->id() === $work->author_id)
+                            <div class="flex items-center gap-2 mt-2 pt-2 border-t border-gray-800">
+                                <a href="{{ route('frontend.works.edit', $work->id) }}"
+                                   class="flex-1 text-center text-xs py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition">
+                                    ✏️ แก้ไข
+                                </a>
+                                <a href="{{ route('frontend.works.bookings', $work->id) }}"
+                                   class="flex-1 text-center text-xs py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition">
+                                    📋 จอง
+                                </a>
+                                <button wire:click="deleteWork({{ $work->id }})"
+                                        wire:confirm="ลบงานนี้?"
+                                        class="text-xs py-1.5 px-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg transition">
+                                    🗑
+                                </button>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 @endforeach
