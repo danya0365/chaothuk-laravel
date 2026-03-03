@@ -1,13 +1,48 @@
+import lodash from "lodash";
+import jQuery from "jquery";
+import axios from "axios";
+import Swal from "sweetalert2";
+import moment from "moment";
+import "moment/locale/th";
+import "flowbite";
+import "flowbite/dist/datepicker.js";
+import dayjs from "dayjs";
+import utc from "dayjs-plugin-utc";
+import "dayjs/locale/th";
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.css";
+
+flatpickr(".datetime", {
+    enableTime: true,
+    dateFormat: "Z",
+    altInput: true,
+    altFormat: "l j F Y, H:m",
+});
+
+flatpickr(".date", {
+    enableTime: false,
+    altInput: true,
+    altFormat: "l j F Y",
+});
+
+moment.locale("th");
+dayjs.locale("th");
+dayjs.extend(utc);
+
+window._ = lodash;
+
+window.moment = moment;
+window.dayjs = dayjs;
+window.flatpickr = flatpickr;
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-import axios from 'axios';
 window.axios = axios;
 
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
@@ -30,3 +65,11 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
 //     enabledTransports: ['ws', 'wss'],
 // });
+
+try {
+    window.$ = window.jQuery = jQuery;
+} catch (e) {}
+
+try {
+    window.Swal = Swal;
+} catch (e) {}

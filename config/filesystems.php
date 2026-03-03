@@ -9,7 +9,7 @@ return [
     |
     | Here you may specify the default filesystem disk that should be used
     | by the framework. The "local" disk, as well as a variety of cloud
-    | based disks are available to your application. Just store away!
+    | based disks are available to your application for file storage.
     |
     */
 
@@ -20,9 +20,9 @@ return [
     | Filesystem Disks
     |--------------------------------------------------------------------------
     |
-    | Here you may configure as many filesystem "disks" as you wish, and you
-    | may even configure multiple disks of the same driver. Defaults have
-    | been set up for each driver as an example of the required values.
+    | Below you may configure as many filesystem disks as necessary, and you
+    | may even configure multiple disks for the same driver. Examples for
+    | most supported storage drivers are configured here for reference.
     |
     | Supported Drivers: "local", "ftp", "sftp", "s3"
     |
@@ -34,14 +34,70 @@ return [
             'driver' => 'local',
             'root' => storage_path('app'),
             'throw' => false,
+            'permissions' => [
+                'file' => [
+                    'public' => 0644,
+                    'private' => 0644,
+                ],
+                'dir' => [
+                    'public' => 0755,
+                    'private' => 0755,
+                ],
+            ],
         ],
 
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
+            'permissions' => [
+                'file' => [
+                    'public' => 0644,
+                    'private' => 0644,
+                ],
+                'dir' => [
+                    'public' => 0755,
+                    'private' => 0755,
+                ],
+            ],
+        ],
+
+        'images' => [
+            'driver' => 'local',
+            'root' => storage_path('app/images'),
+            'url' => env('APP_URL') . '/images',
+            'visibility' => 'public',
+            'throw' => false,
+            'permissions' => [
+                'file' => [
+                    'public' => 0644,
+                    'private' => 0644,
+                ],
+                'dir' => [
+                    'public' => 0755,
+                    'private' => 0755,
+                ],
+            ],
+        ],
+
+        'documents' => [
+            'driver' => 'local',
+            'root' => storage_path('app/documents'),
+            'url' => env('APP_URL') . '/documents',
+            'visibility' => 'public',
+            'throw' => false,
+            'permissions' => [
+                'file' => [
+                    'public' => 0644,
+                    'private' => 0644,
+                ],
+                'dir' => [
+                    'public' => 0755,
+                    'private' => 0755,
+                ],
+            ],
         ],
 
         's3' => [
@@ -71,6 +127,8 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
+        public_path('images') => storage_path('app/images'),
+        public_path('documents') => storage_path('app/documents'),
     ],
 
 ];
