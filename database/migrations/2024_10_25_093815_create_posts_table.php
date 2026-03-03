@@ -13,7 +13,7 @@ return new class () extends Migration {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable()->index();
-            $table->string('content')->nullable()->index();
+            $table->longText('content')->nullable();
             $table->jsonb('images')->nullable();
             $table->tinyInteger('rating')->default(0);
             $table->unsignedBigInteger('author_id')->index();

@@ -8,23 +8,29 @@ use App\Enums\NotificationType;
 use App\Enums\UserActivityType;
 use App\Models\Banner;
 use App\Models\Category;
+use App\Models\Favorite;
 use App\Models\IssuePoint;
 use App\Models\MessengerChannel;
 use App\Models\MessengerConversation;
 use App\Models\MessengerParticipant;
 use App\Models\Notification;
+use App\Models\Portfolio;
 use App\Models\Post;
 use App\Models\PostLike;
 use App\Models\Recruit;
 use App\Models\RecruitReview;
+use App\Models\SessionLocationLog;
 use App\Models\User;
 use App\Models\UserActivityLog;
 use App\Models\UserNotification;
 use App\Models\UserPoint;
 use App\Models\Work;
+use App\Models\WorkAvailability;
+use App\Models\WorkBlockedDate;
 use App\Models\WorkBooking;
 use App\Models\WorkLike;
 use App\Models\WorkReview;
+use App\Models\WorkSession;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -76,6 +82,12 @@ class MockSeeder extends Seeder
         DB::table('issue_point_status_logs')->truncate();
         DB::table('issue_points')->truncate();
         DB::table('user_activity_logs')->truncate();
+        DB::table('favorites')->truncate();
+        DB::table('portfolios')->truncate();
+        DB::table('session_location_logs')->truncate();
+        DB::table('work_sessions')->truncate();
+        DB::table('work_blocked_dates')->truncate();
+        DB::table('work_availabilities')->truncate();
         Notification::truncate();
 
         // Delete mock works/recruits and their mock authors
@@ -412,6 +424,125 @@ class MockSeeder extends Seeder
         $topWorksCount = \App\Models\ProvinceTopWork::currentMonth()->count();
         $this->command->info("  → {$topWorksCount} province top works calculated");
 
+        // ─── 19. Favorites (150) ────────────────────────────────────────────
+        $this->command->info('Creating 150 favorites...');
+        for ($i = 0; $i < 150; $i++) {
+            $userId = $userIds[array_rand($userIds)];
+            $isWork = rand(0, 1);
+            $type   = $isWork ? Work::class : Recruit::class;
+            $id     = $isWork ? $workIds[array_rand($workIds)] : $recruitIds[array_rand($recruitIds)];
+            Favorite::firstOrCreate([
+                'user_id'          => $userId,
+                'favoritable_type' => $type,
+                'favoritable_id'   => $id,
+            ]);
+        }
+
+        // ─── 20. Portfolios (60) ────────────────────────────────────────────
+        $this->command->info('Creating 60 portfolios...');
+        $portfolioTitles = [
+            'ขนส่งสินค้าข้ามจังหวัด', 'ซ่อมเครื่องยนต์', 'ขนย้ายบ้าน',
+            'ล้างแอร์', 'ทาสีบ้าน', 'ซ่อมประปา', 'งานไฟฟ้า',
+            'ขนส่งเฟอร์นิเจอร์', 'รับจ้างทั่วไป', 'งานเชื่อม',
+        ];
+        foreach ($workerIds as $wIdx => $wId) {
+            $numPortfolios = rand(1, 3);
+            for ($p = 0; $p < $numPortfolios; $p++) {
+                Portfolio::create([
+                    'user_id'      => $wId,
+                    'title'        => $portfolioTitles[array_rand($portfolioTitles)] . ' #' . ($wIdx + 1) . '-' . ($p + 1),
+                    'description'  => 'ผลงานตัวอย่างของฉัน งานเสร็จเรียบร้อย ลูกค้าพอใจ',
+                    'images'       => [
+                        'https://picsum.photos/seed/port' . $wId . $p . 'a/800/600',
+                        'https://picsum.photos/seed/port' . $wId . $p . 'b/800/600',
+                    ],
+                    'work_type_id' => $workTypeIds[array_rand($workTypeIds)],
+                ]);
+            }
+        }
+
+        // ─── 21. Work Availabilities ─────────────────────────────────────────
+        $this->command->info('Creating work availabilities...');
+        foreach ($workIds as $wkId) {
+            // Mon-Fri 08:00-17:00
+            for ($day = 1; $day <= 5; $day++) {
+                WorkAvailability::create([
+                    'work_id'      => $wkId,
+                    'day_of_week'  => $day,
+                    'start_time'   => '08:00',
+                    'end_time'     => '17:00',
+                    'is_available' => true,
+                ]);
+            }
+            // Sat 09:00-12:00 (50% chance)
+            if (rand(0, 1)) {
+                WorkAvailability::create([
+                    'work_id'      => $wkId,
+                    'day_of_week'  => 6,
+                    'start_time'   => '09:00',
+                    'end_time'     => '12:00',
+                    'is_available' => true,
+                ]);
+            }
+            // Sun = off (30% chance of having blocked dates)
+            if (rand(1, 100) <= 30) {
+                WorkBlockedDate::create([
+                    'work_id'      => $wkId,
+                    'blocked_date' => now()->addDays(rand(1, 30))->toDateString(),
+                    'reason'       => fake()->randomElement(['ลาพักร้อน', 'วันหยุดนักขัตฤกษ์', 'ซ่อมรถ', 'ธุระส่วนตัว']),
+                ]);
+            }
+        }
+
+        // ─── 22. Work Sessions (80) + Location Logs ──────────────────────────
+        $this->command->info('Creating 80 work sessions with location logs...');
+        $sessionStatuses = ['active', 'paused', 'completed', 'completed', 'completed', 'cancelled'];
+        for ($i = 0; $i < 80; $i++) {
+            $isWork   = rand(0, 1);
+            $workerId = $workerIds[array_rand($workerIds)];
+            $custId   = $employerIds[array_rand($employerIds)];
+            $status   = $sessionStatuses[array_rand($sessionStatuses)];
+            $startedAt = now()->subDays(rand(1, 60))->subHours(rand(1, 8));
+            $duration  = rand(30, 480);
+            $endedAt   = in_array($status, ['completed', 'cancelled']) ? $startedAt->copy()->addMinutes($duration) : null;
+
+            // 60% from booking, 40% walk-in
+            $hasBooking = rand(1, 100) <= 60;
+
+            $session = WorkSession::create([
+                'sessionable_type'  => $isWork ? Work::class : Recruit::class,
+                'sessionable_id'    => $isWork ? $workIds[array_rand($workIds)] : $recruitIds[array_rand($recruitIds)],
+                'worker_id'         => $workerId,
+                'customer_id'       => $custId,
+                'bookingable_type'  => $hasBooking ? ($isWork ? WorkBooking::class : \App\Models\RecruitBooking::class) : null,
+                'bookingable_id'    => $hasBooking ? rand(1, $isWork ? 200 : 100) : null,
+                'started_at'        => $startedAt,
+                'ended_at'          => $endedAt,
+                'total_duration_minutes' => $endedAt ? $duration : 0,
+                'price_agreed'      => fake()->randomElement([500, 800, 1000, 1500, 2000, 3000, 5000]),
+                'status'            => $status,
+                'worker_confirm'    => $status === 'completed' ? 'confirmed' : 'pending',
+                'customer_confirm'  => $status === 'completed' ? 'confirmed' : 'pending',
+            ]);
+
+            // Add 5-15 location logs per session
+            $baseLat = fake()->latitude(13.5, 14.5);
+            $baseLng = fake()->longitude(100.0, 101.0);
+            $logCount = rand(5, 15);
+            for ($l = 0; $l < $logCount; $l++) {
+                SessionLocationLog::create([
+                    'session_id'  => $session->id,
+                    'user_id'     => $workerId,
+                    'latitude'    => $baseLat + ($l * 0.001 * (rand(0, 1) ? 1 : -1)),
+                    'longitude'   => $baseLng + ($l * 0.001 * (rand(0, 1) ? 1 : -1)),
+                    'accuracy'    => rand(5, 50),
+                    'speed'       => rand(0, 80) / 10,
+                    'heading'     => rand(0, 360),
+                    'recorded_at' => $startedAt->copy()->addMinutes($l * 3),
+                ]);
+            }
+        }
+
         Model::reguard();
 
         $this->command->info('✅ MockSeeder complete!');
@@ -431,6 +562,11 @@ class MockSeeder extends Seeder
                 ['issue_points',           5],
                 ['user_points',           50],
                 ['user_activity_logs',   100],
+                ['favorites',            150],
+                ['portfolios',           '~60'],
+                ['work_availabilities',  '~600'],
+                ['work_sessions',         80],
+                ['session_location_logs','~800'],
             ]
         );
     }
