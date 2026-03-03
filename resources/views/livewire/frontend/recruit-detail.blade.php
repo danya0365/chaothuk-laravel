@@ -51,8 +51,7 @@
 
         {{-- Employer --}}
         <div class="bg-gray-900 rounded-xl p-4 flex items-center gap-4">
-            <img src="{{ $recruit->author?->profile_image ?? 'https://ui-avatars.com/api/?name='.urlencode($recruit->author?->name ?? 'U') }}"
-                 class="w-12 h-12 rounded-full object-cover ring-2 ring-green-500/30" alt="">
+            <x-avatar :src="$recruit->author?->profile_image" :name="$recruit->author?->name" size="w-12 h-12" :border="false" class="ring-2 ring-green-500/30" />
             <div>
                 <p class="font-semibold text-white">{{ $recruit->author?->name }}</p>
                 <p class="text-gray-400 text-sm">ผู้ประกาศ</p>

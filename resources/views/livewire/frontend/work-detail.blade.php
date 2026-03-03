@@ -185,8 +185,7 @@
         ═══════════════════════════════════════════════════════════════════ --}}
         <a href="{{ route('frontend.reputation', $work->author_id) }}"
            class="bg-gray-900 rounded-2xl p-4 flex items-center gap-4 hover:ring-2 hover:ring-orange-500/40 transition block group">
-            <img src="{{ $work->author?->profile_image ?? 'https://ui-avatars.com/api/?name='.urlencode($work->author?->name ?? 'U') }}"
-                 class="w-14 h-14 rounded-xl object-cover ring-2 ring-orange-500/30" alt="">
+            <x-avatar :src="$work->author?->profile_image" :name="$work->author?->name" size="w-14 h-14" :border="false" class="ring-2 ring-orange-500/30" />
             <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2">
                     <p class="font-bold text-white group-hover:text-orange-400 transition">{{ $work->author?->name }}</p>

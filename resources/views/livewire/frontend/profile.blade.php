@@ -6,10 +6,7 @@
     <div class="bg-gradient-to-br from-gray-900 via-gray-900 to-orange-500/5 rounded-2xl p-6 mb-6 border border-gray-800/50">
         <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5">
             {{-- Avatar --}}
-            <div class="relative flex-shrink-0">
-                <img src="{{ auth()->user()->profile_image ?: 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()->name ?? 'U').'&background=f97316&color=fff&size=200' }}"
-                     class="w-24 h-24 rounded-2xl object-cover ring-4 ring-orange-500/30 shadow-lg shadow-orange-500/10" alt="Avatar">
-            </div>
+            <x-avatar :src="auth()->user()->profile_image" :name="auth()->user()->name" size="2xl" :border="false" class="ring-4 ring-orange-500/30 shadow-lg shadow-orange-500/10" />
 
             {{-- Name & Info --}}
             <div class="flex-1 text-center sm:text-left min-w-0">

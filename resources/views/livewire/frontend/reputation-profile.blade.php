@@ -16,8 +16,7 @@
         <div class="absolute bottom-0 left-0 w-32 h-32 bg-orange-500/3 rounded-full -ml-8 -mb-8"></div>
 
         <div class="flex items-start gap-5 relative z-10">
-            <img src="{{ $user['avatar'] }}"
-                 class="w-24 h-24 rounded-2xl object-cover ring-3 ring-orange-500/50 shadow-lg shadow-orange-500/10" alt="">
+            <x-avatar :src="$user['avatar'] ?? null" :name="$user['full_name'] ?? $user['name'] ?? 'U'" size="2xl" :border="false" class="ring-3 ring-orange-500/50 shadow-lg shadow-orange-500/10" />
             <div class="flex-1 min-w-0">
                 <h1 class="text-2xl font-bold text-white">{{ $user['full_name'] ?? $user['name'] }}</h1>
 
@@ -229,8 +228,7 @@
             @foreach($reviews as $review)
                 <div class="border-b border-gray-800 pb-4 last:border-0 last:pb-0">
                     <div class="flex items-center gap-3 mb-2">
-                        <img src="{{ $review['reviewer_avatar'] ?: 'https://ui-avatars.com/api/?name=' . urlencode($review['reviewer_name']) }}"
-                             class="w-9 h-9 rounded-full object-cover flex-shrink-0" alt="">
+                        <x-avatar :src="$review['reviewer_avatar'] ?? null" :name="$review['reviewer_name'] ?? 'U'" size="w-9 h-9" :border="false" />
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-2">
                                 <span class="text-white text-sm font-semibold">{{ $review['reviewer_name'] }}</span>

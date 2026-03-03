@@ -35,9 +35,8 @@
                     🔔
                 </a>
                 <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" class="w-8 h-8 rounded-full overflow-hidden ring-2 ring-orange-500/50 cursor-pointer">
-                        <img src="{{ auth()->user()?->profile_image ?? 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()?->name ?? 'U') }}"
-                             class="w-full h-full object-cover" alt="profile">
+                    <button @click="open = !open" class="cursor-pointer transition hover:scale-105 active:scale-95">
+                        <x-avatar :src="auth()->user()?->profile_image" :name="auth()->user()?->name" size="sm" :border="false" class="ring-2 ring-orange-500/50" />
                     </button>
                     <div x-show="open" @click.away="open = false"
                          x-transition:enter="transition ease-out duration-100"

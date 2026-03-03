@@ -48,8 +48,7 @@
                 {{-- Profile Card --}}
                 <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
                     <div class="flex items-center gap-4 mb-5">
-                        <img src="{{ $user['photo_url'] ?? 'https://i.pravatar.cc/80' }}"
-                             alt="" class="w-16 h-16 rounded-2xl object-cover ring-2 ring-white/10">
+                        <x-avatar :src="$user['photo_url'] ?? null" :name="$user['full_name'] ?? 'U'" size="xl" :border="false" class="ring-2 ring-white/10" />
                         <div>
                             <h2 class="text-lg font-bold text-white">{{ $user['full_name'] ?? '-' }}</h2>
                             <p class="text-sm text-gray-400">{{ $user['email'] ?? '-' }}</p>

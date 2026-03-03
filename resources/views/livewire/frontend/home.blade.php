@@ -102,7 +102,7 @@
                                 </div>
                                 @if($fw['author_name'])
                                 <div class="flex items-center gap-2 bg-black/40 backdrop-blur rounded-full px-3 py-1.5">
-                                    <img src="{{ $fw['author_avatar'] }}" class="w-6 h-6 rounded-full object-cover" alt="">
+                                    <x-avatar :src="$fw['author_avatar'] ?? null" :name="$fw['author_name'] ?? 'U'" size="xs" :border="false" />
                                     <span class="text-white text-xs font-medium">{{ $fw['author_name'] }}</span>
                                 </div>
                                 @endif
@@ -189,7 +189,7 @@
                             </div>
                             <div class="flex items-center justify-between mt-1.5">
                                 <div class="flex items-center gap-1.5">
-                                    <img src="{{ $tw['author_avatar'] }}" class="w-4 h-4 rounded-full object-cover" alt="">
+                                    <x-avatar :src="$tw['author_avatar'] ?? null" :name="$tw['author_name'] ?? 'U'" size="w-4 h-4" :border="false" />
                                     <span class="text-gray-400 text-[11px] truncate max-w-[80px]">{{ $tw['author_name'] }}</span>
                                 </div>
                                 @if($tw['type'])

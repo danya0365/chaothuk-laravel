@@ -72,8 +72,7 @@
     @if(isset($portfolio['user']))
     <a href="{{ route('frontend.reputation', $portfolio['user']['id']) }}"
        class="bg-gray-900 rounded-2xl p-4 flex items-center gap-4 hover:ring-2 hover:ring-orange-500/40 transition block group mb-4">
-        <img src="{{ $portfolio['user']['profile_image'] ?? 'https://ui-avatars.com/api/?name='.urlencode($portfolio['user']['name'] ?? 'U') }}"
-             class="w-12 h-12 rounded-xl object-cover ring-2 ring-orange-500/30" alt="">
+        <x-avatar :src="$portfolio['user']['profile_image'] ?? null" :name="$portfolio['user']['name'] ?? 'U'" size="w-12 h-12" :border="false" class="ring-2 ring-orange-500/30" />
         <div class="flex-1 min-w-0">
             <p class="font-bold text-white group-hover:text-orange-400 transition">{{ $portfolio['user']['name'] }}</p>
             <p class="text-gray-500 text-xs">ดูผลงานทั้งหมด</p>
