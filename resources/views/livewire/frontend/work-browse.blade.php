@@ -61,7 +61,22 @@
             <option value="rating">คะแนนสูงสุด</option>
             <option value="price_asc">ราคาต่ำ → สูง</option>
             <option value="price_desc">ราคาสูง → ต่ำ</option>
+            <option value="distance" x-show="$wire.userLat" disabled>📍 ระยะทางใกล้สุด</option>
         </select>
+
+        <div x-data="{
+            handleLocationPicked(e) {
+                @this.set('userLat', e.detail.lat);
+                @this.set('userLng', e.detail.lng);
+                @this.set('sortBy', 'distance');
+            }
+        }" @location-picked.window="handleLocationPicked">
+            <x-location-picker
+                wire:model.lat="userLat"
+                wire:model.lng="userLng"
+                label="📍 ใกล้ฉัน"
+                class="h-[46px] {{ $sortBy === 'distance' ? 'bg-orange-500/20 text-orange-400 border-orange-500/50 ring-1 ring-orange-500/50' : '' }}" />
+        </div>
     </div>
 
     {{-- View Toggle + Count --}}
@@ -136,7 +151,18 @@
                             </a>
                             <p class="text-orange-400 font-bold">฿{{ number_format($work->price) }}</p>
                             <div class="flex items-center justify-between mt-2">
-                                <p class="text-gray-500 text-xs">📍 {{ $work->province?->name_th ?? '-' }}</p>
+                                <div class="flex flex-col gap-0.5">
+                                    <p class="text-gray-500 text-xs">📍 {{ $work->province?->name_th ?? '-' }}</p>
+                                    @if(isset($work->distance))
+                                        <p class="text-orange-400 text-[10px] font-semibold">
+                                            @if($work->distance < 1)
+                                                ({{ number_format($work->distance * 1000) }} เมตร)
+                                            @else
+                                                ({{ number_format($work->distance, 1) }} กม.)
+                                            @endif
+                                        </p>
+                                    @endif
+                                </div>
                                 <div class="flex items-center gap-2">
                                     @if($work->avg_review_rating > 0)
                                         <span class="text-yellow-400 text-xs">⭐ {{ number_format($work->avg_review_rating,1) }}</span>

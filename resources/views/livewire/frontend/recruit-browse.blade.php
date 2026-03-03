@@ -59,7 +59,22 @@
             <option value="latest">ล่าสุด</option>
             <option value="budget_desc">งบสูง → ต่ำ</option>
             <option value="budget_asc">งบต่ำ → สูง</option>
+            <option value="distance" x-show="$wire.userLat" disabled>📍 ระยะทางใกล้สุด</option>
         </select>
+
+        <div x-data="{
+            handleLocationPicked(e) {
+                @this.set('userLat', e.detail.lat);
+                @this.set('userLng', e.detail.lng);
+                @this.set('sortBy', 'distance');
+            }
+        }" @location-picked.window="handleLocationPicked">
+            <x-location-picker
+                wire:model.lat="userLat"
+                wire:model.lng="userLng"
+                label="📍 ใกล้ฉัน"
+                class="h-[46px] {{ $sortBy === 'distance' ? 'bg-green-500/20 text-green-400 border-green-500/50 ring-1 ring-green-500/50' : '' }}" />
+        </div>
     </div>
 
     {{-- Count --}}
@@ -104,8 +119,17 @@
                                     {{ $recruit->title }}
                                 </p>
                                 <p class="text-green-400 font-bold text-sm">฿{{ number_format($recruit->budget) }}/เดือน</p>
-                                <div class="flex items-center gap-2 mt-1">
+                                <div class="flex items-center gap-2 mt-1 flex-wrap">
                                     <p class="text-gray-500 text-xs">📍 {{ $recruit->province?->name_th ?? '-' }}</p>
+                                    @if(isset($recruit->distance))
+                                        <p class="text-green-400 text-[10px] font-semibold">
+                                            @if($recruit->distance < 1)
+                                                ({{ number_format($recruit->distance * 1000) }} ม.)
+                                            @else
+                                                ({{ number_format($recruit->distance, 1) }} กม.)
+                                            @endif
+                                        </p>
+                                    @endif
                                     @if($recruit->workType)
                                         <span class="text-gray-600 text-[10px]">{{ $recruit->workType->name }}</span>
                                     @endif

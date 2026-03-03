@@ -17,8 +17,10 @@ class RecruitBrowse extends Component
     public string $provinceId = '';
     public string $workTypeId = '';
     public string $sortBy = 'latest';
+    public ?float $userLat = null;
+    public ?float $userLng = null;
 
-    protected $queryString = ['tab', 'search', 'provinceId', 'workTypeId', 'sortBy'];
+    protected $queryString = ['tab', 'search', 'provinceId', 'workTypeId', 'sortBy', 'userLat', 'userLng'];
 
     public function updatedTab(): void { $this->resetPage(); }
     public function updatedSearch(): void { $this->resetPage(); }
@@ -53,8 +55,16 @@ class RecruitBrowse extends Component
         $query = match($this->sortBy) {
             'budget_asc'  => $query->orderBy('budget'),
             'budget_desc' => $query->orderByDesc('budget'),
+            'distance' => $query->when($this->userLat !== null && $this->userLng !== null, function ($q) {
+                return $q->selectRaw('recruits.*, ( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance', [$this->userLat, $this->userLng, $this->userLat])
+                         ->orderBy('distance');
+            }, fn($q) => $q->latest()),
             default       => $query->latest(),
         };
+
+        if ($this->sortBy !== 'distance') {
+            $query->select('recruits.*');
+        }
 
         $recruits   = $query->paginate(12);
         $provinces  = Province::orderBy('name_th')->get();
