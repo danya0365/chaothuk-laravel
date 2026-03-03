@@ -31,7 +31,7 @@ class Home extends Component
                 'price'         => $f->work->price,
                 'primary_image' => $f->work->primary_image,
                 'province'      => $f->work->province?->name_th,
-                'type'          => $f->work->workType?->name,
+                'type'          => $f->work->workType?->title,
                 'rating'        => $f->work->avg_review_rating,
                 'likes'         => $f->work->like_count ?? 0,
                 'author_name'   => $f->work->author?->name,
@@ -51,7 +51,7 @@ class Home extends Component
                 'province'     => ['name_th' => $w->province?->name_th],
                 'rating'       => $w->avg_review_rating,
                 'likes'        => $w->like_count ?? 0,
-                'type'         => $w->workType?->name,
+                'type'         => $w->workType?->title,
             ])
             ->toArray();
 
@@ -67,7 +67,7 @@ class Home extends Component
                 'price'         => $pt->work->price,
                 'primary_image' => $pt->work->primary_image,
                 'province'      => $pt->province?->name_th,
-                'type'          => $pt->work->workType?->name,
+                'type'          => $pt->work->workType?->title,
                 'rating'        => $pt->avg_rating,
                 'score'         => $pt->total_score,
                 'bookings'      => $pt->booking_count,

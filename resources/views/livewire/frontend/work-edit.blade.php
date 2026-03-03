@@ -80,7 +80,7 @@
                         class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-gray-300 focus:outline-none focus:border-orange-500 transition">
                     <option value="">เลือกประเภท</option>
                     @foreach($workTypes as $wt)
-                        <option value="{{ $wt->id }}">{{ $wt->name }}</option>
+                        <option value="{{ $wt->id }}">{{ $wt->title }}</option>
                     @endforeach
                 </select>
                 @error('workTypeId')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror

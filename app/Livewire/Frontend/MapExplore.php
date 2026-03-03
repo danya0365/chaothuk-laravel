@@ -27,7 +27,7 @@ class MapExplore extends Component
                 'lat'       => (float) $w->latitude,
                 'lng'       => (float) $w->longitude,
                 'province'  => $w->province?->name_th,
-                'type'      => $w->workType?->title ?? $w->workType?->name,
+                'type'      => $w->workType?->title ?? $w->workType?->title,
                 'rating'    => $w->avg_review_rating,
                 'kind'      => 'work',
             ])
@@ -47,7 +47,7 @@ class MapExplore extends Component
                 'lat'       => (float) $r->latitude,
                 'lng'       => (float) $r->longitude,
                 'province'  => $r->province?->name_th,
-                'type'      => $r->workType?->title ?? $r->workType?->name,
+                'type'      => $r->workType?->title ?? $r->workType?->title,
                 'rating'    => 0,
                 'kind'      => 'recruit',
             ])

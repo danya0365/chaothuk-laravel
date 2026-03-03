@@ -18,7 +18,7 @@
                     {{ match($recruit->recruit_status) { 'stand-by'=>'🟢 รับสมัคร','busy'=>'🟡 ไม่ว่างตอนนี้','close'=>'🔴 ปิดรับสมัคร',default=>$recruit->recruit_status } }}
                 </span>
                 <span class="text-gray-400">📍 {{ $recruit->province?->name_th ?? '-' }}</span>
-                <span class="text-gray-400">🚛 {{ $recruit->workType?->name ?? '-' }}</span>
+                <span class="text-gray-400">🚛 {{ $recruit->workType?->title ?? '-' }}</span>
             </div>
             <h1 class="text-2xl font-bold text-white">{{ $recruit->title }}</h1>
             <p class="text-3xl font-black text-green-400 mt-1">฿{{ number_format($recruit->budget) }}<span class="text-sm font-normal text-gray-400">/เดือน</span></p>

@@ -54,7 +54,7 @@
             {{-- Tags row --}}
             <div class="flex items-center gap-2 flex-wrap mb-2">
                 <span class="bg-orange-500/20 text-orange-400 px-2.5 py-0.5 rounded-full text-xs font-semibold">
-                    {{ $work->workType?->name ?? '-' }}
+                    {{ $work->workType?->title ?? '-' }}
                 </span>
                 @foreach($work->categories as $cat)
                     <span class="bg-gray-800 text-gray-400 px-2 py-0.5 rounded-full text-[11px]">{{ $cat->name }}</span>

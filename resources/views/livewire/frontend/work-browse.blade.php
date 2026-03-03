@@ -48,9 +48,9 @@
 
         <select wire:model.live="workTypeId"
                 class="bg-gray-800 border border-gray-700 rounded-xl px-3 py-2.5 text-gray-300 focus:outline-none focus:border-orange-500 transition">
-            <option value="">🚛 ประเภทงานทั้งหมด</option>
+            <option value="">🚛 ทุกประเภท</option>
             @foreach($workTypes as $wt)
-                <option value="{{ $wt->id }}">{{ $wt->name }}</option>
+                <option value="{{ $wt->id }}">{{ $wt->title }}</option>
             @endforeach
         </select>
 

@@ -54,7 +54,7 @@ class ReputationProfile extends Component
                 'price'     => $w->price,
                 'image'     => $w->primary_image,
                 'province'  => $w->province?->name_th,
-                'type'      => $w->workType?->name,
+                'type'      => $w->workType?->title,
                 'rating'    => $w->avg_review_rating,
                 'likes'     => $w->like_count ?? 0,
                 'status'    => $w->work_status,

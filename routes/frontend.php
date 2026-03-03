@@ -13,6 +13,7 @@ use App\Livewire\Frontend\WorkEdit;
 use App\Livewire\Frontend\WorkBookings;
 use App\Livewire\Frontend\WorkCreate;
 use App\Livewire\Frontend\RecruitBrowse;
+use App\Livewire\Frontend\RecruitCreate;
 use App\Livewire\Frontend\RecruitDetail;
 use App\Livewire\Frontend\Search;
 use App\Livewire\Frontend\Profile;
@@ -37,6 +38,7 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
     Route::get('/works/create',  WorkCreate::class)->name('works.create')->middleware('auth');
     Route::get('/works/{id}',    WorkDetail::class)->name('works.show');
     Route::get('/recruits',      RecruitBrowse::class)->name('recruits');
+    Route::get('/recruits/create', RecruitCreate::class)->name('recruits.create')->middleware('auth');
     Route::get('/recruits/{id}', RecruitDetail::class)->name('recruits.show');
     Route::get('/search',        Search::class)->name('search');
     Route::get('/categories',    CategoryBrowse::class)->name('categories');
