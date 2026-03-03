@@ -244,11 +244,40 @@
         </div>
 
         {{-- ═══════════════════════════════════════════════════════════════════
+             5.5 WORK AVAILABILITY SCHEDULE
+        ═══════════════════════════════════════════════════════════════════ --}}
+        @php
+            $dayNames = [1 => 'จันทร์', 2 => 'อังคาร', 3 => 'พุธ', 4 => 'พฤหัสบดี', 5 => 'ศุกร์', 6 => 'เสาร์', 7 => 'อาทิตย์'];
+            $dayShort = [1 => 'จ', 2 => 'อ', 3 => 'พ', 4 => 'พฤ', 5 => 'ศ', 6 => 'ส', 7 => 'อา'];
+        @endphp
+        @if(!empty($availabilities))
+        <div class="bg-gray-900 rounded-2xl p-5">
+            <h2 class="font-bold text-white mb-3 flex items-center gap-2">🕐 ตารางเวลาให้บริการ</h2>
+            <div class="grid grid-cols-7 gap-1.5">
+                @for($d = 1; $d <= 7; $d++)
+                    <div class="text-center rounded-xl p-2 {{ isset($availabilities[$d]) ? 'bg-green-500/10 border border-green-500/30' : 'bg-gray-800/50 border border-gray-800' }}">
+                        <span class="block text-xs font-bold {{ isset($availabilities[$d]) ? 'text-green-400' : 'text-gray-600' }}">
+                            {{ $dayShort[$d] }}
+                        </span>
+                        @if(isset($availabilities[$d]))
+                            <span class="block text-[10px] text-green-300 mt-0.5 leading-tight">{{ $availabilities[$d] }}</span>
+                        @else
+                            <span class="block text-[10px] text-gray-600 mt-0.5">ปิด</span>
+                        @endif
+                    </div>
+                @endfor
+            </div>
+        </div>
+        @endif
+
+        {{-- ═══════════════════════════════════════════════════════════════════
              6. BOOKING CTA + CALENDAR (most actionable section)
         ═══════════════════════════════════════════════════════════════════ --}}
         <div class="bg-gray-900 rounded-2xl p-5"
              x-data="{
                  bookedDates: @js($bookedDates),
+                 availableDays: @js(array_keys($availabilities)),
+                 hasAvailability: {{ !empty($availabilities) ? 'true' : 'false' }},
                  currentMonth: new Date().getMonth(),
                  currentYear: new Date().getFullYear(),
                  today: new Date().toISOString().slice(0,10),
@@ -262,10 +291,19 @@
                  dateStr(day) {
                      return this.currentYear + '-' + String(this.currentMonth + 1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
                  },
+                 dayOfWeek(day) {
+                     // JS: 0=Sun..6=Sat → DB: 1=Mon..7=Sun
+                     const jsDay = new Date(this.currentYear, this.currentMonth, day).getDay();
+                     return jsDay === 0 ? 7 : jsDay;
+                 },
+                 isDayOff(day) {
+                     if (!this.hasAvailability) return false;
+                     return !this.availableDays.includes(this.dayOfWeek(day));
+                 },
                  isBooked(day) { return this.bookedDates.includes(this.dateStr(day)); },
                  isToday(day) { return this.dateStr(day) === this.today; },
                  isPast(day) { return this.dateStr(day) < this.today; },
-                 isAvailable(day) { return !this.isBooked(day) && !this.isPast(day); },
+                 isAvailable(day) { return !this.isBooked(day) && !this.isPast(day) && !this.isDayOff(day); },
                  selectDate(day) {
                      if (!this.isAvailable(day)) return;
                      const ds = this.dateStr(day);
@@ -306,8 +344,9 @@
                          class="aspect-square rounded-lg text-xs font-semibold flex items-center justify-center transition"
                          :class="{
                              'bg-red-500/20 text-red-400 ring-1 ring-red-500/30 cursor-not-allowed': isBooked(day),
+                             'bg-gray-800/30 text-gray-700 cursor-not-allowed line-through': isDayOff(day) && !isBooked(day) && !isPast(day),
                              'bg-green-500/10 text-green-400 hover:bg-green-500/30 hover:ring-2 hover:ring-green-400 cursor-pointer': isAvailable(day) && !isToday(day) && selectedDate !== dateStr(day),
-                             'bg-orange-500 text-white ring-2 ring-orange-400 font-black hover:bg-orange-400 cursor-pointer': isToday(day) && !isBooked(day),
+                             'bg-orange-500 text-white ring-2 ring-orange-400 font-black hover:bg-orange-400 cursor-pointer': isToday(day) && !isBooked(day) && !isDayOff(day),
                              'bg-gray-800/50 text-gray-600 cursor-not-allowed': isPast(day) && !isBooked(day) && !isToday(day),
                              'bg-blue-500 text-white ring-2 ring-blue-400 font-black': selectedDate === dateStr(day),
                          }"
@@ -322,6 +361,7 @@
                 <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-red-500/30 inline-block"></span> <span class="text-gray-500">ถูกจอง</span></span>
                 <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-blue-500 inline-block"></span> <span class="text-gray-500">เลือกอยู่</span></span>
                 <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-orange-500 inline-block"></span> <span class="text-gray-500">วันนี้</span></span>
+                <span class="flex items-center gap-1" x-show="hasAvailability"><span class="w-2.5 h-2.5 rounded bg-gray-800/50 inline-block border border-gray-700"></span> <span class="text-gray-500">วันหยุด</span></span>
             </div>
 
             {{-- Inline Booking Form --}}

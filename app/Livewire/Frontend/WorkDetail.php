@@ -3,6 +3,7 @@
 namespace App\Livewire\Frontend;
 
 use App\Models\Work;
+use App\Models\WorkAvailability;
 use App\Models\WorkBooking;
 use App\Models\WorkLike;
 use App\Models\WorkSession;
@@ -254,7 +255,15 @@ class WorkDetail extends Component
 
         $likeCount = WorkLike::where('work_id', $this->id)->count();
 
-        return view('livewire.frontend.work-detail', compact('isLiked', 'isFavorited', 'likeCount'))
+        $availabilities = WorkAvailability::where('work_id', $this->id)
+            ->where('is_available', true)
+            ->orderBy('day_of_week')
+            ->get()
+            ->groupBy('day_of_week')
+            ->map(fn ($slots) => $slots->map(fn ($s) => substr($s->start_time, 0, 5) . '-' . substr($s->end_time, 0, 5))->implode(', '))
+            ->toArray();
+
+        return view('livewire.frontend.work-detail', compact('isLiked', 'isFavorited', 'likeCount', 'availabilities'))
             ->layout('frontend.layout', ['title' => ($this->work->title ?? 'Work') . ' — Chaothuk']);
     }
 }
