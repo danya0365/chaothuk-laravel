@@ -16,6 +16,7 @@ use App\Livewire\Frontend\RecruitBrowse;
 use App\Livewire\Frontend\RecruitCreate;
 use App\Livewire\Frontend\RecruitDetail;
 use App\Livewire\Frontend\RecruitEdit;
+use App\Livewire\Frontend\RecruitBookings;
 use App\Livewire\Frontend\Search;
 use App\Livewire\Frontend\Profile;
 use App\Livewire\Frontend\Notifications;
@@ -55,7 +56,8 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
         Route::get('/messenger',     Messenger::class)->name('messenger');
         Route::get('/works/{id}/edit',     WorkEdit::class)->name('works.edit');
         Route::get('/works/{id}/bookings', WorkBookings::class)->name('works.bookings');
-        Route::get('/recruits/{id}/edit',  RecruitEdit::class)->name('recruits.edit');
+        Route::get('/recruits/{id}/edit',     RecruitEdit::class)->name('recruits.edit');
+        Route::get('/recruits/{id}/bookings', RecruitBookings::class)->name('recruits.bookings');
     });
 });
 

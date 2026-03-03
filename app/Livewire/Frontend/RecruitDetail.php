@@ -13,6 +13,8 @@ class RecruitDetail extends Component
     public int $id;
     public ?Recruit $recruit = null;
     public ?array $reviews = null;
+    public bool $isOwner = false;
+    public int $bookingsCount = 0;
 
     // Review form
     public bool $showReviewForm = false;
@@ -31,6 +33,8 @@ class RecruitDetail extends Component
     {
         $this->id = $id;
         $this->recruit = Recruit::with(['author', 'province', 'workType', 'categories'])->findOrFail($id);
+        $this->isOwner = auth()->check() && auth()->id() === $this->recruit->author_id;
+        $this->bookingsCount = RecruitBooking::where('recruit_id', $this->id)->count();
         $this->loadReviews();
     }
 

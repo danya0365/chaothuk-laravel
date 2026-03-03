@@ -24,6 +24,25 @@
             <p class="text-3xl font-black text-green-400 mt-1">฿{{ number_format($recruit->budget) }}<span class="text-sm font-normal text-gray-400">/เดือน</span></p>
         </div>
 
+        {{-- Owner Bar --}}
+        @if($isOwner)
+        <div class="bg-gradient-to-r from-green-500/10 to-green-600/5 border border-green-500/30 rounded-2xl p-4">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+                <span class="text-green-400 text-sm font-bold">👑 คุณเป็นเจ้าของประกาศนี้</span>
+                <div class="flex gap-2">
+                    <a href="{{ route('frontend.recruits.edit', $recruit->id) }}"
+                       class="px-4 py-2 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-xl text-sm transition">
+                        ✏️ แก้ไข
+                    </a>
+                    <a href="{{ route('frontend.recruits.bookings', $recruit->id) }}"
+                       class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl text-sm transition ring-1 ring-gray-700">
+                        📋 จัดการสมัคร ({{ $bookingsCount }})
+                    </a>
+                </div>
+            </div>
+        </div>
+        @endif
+
         {{-- Description --}}
         <div class="bg-gray-900 rounded-xl p-4">
             <h2 class="font-bold text-white mb-2">รายละเอียดงาน</h2>
