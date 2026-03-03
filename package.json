@@ -24,6 +24,7 @@
         "dayjs-plugin-utc": "^0.1.2",
         "flatpickr": "^4.6.13",
         "flowbite": "^2.3.0",
+        "maplibre-gl": "^4.7.1",
         "moment": "^2.30.1"
     }
 }
