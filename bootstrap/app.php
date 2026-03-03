@@ -43,6 +43,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'api/*',
         ]);
 
+        $middleware->redirectGuestsTo(function ($request) {
+            if ($request->is('frontend/*')) {
+                return route('frontend.auth.login');
+            }
+            return route('login');
+        });
+
         //$middleware->append(Cors::class); //
     })
     ->withExceptions(function (Exceptions $exceptions) {

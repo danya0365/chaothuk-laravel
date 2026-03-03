@@ -1,5 +1,8 @@
 <?php
 
+use App\Livewire\Frontend\Auth\Login as FrontendLogin;
+use App\Livewire\Frontend\Auth\Register as FrontendRegister;
+use App\Livewire\Frontend\Auth\ForgotPassword as FrontendForgotPassword;
 use App\Livewire\Frontend\Calendar;
 use App\Livewire\Frontend\CategoryBrowse;
 use App\Livewire\Frontend\Favorites;
@@ -40,6 +43,21 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('frontend')->name('frontend.')->group(function () {
+
+    // ─── Auth Pages (guest only) ──────────────────────────────────────
+    Route::middleware('guest')->prefix('auth')->name('auth.')->group(function () {
+        Route::get('/login',           FrontendLogin::class)->name('login');
+        Route::get('/register',        FrontendRegister::class)->name('register');
+        Route::get('/forgot-password', FrontendForgotPassword::class)->name('forgot-password');
+    });
+
+    // ─── Logout (auth only) ───────────────────────────────────────────
+    Route::post('/auth/logout', function () {
+        auth()->logout();
+        session()->invalidate();
+        session()->regenerateToken();
+        return redirect()->route('frontend.auth.login');
+    })->middleware('auth')->name('auth.logout');
 
     // ─── Public Routes ─────────────────────────────────────────────────
     Route::get('/',              Home::class)->name('home');

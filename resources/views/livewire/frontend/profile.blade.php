@@ -8,7 +8,7 @@
             <h1 class="text-xl font-bold text-white">{{ auth()->user()->name }}</h1>
             <p class="text-gray-400">{{ auth()->user()->email }}</p>
         </div>
-        <form method="POST" action="{{ route('logout') }}">
+        <form method="POST" action="{{ route('frontend.auth.logout') }}">
             @csrf
             <button type="submit" class="px-4 py-2 text-sm text-gray-400 border border-gray-700 rounded-full hover:border-red-500 hover:text-red-400 transition">
                 ออกจากระบบ

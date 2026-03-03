@@ -35,13 +35,37 @@
                    class="relative p-2 text-gray-400 hover:text-white transition">
                     🔔
                 </a>
-                <a href="{{ route('frontend.profile') }}"
-                   class="w-8 h-8 rounded-full overflow-hidden ring-2 ring-orange-500/50">
-                    <img src="{{ auth()->user()?->profile_image ?? 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()?->name ?? 'U') }}"
-                         class="w-full h-full object-cover" alt="profile">
-                </a>
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" class="w-8 h-8 rounded-full overflow-hidden ring-2 ring-orange-500/50 cursor-pointer">
+                        <img src="{{ auth()->user()?->profile_image ?? 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()?->name ?? 'U') }}"
+                             class="w-full h-full object-cover" alt="profile">
+                    </button>
+                    <div x-show="open" @click.away="open = false"
+                         x-transition:enter="transition ease-out duration-100"
+                         x-transition:enter-start="opacity-0 scale-95"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-75"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-95"
+                         class="absolute right-0 mt-2 w-44 bg-gray-900 border border-gray-800 rounded-xl shadow-2xl py-1 z-50"
+                         style="display: none;">
+                        <div class="px-3 py-2 border-b border-gray-800">
+                            <p class="text-sm font-medium text-white truncate">{{ auth()->user()?->name }}</p>
+                            <p class="text-xs text-gray-500 truncate">{{ auth()->user()?->email }}</p>
+                        </div>
+                        <a href="{{ route('frontend.profile') }}" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800 transition">
+                            👤 โปรไฟล์
+                        </a>
+                        <form method="POST" action="{{ route('frontend.auth.logout') }}">
+                            @csrf
+                            <button type="submit" class="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-gray-800 transition text-left">
+                                🚪 ออกจากระบบ
+                            </button>
+                        </form>
+                    </div>
+                </div>
             @else
-                <a href="{{ route('login') }}"
+                <a href="{{ route('frontend.auth.login') }}"
                    class="px-4 py-1.5 bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold rounded-full transition">
                     เข้าสู่ระบบ
                 </a>
@@ -131,6 +155,14 @@
                         <span>{{ $item['label'] }}</span>
                     </a>
                 @endforeach
+                <div class="border-t border-gray-800 my-1"></div>
+                <form method="POST" action="{{ route('frontend.auth.logout') }}">
+                    @csrf
+                    <button type="submit" class="flex items-center gap-2.5 px-3 py-2 transition text-sm text-red-400 hover:text-red-300 hover:bg-gray-800 w-full text-left">
+                        <span class="text-base w-6 text-center">🚪</span>
+                        <span>ออกจากระบบ</span>
+                    </button>
+                </form>
             @endauth
         </div>
     </div>
@@ -146,7 +178,7 @@
             <span class="text-[9px]">โปรไฟล์</span>
         </a>
     @else
-        <a href="{{ route('login') }}"
+        <a href="{{ route('frontend.auth.login') }}"
            class="flex flex-col items-center gap-0.5 w-full py-2.5 text-center text-orange-400 hover:bg-orange-500/10 transition">
             <span class="text-lg">🔑</span>
             <span class="text-[9px]">เข้าสู่ระบบ</span>
@@ -220,6 +252,21 @@
                         <span class="text-[10px]">{{ $item['label'] }}</span>
                     </a>
                 @endforeach
+                {{-- Profile + Logout --}}
+                <a href="{{ route('frontend.profile') }}" @click="mobileMore = false"
+                   class="flex flex-col items-center justify-center py-3 rounded-xl transition
+                          {{ request()->routeIs('frontend.profile') ? 'text-orange-400 bg-orange-500/10' : 'text-gray-400 hover:text-white hover:bg-gray-800' }}">
+                    <span class="text-xl mb-0.5">👤</span>
+                    <span class="text-[10px]">โปรไฟล์</span>
+                </a>
+                <form method="POST" action="{{ route('frontend.auth.logout') }}" class="contents">
+                    @csrf
+                    <button type="submit"
+                            class="flex flex-col items-center justify-center py-3 rounded-xl transition text-red-400 hover:text-red-300 hover:bg-gray-800">
+                        <span class="text-xl mb-0.5">🚪</span>
+                        <span class="text-[10px]">ออกจากระบบ</span>
+                    </button>
+                </form>
             @endauth
         </div>
     </div>
