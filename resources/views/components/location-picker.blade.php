@@ -51,10 +51,10 @@
                     </template>
                 </div>
                 <div class="flex gap-2 w-full sm:w-auto">
-                    <button @click="closeModal()" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-white font-bold transition">
+                    <button type="button" @click="closeModal()" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-white font-bold transition">
                         ยกเลิก
                     </button>
-                    <button @click="confirmLocation()" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-400 text-white font-bold transition">
+                    <button type="button" @click="confirmLocation()" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-400 text-white font-bold transition">
                         ✅ ยืนยันตำแหน่ง
                     </button>
                 </div>
@@ -100,6 +100,9 @@
                     return;
                 }
 
+                // Check if we need to auto-detect location
+                let needsDetection = (!this.pickerLat || !this.pickerLng);
+
                 // Default to Bangkok
                 let startLat = this.pickerLat || 13.7563;
                 let startLng = this.pickerLng || 100.5018;
@@ -141,10 +144,16 @@
                 });
 
                 this.map.on('click', (e) => {
-                    this.pickerLat = e.lngLat.lat;
-                    this.pickerLng = e.lngLat.lng;
-                    this.marker.setLngLat([this.pickerLng, this.pickerLat]);
+                    const { lat, lng } = e.lngLat;
+                    this.pickerLat = lat;
+                    this.pickerLng = lng;
+                    this.marker.setLngLat([lng, lat]);
                 });
+
+                // Auto-detect if no initial location was provided
+                if (needsDetection) {
+                    this.detectLocation();
+                }
             },
 
             openModal() {
@@ -171,11 +180,12 @@
                         }
                         this.loadingLoc = false;
                     },
-                    err => {
-                        alert('ไม่สามารถระบุตำแหน่งได้ กรุณาเปิด GPS และอนุญาตการเข้าถึงตำแหน่ง');
+                    (error) => {
+                        console.error("Geolocation error:", error);
+                        // Silently fail to Bangkok default if auto-detecting, otherwise alert wasn't necessary anyway since it falls back gracefully
                         this.loadingLoc = false;
                     },
-                    { enableHighAccuracy: true, timeout: 5000 }
+                    { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
                 );
             },
 
