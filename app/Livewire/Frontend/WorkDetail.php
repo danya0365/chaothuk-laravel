@@ -142,32 +142,42 @@ class WorkDetail extends Component
     public function toggleLike(): void
     {
         if (!auth()->check()) { $this->redirect(route('frontend.auth.login')); return; }
-        $existing = WorkLike::where('author_id', auth()->id())->where('work_id', $this->id)->first();
+
+        $existing = WorkLike::withTrashed()
+            ->where('author_id', auth()->id())
+            ->where('work_id', $this->id)
+            ->first();
+
         if ($existing) {
-            $existing->delete();
-            $this->work->decrement('like_count');
+            if ($existing->trashed()) {
+                $existing->restore();
+            } else {
+                $existing->forceDelete();
+            }
         } else {
             WorkLike::create(['author_id' => auth()->id(), 'work_id' => $this->id]);
-            $this->work->increment('like_count');
         }
-        $this->work->refresh();
     }
 
     public function toggleFavorite(): void
     {
         if (!auth()->check()) { $this->redirect(route('frontend.auth.login')); return; }
-        $existing = Favorite::where('user_id', auth()->id())
+
+        $deleted = Favorite::where('user_id', auth()->id())
             ->where('favoritable_type', Work::class)
             ->where('favoritable_id', $this->id)
-            ->first();
-        if ($existing) {
-            $existing->delete();
-        } else {
-            Favorite::create([
-                'user_id'          => auth()->id(),
-                'favoritable_type' => Work::class,
-                'favoritable_id'   => $this->id,
-            ]);
+            ->delete();
+
+        if (!$deleted) {
+            try {
+                Favorite::create([
+                    'user_id'          => auth()->id(),
+                    'favoritable_type' => Work::class,
+                    'favoritable_id'   => $this->id,
+                ]);
+            } catch (\Illuminate\Database\UniqueConstraintViolationException) {
+                // Already favorited (race condition) — ignore
+            }
         }
     }
 
@@ -242,7 +252,9 @@ class WorkDetail extends Component
             ? Favorite::where('user_id', auth()->id())->where('favoritable_type', Work::class)->where('favoritable_id', $this->id)->exists()
             : false;
 
-        return view('livewire.frontend.work-detail', compact('isLiked', 'isFavorited'))
+        $likeCount = WorkLike::where('work_id', $this->id)->count();
+
+        return view('livewire.frontend.work-detail', compact('isLiked', 'isFavorited', 'likeCount'))
             ->layout('frontend.layout', ['title' => ($this->work->title ?? 'Work') . ' — Chaothuk']);
     }
 }

@@ -80,7 +80,7 @@
                     <button wire:click="toggleLike"
                             class="flex items-center gap-1.5 px-4 py-2 rounded-full border transition
                                    {{ $isLiked ? 'border-red-500 text-red-400 bg-red-500/10' : 'border-gray-700 text-gray-400 hover:border-red-500 hover:text-red-400' }}">
-                        ❤️ {{ $work->like_count }}
+                        ❤️ {{ $likeCount }}
                     </button>
                 </div>
             </div>
@@ -93,7 +93,7 @@
                         <span class="text-gray-500 font-normal">({{ $work->reply_count ?? count($reviews ?? []) }})</span>
                     </span>
                 @endif
-                <span class="text-gray-500 flex items-center gap-1">❤️ {{ $work->like_count }} ถูกใจ</span>
+                <span class="text-gray-500 flex items-center gap-1">❤️ {{ $likeCount }} ถูกใจ</span>
                 <span class="text-gray-500 flex items-center gap-1">📋 {{ count($bookedDates) }} จอง</span>
                 <span class="text-gray-600 text-xs">เผยแพร่ {{ $work->created_at?->diffForHumans() }}</span>
             </div>
