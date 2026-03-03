@@ -9,6 +9,7 @@ use App\Models\WorkLike;
 use App\Models\WorkSession;
 use App\Models\UserReputation;
 use App\Models\Favorite;
+use App\Models\Portfolio;
 use Livewire\Component;
 
 class WorkDetail extends Component
@@ -263,7 +264,16 @@ class WorkDetail extends Component
             ->map(fn ($slots) => $slots->map(fn ($s) => substr($s->start_time, 0, 5) . '-' . substr($s->end_time, 0, 5))->implode(', '))
             ->toArray();
 
-        return view('livewire.frontend.work-detail', compact('isLiked', 'isFavorited', 'likeCount', 'availabilities'))
+        $workerPortfolios = $this->work?->author_id
+            ? Portfolio::with('workType')
+                ->where('user_id', $this->work->author_id)
+                ->latest()
+                ->limit(4)
+                ->get()
+                ->toArray()
+            : [];
+
+        return view('livewire.frontend.work-detail', compact('isLiked', 'isFavorited', 'likeCount', 'availabilities', 'workerPortfolios'))
             ->layout('frontend.layout', ['title' => ($this->work->title ?? 'Work') . ' — Chaothuk']);
     }
 }

@@ -13,6 +13,7 @@ use App\Livewire\Frontend\MyBookings;
 use App\Livewire\Frontend\MyPortfolios;
 use App\Livewire\Frontend\MySessions;
 use App\Livewire\Frontend\PortfolioCreate;
+use App\Livewire\Frontend\PortfolioDetail;
 use App\Livewire\Frontend\PortfolioEdit;
 use App\Livewire\Frontend\ReputationProfile;
 use App\Livewire\Frontend\SessionDetail;
@@ -71,6 +72,7 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
     Route::get('/categories',    CategoryBrowse::class)->name('categories');
     Route::get('/reputation/{id?}', ReputationProfile::class)->name('reputation');
     Route::get('/map',           MapExplore::class)->name('map');
+    Route::get('/portfolios/{id}', PortfolioDetail::class)->name('portfolios.show');
 
     // ─── Auth Required ─────────────────────────────────────────────────
     Route::middleware('auth')->group(function () {

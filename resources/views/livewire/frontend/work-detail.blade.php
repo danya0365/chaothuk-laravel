@@ -221,6 +221,33 @@
         </a>
 
         {{-- ═══════════════════════════════════════════════════════════════════
+             4.5 WORKER PORTFOLIOS
+        ═══════════════════════════════════════════════════════════════════ --}}
+        @if(count($workerPortfolios) > 0)
+        <div class="bg-gray-900 rounded-2xl p-5">
+            <h2 class="font-bold text-white mb-3 flex items-center gap-2">🎨 ผลงานของช่างท่านนี้</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                @foreach($workerPortfolios as $wp)
+                <a href="{{ route('frontend.portfolios.show', $wp['id']) }}"
+                   class="rounded-xl overflow-hidden bg-gray-800 group hover:ring-1 hover:ring-orange-500/30 transition">
+                    @php $wpImages = $wp['images'] ?? []; @endphp
+                    @if(count($wpImages) > 0)
+                        <div class="aspect-square overflow-hidden">
+                            <img src="{{ $wpImages[0] }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="">
+                        </div>
+                    @else
+                        <div class="aspect-square flex items-center justify-center text-gray-600 text-3xl bg-gray-800">🖼</div>
+                    @endif
+                    <div class="p-2">
+                        <p class="text-white text-xs font-semibold truncate">{{ $wp['title'] }}</p>
+                    </div>
+                </a>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        {{-- ═══════════════════════════════════════════════════════════════════
              5. DESCRIPTION + DETAILS
         ═══════════════════════════════════════════════════════════════════ --}}
         <div class="bg-gray-900 rounded-2xl p-5">

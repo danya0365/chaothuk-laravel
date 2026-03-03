@@ -40,7 +40,7 @@
                     <div class="p-4">
                         <h3 class="font-semibold text-white text-sm truncate">{{ $portfolio['title'] }}</h3>
                         @if(isset($portfolio['work_type']))
-                            <span class="text-xs text-orange-400 mt-1 block">{{ $portfolio['work_type']['name'] ?? '' }}</span>
+                            <span class="text-xs text-orange-400 mt-1 block">{{ $portfolio['work_type']['title'] ?? $portfolio['work_type']['name'] ?? '' }}</span>
                         @endif
                         <p class="text-gray-500 text-xs mt-2 line-clamp-2">{{ $portfolio['description'] ?? '' }}</p>
                         <div class="flex items-center gap-2 mt-3">
