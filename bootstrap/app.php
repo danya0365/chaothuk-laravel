@@ -44,10 +44,10 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->redirectGuestsTo(function ($request) {
-            if ($request->is('frontend/*')) {
-                return route('frontend.auth.login');
+            if ($request->is('backend') || $request->is('backend/*')) {
+                return route('backend.auth.login');
             }
-            return route('login');
+            return route('frontend.auth.login');
         });
 
         //$middleware->append(Cors::class); //

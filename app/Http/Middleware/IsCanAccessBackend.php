@@ -21,6 +21,6 @@ class IsCanAccessBackend
         if ($user instanceof \App\Models\User && $user->isPermission(Permission::ACCESS_BACKEND->value)) {
             return $next($request);
         }
-        return redirect()->route('home')->with('error', 'คุณไม่มีสิทธิเข้าหน้า Backend');
+        return redirect()->route('backend.auth.unauthorize');
     }
 }
