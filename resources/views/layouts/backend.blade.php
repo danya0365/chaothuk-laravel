@@ -33,7 +33,7 @@
         @endif
 
         <!-- Page Content -->
-        <main>
+        <main class="flex-grow">
             {{ $slot }}
             @auth
                 <div class="p-4">
@@ -41,6 +41,13 @@
                 </div>
             @endauth
         </main>
+
+        <!-- Footer / Version Info -->
+        <footer class="mt-auto py-4 px-6 text-center lg:text-right border-t border-gray-200 dark:border-gray-800">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+                v{{ config('app.version') }} ({{ config('app.build') }})
+            </span>
+        </footer>
     </div>
     <script type="text/javascript">
         function alpineUploadImage(initUploadFile) {

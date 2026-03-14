@@ -182,6 +182,12 @@
             <span class="text-[9px]">เข้าสู่ระบบ</span>
         </a>
     @endauth
+
+    {{-- Version Badge --}}
+    <div class="w-full text-center py-2 mt-2 border-t border-gray-800">
+        <span class="text-[8px] text-gray-600 block leading-tight">v{{ config('app.version') }}</span>
+        <span class="text-[8px] text-gray-600 block leading-tight">({{ config('app.build') }})</span>
+    </div>
 </nav>
 
 {{-- ─── Main Content ────────────────────────────────────────────────── --}}
@@ -300,11 +306,17 @@
         {{-- More button --}}
         <button @click="mobileMore = !mobileMore"
                 :class="mobileMore ? 'text-orange-400' : 'text-gray-500'"
-                class="flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-center transition">
+                class="flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-center transition relative">
             <span class="text-xl leading-none" x-text="mobileMore ? '✕' : '⋯'">⋯</span>
-            <span class="text-[9px] font-medium">เพิ่มเติม</span>
+            <span class="text-[9px] font-medium block">เพิ่มเติม</span>
+            <span class="absolute top-1 right-1 text-[7px] text-gray-700 font-mono tracking-tighter hidden sm:block">
+                {{ config('app.build') }}
+            </span>
         </button>
     </nav>
+    <div class="fixed bottom-[1px] right-2 z-[60] pointer-events-none md:hidden text-[8px] text-gray-700 font-mono text-right leading-none">
+        v{{ config('app.version') }}<br>({{ config('app.build') }})
+    </div>
 </div>
 
 @livewireScripts
