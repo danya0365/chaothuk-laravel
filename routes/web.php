@@ -18,9 +18,7 @@ use App\Http\Controllers\BackendController;
 use App\Http\Controllers\BarcodeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', \App\Livewire\Landing::class)->name('home');
 
 Route::get('/dashboard', function () {
     return view('home');
