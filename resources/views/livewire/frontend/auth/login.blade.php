@@ -63,6 +63,37 @@
                 <div class="flex-1 h-px bg-gray-800"></div>
             </div>
 
+            {{-- Demo Users Helper (Only visible outside production) --}}
+            @if(config('app.env') !== 'production')
+            <div class="mb-6 p-4 bg-orange-500/10 border border-orange-500/20 rounded-xl">
+                <p class="text-xs text-orange-400 font-bold mb-3 flex items-center gap-1">
+                    <span>🧪</span> บัญชีทดสอบสำหรับลูกค้า (คลิกเพื่อเติมอัตโนมัติ)
+                </p>
+                <div class="grid grid-cols-2 gap-2">
+                    <button type="button" @click="$wire.email = 'worker1@chaothuk.test'; $wire.password = 'password'"
+                            class="py-2 px-2 bg-gray-800 hover:bg-gray-700 rounded-lg border border-gray-700 text-left transition group">
+                        <div class="text-[10px] text-gray-400 group-hover:text-white">👨‍🔧 ผู้รับงาน 1</div>
+                        <div class="text-xs text-gray-300 truncate">worker1@chaothuk.test</div>
+                    </button>
+                    <button type="button" @click="$wire.email = 'worker2@chaothuk.test'; $wire.password = 'password'"
+                            class="py-2 px-2 bg-gray-800 hover:bg-gray-700 rounded-lg border border-gray-700 text-left transition group">
+                        <div class="text-[10px] text-gray-400 group-hover:text-white">👨‍🔧 ผู้รับงาน 2</div>
+                        <div class="text-xs text-gray-300 truncate">worker2@chaothuk.test</div>
+                    </button>
+                    <button type="button" @click="$wire.email = 'employer1@chaothuk.test'; $wire.password = 'password'"
+                            class="py-2 px-2 bg-gray-800 hover:bg-gray-700 rounded-lg border border-gray-700 text-left transition group">
+                        <div class="text-[10px] text-gray-400 group-hover:text-white">🏢 ผู้จ้าง 1</div>
+                        <div class="text-xs text-gray-300 truncate">employer1@chaothuk.test</div>
+                    </button>
+                    <button type="button" @click="$wire.email = 'employer2@chaothuk.test'; $wire.password = 'password'"
+                            class="py-2 px-2 bg-gray-800 hover:bg-gray-700 rounded-lg border border-gray-700 text-left transition group">
+                        <div class="text-[10px] text-gray-400 group-hover:text-white">🏢 ผู้จ้าง 2</div>
+                        <div class="text-xs text-gray-300 truncate">employer2@chaothuk.test</div>
+                    </button>
+                </div>
+            </div>
+            @endif
+
             {{-- Register link --}}
             <p class="text-center text-sm text-gray-400">
                 ยังไม่มีบัญชี?

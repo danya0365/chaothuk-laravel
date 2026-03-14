@@ -44,4 +44,35 @@
             </x-primary-button>
         </div>
     </form>
+
+    {{-- Demo Users Helper (Only visible outside production) --}}
+    @if(config('app.env') !== 'production')
+    <div class="mt-8 p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-lg">
+        <p class="text-xs text-indigo-800 dark:text-indigo-300 font-bold mb-3 flex items-center gap-1">
+            <span>🧪</span> บัญชีทดสอบ (คลิกเพื่อเติมอัตโนมัติ)
+        </p>
+        <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="document.getElementById('email').value='worker1@chaothuk.test'; document.getElementById('password').value='password';"
+                    class="py-2 px-2 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 rounded border border-gray-200 dark:border-gray-700 text-left transition group shadow-sm">
+                <div class="text-[10px] text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">👨‍🔧 ผู้รับงาน 1</div>
+                <div class="text-xs text-gray-700 dark:text-gray-300 truncate">worker1@chaothuk.test</div>
+            </button>
+            <button type="button" onclick="document.getElementById('email').value='worker2@chaothuk.test'; document.getElementById('password').value='password';"
+                    class="py-2 px-2 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 rounded border border-gray-200 dark:border-gray-700 text-left transition group shadow-sm">
+                <div class="text-[10px] text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">👨‍🔧 ผู้รับงาน 2</div>
+                <div class="text-xs text-gray-700 dark:text-gray-300 truncate">worker2@chaothuk.test</div>
+            </button>
+            <button type="button" onclick="document.getElementById('email').value='employer1@chaothuk.test'; document.getElementById('password').value='password';"
+                    class="py-2 px-2 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 rounded border border-gray-200 dark:border-gray-700 text-left transition group shadow-sm">
+                <div class="text-[10px] text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">🏢 ผู้จ้าง 1</div>
+                <div class="text-xs text-gray-700 dark:text-gray-300 truncate">employer1@chaothuk.test</div>
+            </button>
+            <button type="button" onclick="document.getElementById('email').value='admin@chaothuk.test'; document.getElementById('password').value='password';"
+                    class="py-2 px-2 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 rounded border border-gray-200 dark:border-gray-700 text-left transition group shadow-sm">
+                <div class="text-[10px] text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">👑 แอดมิน</div>
+                <div class="text-xs text-gray-700 dark:text-gray-300 truncate">admin@chaothuk.test</div>
+            </button>
+        </div>
+    </div>
+    @endif
 </x-guest-layout>

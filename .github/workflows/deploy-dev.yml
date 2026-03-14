@@ -35,7 +35,7 @@ jobs:
             if [ -f "docker-compose.prod.yml" ]; then
                 # Inject the current commit hash into .env
                 sed -i "/^APP_BUILD=/d" .env
-                echo "APP_BUILD=${GITHUB_SHA::7}" >> .env
+                echo "APP_BUILD=$(echo $GITHUB_SHA | cut -c1-7)" >> .env
 
                 # Ensure the container is running
                 docker compose -f docker-compose.prod.yml up -d
