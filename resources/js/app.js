@@ -1,4 +1,9 @@
+import Cropper from "cropperjs";
+import maplibregl from "maplibre-gl";
 import "./bootstrap";
+
+window.Cropper = Cropper;
+window.maplibregl = maplibregl;
 
 // ─── Livewire v3 ships with its own Alpine.js ────────────────────────────────
 // DO NOT import Alpine separately or call Alpine.start() — it causes

@@ -18,5 +18,5 @@
         });
     }
 }" :class="{ 'dark': darkMode === true }"
-    class="font-kanit antialiased {{ Auth::user() && Auth::user()->theme == 'dark' ? 'dark' : '' }}">
+    class="font-sans antialiased {{ Auth::user() && Auth::user()->theme == 'dark' ? 'dark' : '' }}">
     {{ $slot }}</body>

@@ -3,10 +3,13 @@
 namespace App\Livewire\Frontend;
 
 use App\Models\Work;
+use App\Models\WorkAvailability;
 use App\Models\WorkBooking;
 use App\Models\WorkLike;
 use App\Models\WorkSession;
 use App\Models\UserReputation;
+use App\Models\Favorite;
+use App\Models\Portfolio;
 use Livewire\Component;
 
 class WorkDetail extends Component
@@ -140,21 +143,49 @@ class WorkDetail extends Component
 
     public function toggleLike(): void
     {
-        if (!auth()->check()) { $this->redirect(route('login')); return; }
-        $existing = WorkLike::where('author_id', auth()->id())->where('work_id', $this->id)->first();
+        if (!auth()->check()) { $this->redirect(route('frontend.auth.login')); return; }
+
+        $existing = WorkLike::withTrashed()
+            ->where('author_id', auth()->id())
+            ->where('work_id', $this->id)
+            ->first();
+
         if ($existing) {
-            $existing->delete();
-            $this->work->decrement('like_count');
+            if ($existing->trashed()) {
+                $existing->restore();
+            } else {
+                $existing->forceDelete();
+            }
         } else {
             WorkLike::create(['author_id' => auth()->id(), 'work_id' => $this->id]);
-            $this->work->increment('like_count');
         }
-        $this->work->refresh();
+    }
+
+    public function toggleFavorite(): void
+    {
+        if (!auth()->check()) { $this->redirect(route('frontend.auth.login')); return; }
+
+        $deleted = Favorite::where('user_id', auth()->id())
+            ->where('favoritable_type', Work::class)
+            ->where('favoritable_id', $this->id)
+            ->delete();
+
+        if (!$deleted) {
+            try {
+                Favorite::create([
+                    'user_id'          => auth()->id(),
+                    'favoritable_type' => Work::class,
+                    'favoritable_id'   => $this->id,
+                ]);
+            } catch (\Illuminate\Database\UniqueConstraintViolationException) {
+                // Already favorited (race condition) — ignore
+            }
+        }
     }
 
     public function submitBooking(): void
     {
-        if (!auth()->check()) { $this->redirect(route('login')); return; }
+        if (!auth()->check()) { $this->redirect(route('frontend.auth.login')); return; }
 
         $this->validate([
             'bookingPhone'   => 'required|min:9',
@@ -219,7 +250,30 @@ class WorkDetail extends Component
             ? WorkLike::where('author_id', auth()->id())->where('work_id', $this->id)->exists()
             : false;
 
-        return view('livewire.frontend.work-detail', compact('isLiked'))
+        $isFavorited = auth()->check()
+            ? Favorite::where('user_id', auth()->id())->where('favoritable_type', Work::class)->where('favoritable_id', $this->id)->exists()
+            : false;
+
+        $likeCount = WorkLike::where('work_id', $this->id)->count();
+
+        $availabilities = WorkAvailability::where('work_id', $this->id)
+            ->where('is_available', true)
+            ->orderBy('day_of_week')
+            ->get()
+            ->groupBy('day_of_week')
+            ->map(fn ($slots) => $slots->map(fn ($s) => substr($s->start_time, 0, 5) . '-' . substr($s->end_time, 0, 5))->implode(', '))
+            ->toArray();
+
+        $workerPortfolios = $this->work?->author_id
+            ? Portfolio::with('workType')
+                ->where('user_id', $this->work->author_id)
+                ->latest()
+                ->limit(4)
+                ->get()
+                ->toArray()
+            : [];
+
+        return view('livewire.frontend.work-detail', compact('isLiked', 'isFavorited', 'likeCount', 'availabilities', 'workerPortfolios'))
             ->layout('frontend.layout', ['title' => ($this->work->title ?? 'Work') . ' — Chaothuk']);
     }
 }

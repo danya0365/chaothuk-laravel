@@ -17,7 +17,7 @@ class Notifications extends Component
 
     public function load(): void
     {
-        $this->notifications = UserNotification::with(['notification'])
+        $this->notifications = UserNotification::with(['notificationable'])
             ->where('author_id', auth()->id())
             ->latest()
             ->limit(30)
@@ -29,15 +29,15 @@ class Notifications extends Component
     {
         UserNotification::where('id', $id)
             ->where('author_id', auth()->id())
-            ->update(['read_at' => now()]);
+            ->update(['is_read' => true]);
         $this->load();
     }
 
     public function markAllRead(): void
     {
         UserNotification::where('author_id', auth()->id())
-            ->whereNull('read_at')
-            ->update(['read_at' => now()]);
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
         $this->load();
     }
 

@@ -71,11 +71,18 @@
                     <h1 class="text-2xl font-bold text-white leading-tight">{{ $work->title }}</h1>
                     <p class="text-3xl font-black text-orange-400 mt-1">฿{{ number_format($work->price) }}</p>
                 </div>
-                <button wire:click="toggleLike"
-                        class="flex items-center gap-1.5 px-4 py-2 rounded-full border transition flex-shrink-0
-                               {{ $isLiked ? 'border-red-500 text-red-400 bg-red-500/10' : 'border-gray-700 text-gray-400 hover:border-red-500 hover:text-red-400' }}">
-                    ❤️ {{ $work->like_count }}
-                </button>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <button wire:click="toggleFavorite"
+                            class="flex items-center gap-1.5 px-4 py-2 rounded-full border transition
+                                   {{ $isFavorited ? 'border-yellow-500 text-yellow-400 bg-yellow-500/10' : 'border-gray-700 text-gray-400 hover:border-yellow-500 hover:text-yellow-400' }}">
+                        {{ $isFavorited ? '⭐' : '☆' }} บันทึก
+                    </button>
+                    <button wire:click="toggleLike"
+                            class="flex items-center gap-1.5 px-4 py-2 rounded-full border transition
+                                   {{ $isLiked ? 'border-red-500 text-red-400 bg-red-500/10' : 'border-gray-700 text-gray-400 hover:border-red-500 hover:text-red-400' }}">
+                        ❤️ {{ $likeCount }}
+                    </button>
+                </div>
             </div>
 
             {{-- Stats strip --}}
@@ -86,7 +93,7 @@
                         <span class="text-gray-500 font-normal">({{ $work->reply_count ?? count($reviews ?? []) }})</span>
                     </span>
                 @endif
-                <span class="text-gray-500 flex items-center gap-1">❤️ {{ $work->like_count }} ถูกใจ</span>
+                <span class="text-gray-500 flex items-center gap-1">❤️ {{ $likeCount }} ถูกใจ</span>
                 <span class="text-gray-500 flex items-center gap-1">📋 {{ count($bookedDates) }} จอง</span>
                 <span class="text-gray-600 text-xs">เผยแพร่ {{ $work->created_at?->diffForHumans() }}</span>
             </div>
@@ -178,8 +185,7 @@
         ═══════════════════════════════════════════════════════════════════ --}}
         <a href="{{ route('frontend.reputation', $work->author_id) }}"
            class="bg-gray-900 rounded-2xl p-4 flex items-center gap-4 hover:ring-2 hover:ring-orange-500/40 transition block group">
-            <img src="{{ $work->author?->profile_image ?? 'https://ui-avatars.com/api/?name='.urlencode($work->author?->name ?? 'U') }}"
-                 class="w-14 h-14 rounded-xl object-cover ring-2 ring-orange-500/30" alt="">
+            <x-avatar :src="$work->author?->profile_image" :name="$work->author?->name" size="w-14 h-14" :border="false" class="ring-2 ring-orange-500/30" />
             <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2">
                     <p class="font-bold text-white group-hover:text-orange-400 transition">{{ $work->author?->name }}</p>
@@ -213,6 +219,7 @@
             <span class="text-gray-500 text-sm group-hover:text-orange-400 transition flex-shrink-0">ดูโปรไฟล์ →</span>
         </a>
 
+
         {{-- ═══════════════════════════════════════════════════════════════════
              5. DESCRIPTION + DETAILS
         ═══════════════════════════════════════════════════════════════════ --}}
@@ -237,11 +244,40 @@
         </div>
 
         {{-- ═══════════════════════════════════════════════════════════════════
+             5.5 WORK AVAILABILITY SCHEDULE
+        ═══════════════════════════════════════════════════════════════════ --}}
+        @php
+            $dayNames = [1 => 'จันทร์', 2 => 'อังคาร', 3 => 'พุธ', 4 => 'พฤหัสบดี', 5 => 'ศุกร์', 6 => 'เสาร์', 7 => 'อาทิตย์'];
+            $dayShort = [1 => 'จ', 2 => 'อ', 3 => 'พ', 4 => 'พฤ', 5 => 'ศ', 6 => 'ส', 7 => 'อา'];
+        @endphp
+        @if(!empty($availabilities))
+        <div class="bg-gray-900 rounded-2xl p-5">
+            <h2 class="font-bold text-white mb-3 flex items-center gap-2">🕐 ตารางเวลาให้บริการ</h2>
+            <div class="grid grid-cols-7 gap-1.5">
+                @for($d = 1; $d <= 7; $d++)
+                    <div class="text-center rounded-xl p-2 {{ isset($availabilities[$d]) ? 'bg-green-500/10 border border-green-500/30' : 'bg-gray-800/50 border border-gray-800' }}">
+                        <span class="block text-xs font-bold {{ isset($availabilities[$d]) ? 'text-green-400' : 'text-gray-600' }}">
+                            {{ $dayShort[$d] }}
+                        </span>
+                        @if(isset($availabilities[$d]))
+                            <span class="block text-[10px] text-green-300 mt-0.5 leading-tight">{{ $availabilities[$d] }}</span>
+                        @else
+                            <span class="block text-[10px] text-gray-600 mt-0.5">ปิด</span>
+                        @endif
+                    </div>
+                @endfor
+            </div>
+        </div>
+        @endif
+
+        {{-- ═══════════════════════════════════════════════════════════════════
              6. BOOKING CTA + CALENDAR (most actionable section)
         ═══════════════════════════════════════════════════════════════════ --}}
         <div class="bg-gray-900 rounded-2xl p-5"
              x-data="{
                  bookedDates: @js($bookedDates),
+                 availableDays: @js(array_keys($availabilities)),
+                 hasAvailability: {{ !empty($availabilities) ? 'true' : 'false' }},
                  currentMonth: new Date().getMonth(),
                  currentYear: new Date().getFullYear(),
                  today: new Date().toISOString().slice(0,10),
@@ -255,10 +291,19 @@
                  dateStr(day) {
                      return this.currentYear + '-' + String(this.currentMonth + 1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
                  },
+                 dayOfWeek(day) {
+                     // JS: 0=Sun..6=Sat → DB: 1=Mon..7=Sun
+                     const jsDay = new Date(this.currentYear, this.currentMonth, day).getDay();
+                     return jsDay === 0 ? 7 : jsDay;
+                 },
+                 isDayOff(day) {
+                     if (!this.hasAvailability) return false;
+                     return !this.availableDays.includes(this.dayOfWeek(day));
+                 },
                  isBooked(day) { return this.bookedDates.includes(this.dateStr(day)); },
                  isToday(day) { return this.dateStr(day) === this.today; },
                  isPast(day) { return this.dateStr(day) < this.today; },
-                 isAvailable(day) { return !this.isBooked(day) && !this.isPast(day); },
+                 isAvailable(day) { return !this.isBooked(day) && !this.isPast(day) && !this.isDayOff(day); },
                  selectDate(day) {
                      if (!this.isAvailable(day)) return;
                      const ds = this.dateStr(day);
@@ -299,8 +344,9 @@
                          class="aspect-square rounded-lg text-xs font-semibold flex items-center justify-center transition"
                          :class="{
                              'bg-red-500/20 text-red-400 ring-1 ring-red-500/30 cursor-not-allowed': isBooked(day),
+                             'bg-gray-800/30 text-gray-700 cursor-not-allowed line-through': isDayOff(day) && !isBooked(day) && !isPast(day),
                              'bg-green-500/10 text-green-400 hover:bg-green-500/30 hover:ring-2 hover:ring-green-400 cursor-pointer': isAvailable(day) && !isToday(day) && selectedDate !== dateStr(day),
-                             'bg-orange-500 text-white ring-2 ring-orange-400 font-black hover:bg-orange-400 cursor-pointer': isToday(day) && !isBooked(day),
+                             'bg-orange-500 text-white ring-2 ring-orange-400 font-black hover:bg-orange-400 cursor-pointer': isToday(day) && !isBooked(day) && !isDayOff(day),
                              'bg-gray-800/50 text-gray-600 cursor-not-allowed': isPast(day) && !isBooked(day) && !isToday(day),
                              'bg-blue-500 text-white ring-2 ring-blue-400 font-black': selectedDate === dateStr(day),
                          }"
@@ -315,6 +361,7 @@
                 <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-red-500/30 inline-block"></span> <span class="text-gray-500">ถูกจอง</span></span>
                 <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-blue-500 inline-block"></span> <span class="text-gray-500">เลือกอยู่</span></span>
                 <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-orange-500 inline-block"></span> <span class="text-gray-500">วันนี้</span></span>
+                <span class="flex items-center gap-1" x-show="hasAvailability"><span class="w-2.5 h-2.5 rounded bg-gray-800/50 inline-block border border-gray-700"></span> <span class="text-gray-500">วันหยุด</span></span>
             </div>
 
             {{-- Inline Booking Form --}}
@@ -373,10 +420,37 @@
              7. MAP
         ═══════════════════════════════════════════════════════════════════ --}}
         @if($work->latitude && $work->longitude)
-        <div class="bg-gray-900 rounded-2xl p-5">
+        <div wire:ignore class="bg-gray-900 rounded-2xl p-5">
             <h2 class="font-bold text-white mb-3">📍 ตำแหน่งงาน</h2>
             <div id="work-map" class="w-full h-64 md:h-72 rounded-xl overflow-hidden"></div>
             <p class="text-gray-600 text-[11px] mt-2">{{ $work->latitude }}, {{ $work->longitude }}</p>
+        </div>
+        @endif
+
+        {{-- ═══════════════════════════════════════════════════════════════════
+             7.5 WORKER PORTFOLIOS
+        ═══════════════════════════════════════════════════════════════════ --}}
+        @if(count($workerPortfolios) > 0)
+        <div class="bg-gray-900 rounded-2xl p-5">
+            <h2 class="font-bold text-white mb-3 flex items-center gap-2">🎨 ผลงานของช่างท่านนี้</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                @foreach($workerPortfolios as $wp)
+                <a href="{{ route('frontend.portfolios.show', $wp['id']) }}"
+                   class="rounded-xl overflow-hidden bg-gray-800 group hover:ring-1 hover:ring-orange-500/30 transition">
+                    @php $wpImages = $wp['images'] ?? []; @endphp
+                    @if(count($wpImages) > 0)
+                        <div class="aspect-square overflow-hidden">
+                            <img src="{{ $wpImages[0] }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="">
+                        </div>
+                    @else
+                        <div class="aspect-square flex items-center justify-center text-gray-600 text-3xl bg-gray-800">🖼</div>
+                    @endif
+                    <div class="p-2">
+                        <p class="text-white text-xs font-semibold truncate">{{ $wp['title'] }}</p>
+                    </div>
+                </a>
+                @endforeach
+            </div>
         </div>
         @endif
 

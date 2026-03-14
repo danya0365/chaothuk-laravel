@@ -142,10 +142,7 @@
             <h2 class="font-semibold text-white text-sm">👥 ผู้เกี่ยวข้อง</h2>
             <div class="space-y-3">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-800">
-                        <img src="{{ $session->worker?->profile_image ?? 'https://ui-avatars.com/api/?name='.urlencode($session->worker?->name ?? 'W') }}"
-                             class="w-full h-full object-cover" alt="">
-                    </div>
+                    <x-avatar :src="$session->worker?->profile_image" :name="$session->worker?->name ?? 'W'" size="md" :border="false" />
                     <div class="flex-1">
                         <p class="text-white text-sm font-medium">{{ $session->worker?->name ?? '-' }}</p>
                         <p class="text-gray-500 text-xs">👷 ผู้ให้บริการ {{ $isWorker ? '(คุณ)' : '' }}</p>
@@ -155,10 +152,7 @@
                     </span>
                 </div>
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-800">
-                        <img src="{{ $session->customer?->profile_image ?? 'https://ui-avatars.com/api/?name='.urlencode($session->customer?->name ?? 'C') }}"
-                             class="w-full h-full object-cover" alt="">
-                    </div>
+                    <x-avatar :src="$session->customer?->profile_image" :name="$session->customer?->name ?? 'C'" size="md" :border="false" />
                     <div class="flex-1">
                         <p class="text-white text-sm font-medium">{{ $session->customer?->name ?? '-' }}</p>
                         <p class="text-gray-500 text-xs">👤 ลูกค้า {{ $isCustomer ? '(คุณ)' : '' }}</p>

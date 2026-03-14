@@ -10,16 +10,17 @@ use App\Models\UserReputationReview;
 use App\Models\UserBadge;
 use App\Models\UserVerification;
 use Livewire\Component;
+use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
 
 class ReputationProfile extends Component
 {
+    use WithPagination;
     public ?int $userId = null;
     public ?array $user = null;
     public ?array $reputation = null;
     public array $badges = [];
     public array $verifications = [];
-    public array $reviews = [];
     public array $ratingDistribution = [];
     public array $works = [];
     public array $stats = [];
@@ -120,55 +121,6 @@ class ReputationProfile extends Component
                 'label'  => $v->label,
             ])
             ->toArray();
-
-        // ─── Reputation Reviews (multi-dimensional) ─────────────────────
-        $this->reviews = UserReputationReview::where('reviewee_id', $this->userId)
-            ->with('reviewer')
-            ->latest()
-            ->limit(10)
-            ->get()
-            ->map(fn($r) => [
-                'reviewer_name'   => $r->reviewer?->name ?? 'ผู้ใช้',
-                'reviewer_avatar' => $r->reviewer?->getAvatar(48) ?? '',
-                'overall_rating'  => $r->overall_rating,
-                'quality'         => $r->quality_rating,
-                'timeliness'      => $r->timeliness_rating,
-                'communication'   => $r->communication_rating,
-                'professionalism' => $r->professionalism_rating,
-                'comment'         => $r->comment,
-                'response'        => $r->response,
-                'verified'        => $r->is_verified_booking,
-                'date'            => $r->created_at?->diffForHumans(),
-            ])
-            ->toArray();
-
-        // If no reputation reviews, fall back to work review posts
-        if (empty($this->reviews)) {
-            $this->reviews = DB::table('works_reviews')
-                ->join('posts', 'posts.id', '=', 'works_reviews.post_id')
-                ->join('users', 'users.id', '=', 'posts.author_id')
-                ->whereIn('works_reviews.work_id', $workIds)
-                ->whereNull('posts.parent_id')
-                ->orderByDesc('posts.created_at')
-                ->limit(10)
-                ->select('posts.*', 'users.name as reviewer_name', 'users.profile_image as reviewer_avatar')
-                ->get()
-                ->map(fn($r) => [
-                    'reviewer_name'   => $r->reviewer_name,
-                    'reviewer_avatar' => $r->reviewer_avatar ?? '',
-                    'overall_rating'  => $r->rating ?? 0,
-                    'quality'         => 0,
-                    'timeliness'      => 0,
-                    'communication'   => 0,
-                    'professionalism' => 0,
-                    'comment'         => $r->content,
-                    'response'        => null,
-                    'verified'        => false,
-                    'date'            => \Carbon\Carbon::parse($r->created_at)->diffForHumans(),
-                ])
-                ->toArray();
-        }
-
         // ─── Rating Distribution ────────────────────────────────────────
         $allRepReviews = UserReputationReview::where('reviewee_id', $this->userId)->get();
 
@@ -204,7 +156,43 @@ class ReputationProfile extends Component
 
     public function render()
     {
-        return view('livewire.frontend.reputation-profile')
+        $viewReviews = UserReputationReview::where('reviewee_id', $this->userId)
+            ->with('reviewer')
+            ->latest()
+            ->paginate(5);
+            
+        // If no reputation reviews, fall back to work review posts
+        if ($viewReviews->isEmpty() && isset($this->stats['total_reviews']) && $this->stats['total_reviews'] > 0) {
+            $workIds = Work::where('author_id', $this->userId)->pluck('id');
+            $viewReviews = \App\Models\Post::join('works_reviews', 'posts.id', '=', 'works_reviews.post_id')
+                ->whereIn('works_reviews.work_id', $workIds)
+                ->whereNull('posts.parent_id')
+                ->with('author')
+                ->select('posts.*')
+                ->orderByDesc('posts.created_at')
+                ->paginate(5);
+                
+            // Transform post models for the view to match reputation review structure
+            $viewReviews->getCollection()->transform(function ($post) {
+                return (object)[
+                    'reviewer_name'   => $post->author?->name ?? 'ผู้ใช้',
+                    'reviewer_avatar' => $post->author?->getAvatar(48) ?? '',
+                    'overall_rating'  => $post->rating ?? 0,
+                    'quality'         => 0,
+                    'timeliness'      => 0,
+                    'communication'   => 0,
+                    'professionalism' => 0,
+                    'comment'         => $post->content,
+                    'response'        => null,
+                    'verified'        => false,
+                    'date'            => $post->created_at?->diffForHumans(),
+                ];
+            });
+        }
+
+        return view('livewire.frontend.reputation-profile', [
+            'paginatedReviews' => $viewReviews
+        ])
             ->layout('frontend.layout', ['title' => ($this->user['name'] ?? 'Reputation') . ' — Chaothuk']);
     }
 }

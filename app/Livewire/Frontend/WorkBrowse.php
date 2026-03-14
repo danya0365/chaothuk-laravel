@@ -18,8 +18,10 @@ class WorkBrowse extends Component
     public string $provinceId = '';
     public string $workTypeId = '';
     public string $sortBy = 'latest';
+    public ?float $userLat = null;
+    public ?float $userLng = null;
 
-    protected $queryString = ['tab', 'search', 'provinceId', 'workTypeId', 'sortBy'];
+    protected $queryString = ['tab', 'search', 'provinceId', 'workTypeId', 'sortBy', 'userLat', 'userLng'];
 
     public function updatedTab(): void { $this->resetPage(); }
     public function updatedSearch(): void { $this->resetPage(); }
@@ -74,8 +76,19 @@ class WorkBrowse extends Component
             'rating'  => $query->orderByDesc('avg_review_rating'),
             'price_asc'  => $query->orderBy('price'),
             'price_desc' => $query->orderByDesc('price'),
+            'distance' => $query->when($this->userLat !== null && $this->userLng !== null, function ($q) {
+                return $q->selectRaw('works.*, ( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance', [$this->userLat, $this->userLng, $this->userLat])
+                         ->orderBy('distance');
+            }, fn($q) => $q->latest()),
             default   => $query->latest(),
         };
+
+        // If not using distance, make sure we select works.* so we don't accidentally get partial columns
+        // Actually, Eloquent defaults to `select *` if no select is provided.
+        // But let's ensure works.* is explicitly passed if distance wasn't selected yet we need to avoid ambiguous columns
+        if ($this->sortBy !== 'distance') {
+            $query->select('works.*');
+        }
 
         $works     = $query->paginate(12);
         $provinces = Province::orderBy('name_th')->get();

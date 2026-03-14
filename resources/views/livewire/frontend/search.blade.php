@@ -68,7 +68,7 @@
                         </div>
                         <div>
                             <p class="font-semibold text-white group-hover:text-orange-400 transition line-clamp-1">{{ $item['title'] }}</p>
-                            <p class="text-green-400 text-sm font-bold">฿{{ number_format($item['budget'] ?? 0) }}/เดือน</p>
+                            <p class="text-green-400 text-sm font-bold">฿{{ number_format($item['budget'] ?? 0) }}/ครั้ง</p>
                         </div>
                     </a>
                 @endforeach

@@ -4,11 +4,13 @@ namespace App\Livewire\Frontend;
 
 use App\Models\Post;
 use App\Models\WorkReview;
-use App\Models\RecruitReview;
+use App\Models\RecruitReview as RecruitReviewModel;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class ReviewSection extends Component
 {
+    use WithPagination;
     // Props — set by parent
     public string $entityType;   // 'work' or 'recruit'
     public int $entityId;
@@ -45,7 +47,7 @@ class ReviewSection extends Component
         if ($this->entityType === 'work') {
             WorkReview::create(['work_id' => $this->entityId, 'post_id' => $post->id]);
         } else {
-            RecruitReview::create(['recruit_id' => $this->entityId, 'post_id' => $post->id]);
+            RecruitReviewModel::create(['recruit_id' => $this->entityId, 'post_id' => $post->id]);
         }
 
         $this->reviewMessage = '✅ รีวิวของคุณถูกบันทึกแล้ว';
@@ -96,7 +98,7 @@ class ReviewSection extends Component
             ->whereIn('id', $postIds)
             ->whereNull('parent_id')
             ->latest()
-            ->get();
+            ->paginate(5);
 
         return view('livewire.frontend.review-section', [
             'reviews' => $reviews,

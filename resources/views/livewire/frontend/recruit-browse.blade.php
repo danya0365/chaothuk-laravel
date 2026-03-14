@@ -59,7 +59,31 @@
             <option value="latest">ล่าสุด</option>
             <option value="budget_desc">งบสูง → ต่ำ</option>
             <option value="budget_asc">งบต่ำ → สูง</option>
+            <option value="distance" x-show="$wire.userLat" disabled>📍 ระยะทางใกล้สุด</option>
         </select>
+
+        <div x-data="{
+            handleLocationPicked(e) {
+                @this.set('userLat', e.detail.lat);
+                @this.set('userLng', e.detail.lng);
+                @this.set('sortBy', 'distance');
+            }
+        }" @location-picked.window="handleLocationPicked" class="flex gap-2">
+            
+            <x-location-picker
+                wire:model.lat="userLat"
+                wire:model.lng="userLng"
+                label="📍 ใกล้ฉัน"
+                class="h-[46px] {{ $sortBy === 'distance' ? 'bg-green-500/20 text-green-400 border-green-500/50 ring-1 ring-green-500/50' : '' }}" />
+
+            @if($userLat && $userLng)
+                <button type="button" wire:click="$set('userLat', null); $set('userLng', null); $set('sortBy', 'latest')"
+                        class="h-[46px] px-4 bg-gray-800 border border-gray-700 hover:bg-red-500/20 hover:text-red-400 hover:border-red-500/50 text-gray-400 rounded-xl transition flex items-center justify-center font-bold"
+                        title="ยกเลิกระยะทาง">
+                    ✕
+                </button>
+            @endif
+        </div>
     </div>
 
     {{-- Count --}}
@@ -103,9 +127,18 @@
                                 <p class="font-semibold text-white line-clamp-1 group-hover:text-green-400 transition">
                                     {{ $recruit->title }}
                                 </p>
-                                <p class="text-green-400 font-bold text-sm">฿{{ number_format($recruit->budget) }}/เดือน</p>
-                                <div class="flex items-center gap-2 mt-1">
+                                <p class="text-green-400 font-bold text-sm">฿{{ number_format($recruit->budget) }}/ครั้ง</p>
+                                <div class="flex items-center gap-2 mt-1 flex-wrap">
                                     <p class="text-gray-500 text-xs">📍 {{ $recruit->province?->name_th ?? '-' }}</p>
+                                    @if(isset($recruit->distance))
+                                        <p class="text-green-400 text-[10px] font-semibold">
+                                            @if($recruit->distance < 1)
+                                                ({{ number_format($recruit->distance * 1000) }} ม.)
+                                            @else
+                                                ({{ number_format($recruit->distance, 1) }} กม.)
+                                            @endif
+                                        </p>
+                                    @endif
                                     @if($recruit->workType)
                                         <span class="text-gray-600 text-[10px]">{{ $recruit->workType->name }}</span>
                                     @endif

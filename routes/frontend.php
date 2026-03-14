@@ -13,6 +13,7 @@ use App\Livewire\Frontend\MyBookings;
 use App\Livewire\Frontend\MyPortfolios;
 use App\Livewire\Frontend\MySessions;
 use App\Livewire\Frontend\PortfolioCreate;
+use App\Livewire\Frontend\PortfolioDetail;
 use App\Livewire\Frontend\PortfolioEdit;
 use App\Livewire\Frontend\ReputationProfile;
 use App\Livewire\Frontend\SessionDetail;
@@ -29,6 +30,7 @@ use App\Livewire\Frontend\RecruitEdit;
 use App\Livewire\Frontend\RecruitBookings;
 use App\Livewire\Frontend\Search;
 use App\Livewire\Frontend\Profile;
+use App\Livewire\Frontend\ProfileEdit;
 use App\Livewire\Frontend\Notifications;
 use Illuminate\Support\Facades\Route;
 
@@ -71,10 +73,12 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
     Route::get('/categories',    CategoryBrowse::class)->name('categories');
     Route::get('/reputation/{id?}', ReputationProfile::class)->name('reputation');
     Route::get('/map',           MapExplore::class)->name('map');
+    Route::get('/portfolios/{id}', PortfolioDetail::class)->name('portfolios.show');
 
     // ─── Auth Required ─────────────────────────────────────────────────
     Route::middleware('auth')->group(function () {
         Route::get('/profile',       Profile::class)->name('profile');
+        Route::get('/profile/edit',  ProfileEdit::class)->name('profile.edit');
         Route::get('/notifications', Notifications::class)->name('notifications');
         Route::get('/calendar',      Calendar::class)->name('calendar');
         Route::get('/bookings',      MyBookings::class)->name('bookings');

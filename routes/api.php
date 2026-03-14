@@ -57,7 +57,7 @@ Route::group(['prefix' => 'me', 'as' => 'api.me.', 'middleware' => ['auth:sanctu
 Route::group(['prefix' => 'upload', 'as' => 'api.upload.'], function () {
     Route::post('/document', [UploadController::class, 'doUploadDocument'])->name('document');
     Route::post('/image', [UploadController::class, 'doUploadImage'])->name('image');
-    Route::post('/original-image', [UploadController::class, 'doUploadOriginalImage'])->name('image');
+    Route::post('/original-image', [UploadController::class, 'doUploadOriginalImage'])->name('original-image');
     Route::post('/avatar', [UploadController::class, 'doUploadAvatar'])->name('avatar');
 });
 

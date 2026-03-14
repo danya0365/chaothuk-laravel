@@ -4,8 +4,7 @@
 
 <div class="{{ $depth > 0 ? 'ml-8 border-l-2 border-gray-800 pl-4' : 'border-t border-gray-800' }} py-3">
     <div class="flex items-start gap-3">
-        <img src="{{ $post->author?->profile_image ?? 'https://ui-avatars.com/api/?name='.urlencode($post->author?->name ?? 'U') }}"
-             class="w-8 h-8 rounded-full object-cover flex-shrink-0 {{ $depth > 0 ? 'w-7 h-7' : '' }}" alt="">
+        <x-avatar :src="$post->author?->profile_image" :name="$post->author?->name" :size="$depth > 0 ? 'w-7 h-7' : 'w-8 h-8'" :border="false" />
         <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 mb-0.5">
                 <span class="font-semibold text-sm text-white">{{ $post->author?->name ?? '-' }}</span>

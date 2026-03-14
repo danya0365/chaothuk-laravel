@@ -115,7 +115,7 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-gray-400 text-sm mb-1">จังหวัด *</label>
-                    <select wire:model="provinceId"
+                    <select id="province-select" wire:model="provinceId"
                             class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-gray-300 focus:outline-none focus:border-green-500">
                         <option value="">-- เลือกจังหวัด --</option>
                         @foreach($provinces as $p)
@@ -137,17 +137,60 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-gray-400 text-sm mb-1">ละติจูด</label>
-                    <input wire:model="latitude" type="number" step="0.0000001" placeholder="13.7563"
-                           class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-green-500">
+            {{-- Location Picker --}}
+            <div>
+                <label class="block text-gray-400 text-sm mb-2">พิกัดสถานที่หน้างาน (ละติจูด/ลองจิจูด)</label>
+                <div x-data="{
+                    loadingAddress: false,
+                    async handleLocationPicked(e) {
+                        const lat = e.detail.lat;
+                        const lng = e.detail.lng;
+                        
+                        @this.set('latitude', lat);
+                        @this.set('longitude', lng);
+                        
+                        this.loadingAddress = true;
+                        try {
+                            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10&accept-language=th`);
+                            const data = await res.json();
+                            
+                            if (data && data.address) {
+                                let provinceName = data.address.state || data.address.province || data.address.city || '';
+                                provinceName = provinceName.replace('จังหวัด', '').trim();
+                                
+                                if (provinceName) {
+                                    const selectEl = document.getElementById('province-select');
+                                    if (selectEl) {
+                                        for (let i = 0; i < selectEl.options.length; i++) {
+                                            const optionText = selectEl.options[i].text;
+                                            if (optionText.includes(provinceName) || provinceName.includes(optionText)) {
+                                                @this.set('provinceId', selectEl.options[i].value);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (err) {
+                            console.error('Failed to reverse geocode', err);
+                        } finally {
+                            this.loadingAddress = false;
+                        }
+                    }
+                }" @location-picked.window="handleLocationPicked">
+                    
+                    <x-location-picker 
+                        wire:model.lat="latitude" 
+                        wire:model.lng="longitude" 
+                        label="📍 เปิดแผนที่เพื่อระบุตำแหน่ง" 
+                        class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-green-400 focus:outline-none hover:bg-gray-700 transition font-semibold" />
+                        
+                    <div class="mt-2 text-xs text-gray-500 font-mono flex items-center gap-2">
+                        <span>พิกัดที่เลือก: <span x-text="$wire.latitude || '-'"></span>, <span x-text="$wire.longitude || '-'"></span></span>
+                        <span x-show="loadingAddress" class="text-green-400">⏳ กำลังค้นหาจังหวัด...</span>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-gray-400 text-sm mb-1">ลองจิจูด</label>
-                    <input wire:model="longitude" type="number" step="0.0000001" placeholder="100.5018"
-                           class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-green-500">
-                </div>
+                @error('latitude')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
         </div>
 

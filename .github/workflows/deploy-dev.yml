@@ -1,0 +1,54 @@
+name: Deploy to VPS (Develop)
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copy files via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          source: "."
+          target: "~/chaothuk-laravel"
+          rm: false # Do not delete remote files not present locally
+          strip_components: 0
+          tar_tmp_path: "/tmp" # Use tar to speed up transfer
+          tar_exec: "tar"
+        
+      - name: Execute deployment commands via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            cd ~/chaothuk-laravel
+            
+            # Use docker compose inside the VPS
+            if [ -f "docker-compose.prod.yml" ]; then
+                # Ensure the container is running
+                docker compose -f docker-compose.prod.yml up -d
+                
+                # Install composer dependencies
+                docker compose -f docker-compose.prod.yml exec -T --user sail laravel.test composer install --no-interaction --prefer-dist --optimize-autoloader
+                
+                # Run database migrations
+                docker compose -f docker-compose.prod.yml exec -T --user sail laravel.test php artisan migrate --force
+                
+                # Clear all caches (useful for develop branch)
+                docker compose -f docker-compose.prod.yml exec -T --user sail laravel.test php artisan optimize:clear
+                
+                # Install NPM and Build assets
+                docker compose -f docker-compose.prod.yml exec -T --user sail laravel.test npm install
+                docker compose -f docker-compose.prod.yml exec -T --user sail laravel.test npm run build
+            fi
