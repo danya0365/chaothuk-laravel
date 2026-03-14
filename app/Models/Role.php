@@ -61,7 +61,7 @@ class Role extends Model
                 $rolePermission['data'] = 1;
             }
 
-            if (!$rolePermission['desc']) {
+            if (!isset($rolePermission['desc']) || !$rolePermission['desc']) {
                 $rolePermission['desc'] = '';
             }
 

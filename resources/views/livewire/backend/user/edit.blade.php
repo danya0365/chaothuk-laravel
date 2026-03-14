@@ -14,8 +14,8 @@
 
     <!-- Form Card -->
     <div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <form wire:submit="save" class="p-6 sm:p-8 space-y-6">
-            
+        <form wire:submit="save" class="p-6 sm:p-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Roles -->
                 <div class="col-span-1 md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">กลุ่มสิทธิ์การใช้งาน (Roles)</label>
@@ -37,22 +37,40 @@
                 <!-- Custom Permissions -->
                 <div class="col-span-1 md:col-span-2 mt-6">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">สิทธิ์เพิ่มเติมเฉพาะบุคคล (Custom Permissions)</label>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                         @foreach($permissions as $permission)
-                            <label class="flex items-start p-4 border border-gray-200 rounded-xl dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition">
-                                <div class="flex items-center h-5">
-                                    <input wire:model="permission_ids" value="{{ $permission->id }}" type="checkbox" class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                </div>
-                                <div class="ml-3 text-sm">
+                            <div class="p-4 border border-gray-200 rounded-xl dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm flex flex-col space-y-4">
+                                <div>
                                     <span class="font-medium text-gray-900 dark:text-white">{{ __('common.permission-' . $permission->slug) ?? $permission->name }}</span>
-                                    @if($permission->desc)
-                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $permission->desc }}</p>
-                                    @endif
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 whitespace-normal break-words">{{ $permission->desc }}</p>
                                 </div>
-                            </label>
+                                
+                                <div class="flex items-center space-x-4 bg-gray-50 dark:bg-gray-900/50 p-2 rounded-lg border border-gray-100 dark:border-gray-800">
+                                    <!-- อนุญาต (True) -->
+                                    <label class="flex items-center cursor-pointer">
+                                        <input wire:model="permissions_data.{{ $permission->id }}.value" value="true" type="radio" class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <span class="ml-2 text-xs font-medium text-green-700 dark:text-green-400">อนุญาต</span>
+                                    </label>
+                                    <!-- ไม่อนุญาต (False) -->
+                                    <label class="flex items-center cursor-pointer">
+                                        <input wire:model="permissions_data.{{ $permission->id }}.value" value="false" type="radio" class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <span class="ml-2 text-xs font-medium text-red-700 dark:text-red-400">ไม่อนุญาต</span>
+                                    </label>
+                                    <!-- ไม่ระบุ (Clear) -->
+                                    <label class="flex items-center cursor-pointer opacity-60 hover:opacity-100 transition">
+                                        <input wire:model="permissions_data.{{ $permission->id }}.value" value="" type="radio" class="w-4 h-4 text-gray-400 bg-gray-100 border-gray-300 focus:ring-gray-400 dark:focus:ring-gray-500 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <span class="ml-2 text-xs font-medium text-gray-500 dark:text-gray-400">ค่าเริ่มต้น</span>
+                                    </label>
+                                </div>
+
+                                <!-- Description Input (Always shows) -->
+                                <div class="mt-2">
+                                    <input wire:model="permissions_data.{{ $permission->id }}.desc" type="text" class="block w-full text-xs rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="หมายเหตุ/คำอธิบายเพิ่มเติม (ตัวเลือก)">
+                                </div>
+                            </div>
                         @endforeach
                     </div>
-                    @error('permission_ids') <span class="text-sm text-red-600 dark:text-red-400 mt-1 block">{{ $message }}</span> @enderror
+                    @error('permissions_data') <span class="text-sm text-red-600 dark:text-red-400 mt-1 block">{{ $message }}</span> @enderror
                 </div>
                 
                 <hr class="col-span-1 md:col-span-2 border-gray-200 dark:border-gray-700 my-4">

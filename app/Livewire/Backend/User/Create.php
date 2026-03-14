@@ -32,7 +32,8 @@ class Create extends Component
     public $role_ids = [];
 
     #[Validate('array')]
-    public $permission_ids = [];
+
+    public $permissions_data = [];
 
     #[Validate('required|min:8|confirmed')]
     public $password = '';
@@ -56,8 +57,31 @@ class Create extends Component
             $user->roles()->sync($this->role_ids);
         }
 
-        if (!empty($this->permission_ids)) {
-            $user->permissions()->sync($this->permission_ids);
+        if (!empty($this->role_ids)) {
+            $user->syncUserRoles($this->role_ids);
+        }
+
+        if (!empty($this->permissions_data)) {
+            $userPermissions = [];
+            foreach($this->permissions_data as $permId => $valueData) {
+                // Determine truth value logic
+                $boolValue = null;
+                if (is_array($valueData) && isset($valueData['value'])) {
+                    $boolValue = $valueData['value'];
+                } elseif (is_string($valueData)) {
+                    $boolValue = $valueData;
+                }
+
+                if($boolValue === 'true' || $boolValue === 'false') {
+                    $desc = is_array($valueData) && isset($valueData['desc']) ? $valueData['desc'] : '';
+                    $userPermissions[] = [
+                        'permission_id' => $permId,
+                        'data' => $boolValue === 'true' ? 1 : 0,
+                        'desc' => $desc
+                    ];
+                }
+            }
+            $user->syncUserPermissions($userPermissions);
         }
 
         session()->flash('success', 'สร้างบัญชีผู้ใช้สำเร็จ');

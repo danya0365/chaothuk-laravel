@@ -80,32 +80,86 @@
                 </dl>
             </div>
 
-            <!-- Custom Permissions Card -->
+            <!-- All Permissions Card -->
             <div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-                <h3 class="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3 mb-4 flex items-center justify-between">
-                    สิทธิ์เพิ่มเติม (Permissions)
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3 mb-4">
+                    สิทธิ์การใช้งานทั้งหมด (Permissions)
                 </h3>
-                @if($user->permissions->count() > 0)
-                    <ul class="space-y-3">
-                        @foreach($user->permissions as $permission)
-                            <li class="flex items-start">
-                                <span class="flex-shrink-0 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 h-5 w-5 rounded-full flex items-center justify-center mt-0.5">
-                                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                </span>
-                                <div class="ml-3">
-                                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ __('common.permission-' . $permission->slug) ?? $permission->name }}</p>
-                                    @if($permission->desc)
-                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $permission->desc }}</p>
-                                    @endif
-                                </div>
-                            </li>
-                        @endforeach
-                    </ul>
-                @else
-                    <p class="text-sm text-gray-500 dark:text-gray-400 italic">ไม่มีการกำหนดสิทธิ์เพิ่มเติมเฉพาะบุคคล</p>
-                @endif
+                
+                <div class="space-y-6">
+                    <!-- Role Permissions -->
+                    @if($user->roles->count() > 0)
+                        <div>
+                            <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">สิทธิ์จากกลุ่มสิทธิ์ (Role Permissions)</h4>
+                            <div class="space-y-4">
+                                @foreach($user->roles as $role)
+                                    <div>
+                                        <p class="text-sm font-medium text-indigo-600 dark:text-indigo-400 mb-2">{{ __('common.role-' . $role->id) ?? $role->name }}</p>
+                                        @if($role->permissions->count() > 0)
+                                            <ul class="space-y-3 mt-3 ml-2">
+                                                @foreach($role->permissions as $permission)
+                                                    <li class="flex items-start">
+                                                        <span class="flex-shrink-0 flex items-center justify-center h-5 w-5 rounded-full mt-0.5 {{ $permission->pivot->data ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' : 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' }}">
+                                                            @if($permission->pivot->data)
+                                                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            @else
+                                                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
+                                                                </svg>
+                                                            @endif
+                                                        </span>
+                                                        <div class="ml-3">
+                                                            <p class="text-sm font-medium {{ $permission->pivot->data ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-500 line-through' }}">{{ __('common.permission-' . $permission->slug) ?? $permission->name }}</p>
+                                                            @if($permission->desc)
+                                                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $permission->desc }}</p>
+                                                            @endif
+                                                        </div>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @else
+                                            <p class="text-xs text-gray-500 dark:text-gray-400 ml-2 italic">ไม่มีสิทธิ์ที่กำหนดในกลุ่มนี้</p>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- Custom Permissions -->
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">สิทธิ์เพิ่มเติมเฉพาะบุคคล (Custom)</h4>
+                        @if($user->permissions->count() > 0)
+                            <ul class="space-y-3">
+                                @foreach($user->permissions as $permission)
+                                    <li class="flex items-start">
+                                                        <span class="flex-shrink-0 flex items-center justify-center h-5 w-5 rounded-full mt-0.5 {{ $permission->pivot->data ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' : 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' }}">
+                                                            @if($permission->pivot->data)
+                                                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            @else
+                                                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
+                                                                </svg>
+                                                            @endif
+                                                        </span>
+                                                        <div class="ml-3">
+                                                            <p class="text-sm font-medium {{ $permission->pivot->data ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-500 line-through' }}">{{ __('common.permission-' . $permission->slug) ?? $permission->name }}</p>
+                                                            @if($permission->desc)
+                                                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $permission->desc }}</p>
+                                                            @endif
+                                                        </div>
+                                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <p class="text-sm text-gray-500 dark:text-gray-400 italic">ไม่มีสิทธิ์เพิ่มเติมเฉพาะบุคคล</p>
+                        @endif
+                    </div>
+                </div>
             </div>
 
         </div>

@@ -231,7 +231,7 @@ class User extends Authenticatable
                 $userPermission['data'] = 1;
             }
 
-            if (!$userPermission['desc']) {
+            if (!isset($userPermission['desc']) || !$userPermission['desc']) {
                 $userPermission['desc'] = '';
             }
 

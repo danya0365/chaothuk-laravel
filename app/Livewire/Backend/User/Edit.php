@@ -21,7 +21,7 @@ class Edit extends Component
     public $email = '';
     public $mobile_phone = '';
     public $role_ids = [];
-    public $permission_ids = [];
+    public $permissions_data = [];
     public $password = ''; // Only if changing
     public $password_confirmation = '';
 
@@ -34,7 +34,12 @@ class Edit extends Component
         $this->email = $user->email;
         $this->mobile_phone = $user->mobile_phone;
         $this->role_ids = $user->roles->pluck('id')->toArray();
-        $this->permission_ids = $user->permissions->pluck('id')->toArray();
+        foreach($user->permissions as $perm) {
+            $this->permissions_data[$perm->id] = [
+                'value' => $perm->pivot->data ? 'true' : 'false',
+                'desc' => $perm->pivot->desc ?? ''
+            ];
+        }
     }
 
     public function rules()
@@ -46,7 +51,7 @@ class Edit extends Component
             'email' => ['required', 'email', Rule::unique('users')->ignore($this->user->id)],
             'mobile_phone' => 'nullable|string',
             'role_ids' => 'array',
-            'permission_ids' => 'array',
+            'permissions_data' => 'array',
             'password' => 'nullable|min:8|confirmed',
         ];
     }
@@ -69,8 +74,30 @@ class Edit extends Component
 
         $this->user->update($data);
 
-        $this->user->roles()->sync($this->role_ids ?? []);
-        $this->user->permissions()->sync($this->permission_ids ?? []);
+        $this->user->syncUserRoles($this->role_ids ?? []);
+        
+        $userPermissions = [];
+        if (!empty($this->permissions_data)) {
+            foreach($this->permissions_data as $permId => $valueData) {
+                // Determine truth value logic
+                $boolValue = null;
+                if (is_array($valueData) && isset($valueData['value'])) {
+                    $boolValue = $valueData['value'];
+                } elseif (is_string($valueData)) {
+                    $boolValue = $valueData;
+                }
+
+                if($boolValue === 'true' || $boolValue === 'false') {
+                    $desc = is_array($valueData) && isset($valueData['desc']) ? $valueData['desc'] : '';
+                    $userPermissions[] = [
+                        'permission_id' => $permId,
+                        'data' => $boolValue === 'true' ? 1 : 0,
+                        'desc' => $desc
+                    ];
+                }
+            }
+        }
+        $this->user->syncUserPermissions($userPermissions);
 
         session()->flash('success', 'อัปเดตข้อมูลผู้ใช้สำเร็จ');
         return $this->redirectRoute('backend.users.index', navigate: true);

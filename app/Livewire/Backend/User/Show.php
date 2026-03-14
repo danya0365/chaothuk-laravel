@@ -16,7 +16,8 @@ class Show extends Component
     public function mount(User $user)
     {
         $this->user = $user->load([
-            'roles', 
+            'roles',
+            'roles.permissions', 
             'permissions', 
             'userPoints',
             'transactions',
