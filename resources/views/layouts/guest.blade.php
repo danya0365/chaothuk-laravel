@@ -32,6 +32,13 @@
             class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg">
             {{ $slot }}
         </div>
+
+        <!-- Footer / Version Info -->
+        <div class="mt-8 text-center pb-4">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-medium bg-gray-200 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+                v{{ config('app.version') }} ({{ config('app.build') }})
+            </span>
+        </div>
     </div>
     @if (isset($javascript))
         {{ $javascript }}

@@ -17,6 +17,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Version & Build
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the "version" your application is currently running,
+    | including the specific git commit build for tracking deployments.
+    |
+    */
+
+    'version' => env('APP_VERSION', '1.0.0'),
+    'build' => env('APP_BUILD', trim(exec('git log --pretty="%h" -n1 HEAD 2>/dev/null')) ?: 'development'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |
