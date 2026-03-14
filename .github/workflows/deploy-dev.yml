@@ -18,12 +18,9 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
           password: ${{ secrets.VPS_PASSWORD }}
-          source: "."
-          target: "~/chaothuk-laravel"
-          rm: false # Do not delete remote files not present locally
-          strip_components: 0
-          tar_tmp_path: "/tmp" # Use tar to speed up transfer
-          tar_exec: "tar"
+          source: "./"
+          target: "/home/${{ secrets.VPS_USERNAME }}/chaothuk-laravel"
+          rm: false
         
       - name: Execute deployment commands via SSH
         uses: appleboy/ssh-action@v1.0.3
