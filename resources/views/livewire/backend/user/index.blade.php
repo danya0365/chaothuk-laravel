@@ -62,11 +62,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10">
-                                        <div class="h-10 w-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg shadow-inner">
-                                            {{ strtoupper(substr($user->name, 0, 1)) }}
-                                        </div>
-                                    </div>
+                                    <x-backend.avatar :src="$user->getAvatar()" :name="$user->name" size="md" />
                                     <div class="ml-4">
                                         <div class="text-sm font-medium text-gray-900 dark:text-white">
                                             {{ $user->name }}
