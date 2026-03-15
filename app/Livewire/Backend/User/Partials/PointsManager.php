@@ -5,6 +5,7 @@ namespace App\Livewire\Backend\User\Partials;
 use App\Models\User;
 use App\Models\UserPoint;
 use App\Models\UserPointLog;
+use App\Models\IssuePoint;
 use App\Models\PointTransactionLog;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -20,22 +21,38 @@ class PointsManager extends Component
     public $showModal = false;
     public $actionType = 'add'; // 'add' or 'deduct'
     public $amount = 0;
+    public $issue_point_id = '';
     public $note = '';
 
-    protected $rules = [
-        'amount' => 'required|integer|min:1',
-        'actionType' => 'required|in:add,deduct',
-        'note' => 'nullable|string|max:255',
-    ];
+    protected function rules()
+    {
+        return [
+            'amount' => 'required|numeric|min:1',
+            'actionType' => 'required|in:add,deduct',
+            'issue_point_id' => 'required|exists:issue_points,id',
+            'note' => 'nullable|string|max:255',
+        ];
+    }
 
     public function mount(User $user)
     {
         $this->user = $user;
     }
 
+    public function updatedIssuePointId($val)
+    {
+        if ($val) {
+            $issue = IssuePoint::find($val);
+            if ($issue && $issue->points) {
+                // Auto-fill amount based on issue points definition
+                $this->amount = abs($issue->points);
+            }
+        }
+    }
+
     public function openModal($type = 'add')
     {
-        $this->reset(['amount', 'note']);
+        $this->reset(['amount', 'note', 'issue_point_id']);
         $this->actionType = $type;
         $this->showModal = true;
     }
@@ -52,13 +69,16 @@ class PointsManager extends Component
         DB::beginTransaction();
 
         try {
+            $issuePointConfig = IssuePoint::find($this->issue_point_id);
+
             if ($this->actionType === 'add') {
                 // Add points: Create a new UserPoint
                 $userPoint = UserPoint::create([
                     'point_received' => $this->amount,
                     'point_available' => $this->amount,
                     'user_id' => $this->user->id,
-                    'expired_at' => null,
+                    'issue_point_id' => $issuePointConfig->id,
+                    'expired_at' => $issuePointConfig->end_at, // Use end_at from issue config if applicable
                 ]);
 
                 $userPointLog = UserPointLog::create([
@@ -70,9 +90,11 @@ class PointsManager extends Component
                 $transaction = new PointTransactionLog();
                 $transaction->user_id = $this->user->id;
                 $transaction->points = $this->amount;
-                // Note: storing note in points temporarily or skipping morphological relation if not strict
-                // we leave transactionable null since it's a manual adjustment
                 $transaction->user_point_logs = [$userPointLog];
+                
+                // Polymorphic relation to IssuePoint as the reason
+                $transaction->transactionable()->associate($issuePointConfig); 
+                
                 $transaction->save();
             } else {
                 // Deduct points concept
@@ -110,6 +132,7 @@ class PointsManager extends Component
                 $transaction->user_id = $this->user->id;
                 $transaction->points = -$this->amount;
                 $transaction->user_point_logs = $logs;
+                $transaction->transactionable()->associate($issuePointConfig); // Record deduction reason
                 $transaction->save();
             }
 
@@ -131,9 +154,13 @@ class PointsManager extends Component
             ->with('transactionable')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
+            
+        // Load active issue points for the dropdown
+        $issuePoints = IssuePoint::where('status', 'approve')->get();
 
         return view('livewire.backend.user.partials.points-manager', [
             'transactions' => $transactions,
+            'issuePoints' => $issuePoints,
         ]);
     }
 }

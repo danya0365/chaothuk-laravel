@@ -107,16 +107,32 @@
                                     {{ $actionType === 'add' ? 'เพิ่มคะแนนสะสม' : 'หักคะแนนสะสม' }}
                                 </h3>
                                 <div class="mt-4 space-y-4 text-left">
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">
-                                        {{ $actionType === 'add' ? 'โปรดระบุจำนวนคะแนนที่ต้องการเพิ่มให้กับสมาชิกรายนี้' : 'โปรดระบุจำนวนคะแนนที่ต้องการหักออกจากสมาชิกรายนี้ (ระบบจะนำคะแนนเก่าสุดที่ยังมีอยู่มาหักก่อนเรียงตามลำดับเวลา)' }}
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                                        {{ $actionType === 'add' ? 'โปรดระบุแคมเปญ/เหตุผลและจำนวนคะแนนที่ต้องการเพิ่มให้กับสมาชิกรายนี้' : 'โปรดระบุแคมเปญ/เหตุผลและจำนวนคะแนนที่ต้องการหักออกจากสมาชิกรายนี้ (ระบบจะหักคะแนนเก่าสุดก่อน)' }}
                                     </p>
                                     
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">จำนวนคะแนน (Points)</label>
-                                        <input wire:model="amount" type="number" min="1" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="เช่น 100">
-                                        @error('amount') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">แคมเปญ/เหตุผล (Reason)</label>
+                                        <select wire:model.live="issue_point_id" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                            <option value="">-- เลือกเหตุผลการปรับพอยท์ --</option>
+                                            @foreach($issuePoints as $issue)
+                                                <option value="{{ $issue->id }}">{{ $issue->name }} {{ $issue->points ? '('.rtrim(rtrim(number_format($issue->points, 2), '0'), '.').' Pts)' : '' }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('issue_point_id') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                                     </div>
 
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">จำนวนคะแนน (Points)</label>
+                                        <input wire:model="amount" type="number" min="1" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="เช่น 100">
+                                        @error('amount') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">บันทึกเพิ่มเติม (Note - ตัวเลือก)</label>
+                                        <textarea wire:model="note" rows="2" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="ระบุเหตุผลเพิ่มเติม..."></textarea>
+                                        @error('note') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
+                                    </div>
                                 </div>
                             </div>
                         </div>

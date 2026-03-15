@@ -30,6 +30,13 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
     Route::get('/roles', \App\Livewire\Backend\Role\Index::class)->name('roles.index');
     Route::get('/roles/create', \App\Livewire\Backend\Role\Form::class)->name('roles.create');
     Route::get('/roles/{role}/edit', \App\Livewire\Backend\Role\Form::class)->name('roles.edit');
+    
+    // Points Management (Issues)
+    Route::group(['prefix' => 'points', 'as' => 'points.'], function () {
+        Route::get('/issues', \App\Livewire\Backend\Point\IssueIndex::class)->name('issues.index');
+        Route::get('/issues/create', \App\Livewire\Backend\Point\IssueForm::class)->name('issues.create');
+        Route::get('/issues/{issue}/edit', \App\Livewire\Backend\Point\IssueForm::class)->name('issues.edit');
+    });
 });
 
 Route::group(['prefix' => 'barcode', 'as' => 'barcode.'], function () {
