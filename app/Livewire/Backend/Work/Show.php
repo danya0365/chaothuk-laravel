@@ -19,6 +19,8 @@ class Show extends Component
     public $providerStats = [];
     public $bookedDates = [];
     public $availabilities = [];
+    public $recentBookings = [];
+    public $recentReviews = [];
 
     public function mount(Work $work)
     {
@@ -67,6 +69,10 @@ class Show extends Component
             ->groupBy('day_of_week')
             ->map(fn ($slots) => $slots->map(fn ($s) => substr($s->start_time, 0, 5) . '-' . substr($s->end_time, 0, 5))->implode(', '))
             ->toArray();
+
+        // 4. Recent Bookings & Reviews
+        $this->recentBookings = $this->work->bookings()->with('author')->latest()->take(10)->get();
+        $this->recentReviews = $this->work->reviews()->with('author')->latest()->take(10)->get();
     }
 
     public function toggleFeature()
