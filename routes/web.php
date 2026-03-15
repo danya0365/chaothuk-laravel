@@ -51,6 +51,18 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
         Route::get('/', \App\Livewire\Backend\Work\Index::class)->name('index');
         Route::get('/{work}', \App\Livewire\Backend\Work\Show::class)->name('show');
     });
+
+    // Content Moderation (Recruits)
+    Route::group(['prefix' => 'recruits', 'as' => 'recruits.'], function () {
+        Route::get('/', \App\Livewire\Backend\Recruit\Index::class)->name('index');
+        Route::get('/{recruit}', \App\Livewire\Backend\Recruit\Show::class)->name('show');
+    });
+
+    // Content Moderation (Posts & Reviews)
+    Route::group(['prefix' => 'posts', 'as' => 'posts.'], function () {
+        Route::get('/', \App\Livewire\Backend\Post\Index::class)->name('index');
+        Route::get('/{post}', \App\Livewire\Backend\Post\Show::class)->name('show');
+    });
 });
 
 Route::group(['prefix' => 'barcode', 'as' => 'barcode.'], function () {
