@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -76,6 +78,20 @@ class User extends Authenticatable
     public function getCoverImage($size = "1200x600"): ?string
     {
         return $this->cover_image;
+    }
+
+    protected function profileImage(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value ? (str_contains($value, 'http') ? $value : Storage::url($value)) : null,
+        );
+    }
+
+    protected function coverImage(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value ? (str_contains($value, 'http') ? $value : Storage::url($value)) : null,
+        );
     }
 
     public function userPoints(): HasMany

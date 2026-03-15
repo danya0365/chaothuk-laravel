@@ -8,11 +8,20 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
+use Livewire\WithFileUploads;
 
 #[Layout('layouts.backend')]
 #[Title('เพิ่มสมาชิกใหม่ - Admin')]
 class Create extends Component
 {
+    use WithFileUploads;
+
+    #[Validate('nullable|image|max:2048')]
+    public $profile_image;
+
+    #[Validate('nullable|image|max:5120')]
+    public $cover_image;
+
     #[Validate('required|min:3')]
     public $name = '';
 
@@ -44,14 +53,31 @@ class Create extends Component
     {
         $this->validate();
 
-        $user = User::create([
+        $data = [
             'name' => $this->name,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'email' => $this->email,
             'mobile_phone' => $this->mobile_phone,
             'password' => Hash::make($this->password),
-        ]);
+        ];
+
+        $user = User::create($data);
+
+        $updates = [];
+        if ($this->profile_image) {
+            $path = $this->profile_image->store("users/{$user->id}/avatar", 'public');
+            $updates['profile_image'] = asset('storage/' . $path);
+        }
+
+        if ($this->cover_image) {
+            $path = $this->cover_image->store("users/{$user->id}/cover", 'public');
+            $updates['cover_image'] = asset('storage/' . $path);
+        }
+
+        if (!empty($updates)) {
+            $user->update($updates);
+        }
 
         if (!empty($this->role_ids)) {
             $user->roles()->sync($this->role_ids);

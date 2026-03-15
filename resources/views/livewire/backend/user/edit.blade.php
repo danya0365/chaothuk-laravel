@@ -75,8 +75,44 @@
                 
                 <hr class="col-span-1 md:col-span-2 border-gray-200 dark:border-gray-700 my-4">
 
+                <!-- Profile Image -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">รูปโปรไฟล์ (Avatar)</label>
+                    <div class="mt-2 flex items-center space-x-4">
+                        <div class="h-16 w-16 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex-shrink-0">
+                            @if ($new_profile_image)
+                                <img src="{{ $new_profile_image->temporaryUrl() }}" class="h-full w-full object-cover">
+                            @elseif ($user->profile_image)
+                                <img src="{{ $user->profile_image }}" class="h-full w-full object-cover">
+                            @else
+                                <svg class="h-full w-full text-gray-300 dark:text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                            @endif
+                        </div>
+                        <input type="file" wire:model="new_profile_image" accept="image/*" class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-gray-700 dark:file:text-gray-300 transition">
+                    </div>
+                    @error('new_profile_image') <span class="text-sm text-red-600 dark:text-red-400 mt-1 block">{{ $message }}</span> @enderror
+                </div>
+
+                <!-- Cover Image -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">รูปหน้าปก (Cover)</label>
+                    <div class="mt-2 flex items-center space-x-4">
+                        <div class="h-16 w-32 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex-shrink-0">
+                            @if ($new_cover_image)
+                                <img src="{{ $new_cover_image->temporaryUrl() }}" class="h-full w-full object-cover">
+                            @elseif ($user->cover_image)
+                                <img src="{{ $user->cover_image }}" class="h-full w-full object-cover">
+                            @else
+                                <svg class="h-full w-full text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v12a2 2 0 002 2z" /></svg>
+                            @endif
+                        </div>
+                        <input type="file" wire:model="new_cover_image" accept="image/*" class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-gray-700 dark:file:text-gray-300 transition">
+                    </div>
+                    @error('new_cover_image') <span class="text-sm text-red-600 dark:text-red-400 mt-1 block">{{ $message }}</span> @enderror
+                </div>
+
                 <!-- Username -->
-                <div class="col-span-1 md:col-span-2">
+                <div class="col-span-1 md:col-span-2 mt-4">
                     <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">ชื่อแสดงผล (Username) <span class="text-red-500">*</span></label>
                     <input wire:model="name" type="text" id="name" class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                     @error('name') <span class="text-sm text-red-600 dark:text-red-400 mt-1 block">{{ $message }}</span> @enderror
