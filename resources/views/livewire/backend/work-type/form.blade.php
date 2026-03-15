@@ -50,7 +50,7 @@
                     @elseif ($existingImageUrl)
                         <!-- Show existing image -->
                         <div class="relative inline-block mt-2">
-                            <img src="{{ Storage::url($existingImageUrl) }}" class="h-32 w-32 object-cover rounded-md border border-gray-300 shadow-sm" alt="Current Image">
+                            <img src="{{ $existingImageUrl }}" class="h-32 w-32 object-cover rounded-md border border-gray-300 shadow-sm" alt="Current Image">
                             <button type="button" wire:click="removeExistingImage" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transform transition hover:scale-110">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                             </button>

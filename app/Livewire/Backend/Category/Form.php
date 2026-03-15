@@ -22,7 +22,7 @@ class Form extends Component
     public $image;
     public $existingImageUrl = null;
 
-    public function mount(Category $category = null)
+    public function mount(?Category $category = null)
     {
         if ($category && $category->exists) {
             $this->category = $category;
@@ -69,9 +69,16 @@ class Form extends Component
 
         if ($this->image) {
             if ($this->isEditMode && $this->existingImageUrl) {
-                Storage::delete($this->existingImageUrl);
+                $relativePath = str_replace(asset('storage') . '/', '', $this->existingImageUrl);
+                Storage::disk('public')->delete($relativePath);
             }
-            $data['image_url'] = $this->image->store('categories', 'public');
+            
+            $imageService = app(\App\Services\UserImageService::class);
+            $uploadResult = $imageService->handleCategoryUpload($this->image);
+            
+            if (isset($uploadResult['status']) && $uploadResult['status']) {
+                $data['image_url'] = $uploadResult['url'];
+            }
         }
 
         if ($this->isEditMode) {
@@ -89,7 +96,9 @@ class Form extends Component
     public function removeExistingImage()
     {
         if ($this->isEditMode && $this->existingImageUrl) {
-            Storage::delete($this->existingImageUrl);
+            $relativePath = str_replace(asset('storage') . '/', '', $this->existingImageUrl);
+            Storage::disk('public')->delete($relativePath);
+            
             $this->category->update(['image_url' => null]);
             $this->existingImageUrl = null;
         }

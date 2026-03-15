@@ -49,7 +49,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @if($type->image)
                                     <div class="h-10 w-10 flex-shrink-0">
-                                        <img class="h-10 w-10 rounded-md object-cover" src="{{ Storage::url($type->image) }}" alt="">
+                                        <img class="h-10 w-10 rounded-md object-cover" src="{{ $type->image }}" alt="">
                                     </div>
                                 @else
                                     <div class="h-10 w-10 rounded-md bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-400">

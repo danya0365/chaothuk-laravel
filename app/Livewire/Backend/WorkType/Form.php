@@ -20,7 +20,7 @@ class Form extends Component
     public $image;
     public $existingImageUrl = null;
 
-    public function mount(WorkType $workType = null)
+    public function mount(?WorkType $workType = null)
     {
         if ($workType && $workType->exists) {
             $this->workType = $workType;
@@ -59,10 +59,16 @@ class Form extends Component
 
         if ($this->image) {
             if ($this->isEditMode && $this->existingImageUrl) {
-                Storage::disk('public')->delete($this->existingImageUrl);
+                $relativePath = str_replace(asset('storage') . '/', '', $this->existingImageUrl);
+                Storage::disk('public')->delete($relativePath);
             }
-            // Store image
-            $data['image'] = $this->image->store('work_types', 'public');
+            
+            $imageService = app(\App\Services\UserImageService::class);
+            $uploadResult = $imageService->handleWorkTypeUpload($this->image);
+            
+            if (isset($uploadResult['status']) && $uploadResult['status']) {
+                $data['image'] = $uploadResult['url'];
+            }
         }
 
         if ($this->isEditMode) {
@@ -80,7 +86,9 @@ class Form extends Component
     public function removeExistingImage()
     {
         if ($this->isEditMode && $this->existingImageUrl) {
-            Storage::disk('public')->delete($this->existingImageUrl);
+            $relativePath = str_replace(asset('storage') . '/', '', $this->existingImageUrl);
+            Storage::disk('public')->delete($relativePath);
+            
             $this->workType->update(['image' => null]);
             $this->existingImageUrl = null;
         }

@@ -29,7 +29,7 @@ class Form extends Component
     public $image;
     public $existingImageUrl = null;
 
-    public function mount(Banner $banner = null)
+    public function mount(?Banner $banner = null)
     {
         if ($banner && $banner->exists) {
             $this->banner = $banner;
@@ -107,9 +107,16 @@ class Form extends Component
 
         if ($this->image) {
             if ($this->isEditMode && $this->existingImageUrl) {
-                Storage::disk('public')->delete($this->existingImageUrl);
+                $relativePath = str_replace(asset('storage') . '/', '', $this->existingImageUrl);
+                Storage::disk('public')->delete($relativePath);
             }
-            $data['image_url'] = collect(explode('public/', $this->image->store('public/banners')))->last();
+            
+            $imageService = app(\App\Services\UserImageService::class);
+            $uploadResult = $imageService->handleBannerUpload($this->image);
+            
+            if (isset($uploadResult['status']) && $uploadResult['status']) {
+                $data['image_url'] = $uploadResult['url'];
+            }
         }
 
         if ($this->isEditMode) {
@@ -127,7 +134,9 @@ class Form extends Component
     public function removeExistingImage()
     {
         if ($this->isEditMode && $this->existingImageUrl) {
-            Storage::disk('public')->delete($this->existingImageUrl);
+            $relativePath = str_replace(asset('storage') . '/', '', $this->existingImageUrl);
+            Storage::disk('public')->delete($relativePath);
+            
             $this->banner->update(['image_url' => '']); // Allow nullable conditionally in model context or temporary update
             $this->existingImageUrl = null;
         }
