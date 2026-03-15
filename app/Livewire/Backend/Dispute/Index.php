@@ -61,7 +61,7 @@ class Index extends Component
             $query->where('status', $this->status);
         }
 
-        $disputes = $query->paginate(20);
+        $disputes = $query->paginate(10);
 
         return view('livewire.backend.dispute.index', compact('disputes'));
     }

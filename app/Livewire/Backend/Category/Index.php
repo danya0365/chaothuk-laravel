@@ -46,7 +46,7 @@ class Index extends Component
                   ->orWhere('description', 'like', '%' . $this->search . '%');
         }
 
-        $categories = $query->paginate(20);
+        $categories = $query->paginate(10);
 
         return view('livewire.backend.category.index', compact('categories'));
     }

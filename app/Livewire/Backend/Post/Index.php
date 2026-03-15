@@ -118,7 +118,7 @@ class Index extends Component
              $query->where('is_suspended', true);
         }
 
-        $items = $query->latest()->paginate(15);
+        $items = $query->latest()->paginate(10);
 
         return view('livewire.backend.post.index', [
             'items' => $items,

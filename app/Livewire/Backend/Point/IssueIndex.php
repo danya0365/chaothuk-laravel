@@ -46,7 +46,7 @@ class IssueIndex extends Component
                 $query->where('status', $this->status);
             })
             ->latest()
-            ->paginate(15);
+            ->paginate(10);
 
         return view('livewire.backend.point.issue-index', [
             'issues' => $issues

@@ -47,7 +47,7 @@ class Index extends Component
             ->latest('created_at');
 
         return view('livewire.backend.verification.index', [
-            'verifications' => $query->paginate(15)
+            'verifications' => $query->paginate(10)
         ]);
     }
 }

@@ -79,7 +79,7 @@ class Index extends Component
             $query->where('is_public', $this->filterStatus === 'public');
         }
 
-        $banners = $query->paginate(20);
+        $banners = $query->paginate(10);
 
         return view('livewire.backend.banner.index', compact('banners'));
     }

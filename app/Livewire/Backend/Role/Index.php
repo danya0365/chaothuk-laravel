@@ -44,7 +44,7 @@ class Index extends Component
                       ->orWhere('desc', 'like', '%' . $this->search . '%');
             })
             ->latest()
-            ->paginate(15);
+            ->paginate(10);
 
         return view('livewire.backend.role.index', [
             'roles' => $roles

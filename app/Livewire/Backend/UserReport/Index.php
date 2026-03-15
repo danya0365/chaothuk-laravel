@@ -60,7 +60,7 @@ class Index extends Component
             $query->where('status', $this->status);
         }
 
-        $reports = $query->paginate(20);
+        $reports = $query->paginate(10);
 
         return view('livewire.backend.user-report.index', compact('reports'));
     }

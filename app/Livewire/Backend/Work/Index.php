@@ -106,7 +106,7 @@ class Index extends Component
             });
         }
 
-        $works = $query->latest()->paginate(15);
+        $works = $query->latest()->paginate(10);
         $categories = Category::orderBy('name')->get();
 
         return view('livewire.backend.work.index', [
