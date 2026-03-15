@@ -63,6 +63,17 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
         Route::get('/', \App\Livewire\Backend\Post\Index::class)->name('index');
         Route::get('/{post}', \App\Livewire\Backend\Post\Show::class)->name('show');
     });
+
+    // Dispute & Report Management
+    Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
+        Route::get('/', \App\Livewire\Backend\UserReport\Index::class)->name('index');
+        Route::get('/{report}', \App\Livewire\Backend\UserReport\Show::class)->name('show');
+    });
+
+    Route::group(['prefix' => 'disputes', 'as' => 'disputes.'], function () {
+        Route::get('/', \App\Livewire\Backend\Dispute\Index::class)->name('index');
+        Route::get('/{dispute}', \App\Livewire\Backend\Dispute\Show::class)->name('show');
+    });
 });
 
 Route::group(['prefix' => 'barcode', 'as' => 'barcode.'], function () {
