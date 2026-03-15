@@ -9,6 +9,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\WithFileUploads;
+use App\Services\UserImageService;
 
 #[Layout('layouts.backend')]
 #[Title('เพิ่มสมาชิกใหม่ - Admin')]
@@ -66,13 +67,17 @@ class Create extends Component
 
         $updates = [];
         if ($this->profile_image) {
-            $path = $this->profile_image->store("users/{$user->id}/avatar", 'public');
-            $updates['profile_image'] = asset('storage/' . $path);
+            $result = app(UserImageService::class)->handleAvatarUpload($this->profile_image, $user);
+            if ($result['status'] ?? false) {
+                $updates['profile_image'] = $result['url'];
+            }
         }
 
         if ($this->cover_image) {
-            $path = $this->cover_image->store("users/{$user->id}/cover", 'public');
-            $updates['cover_image'] = asset('storage/' . $path);
+            $result = app(UserImageService::class)->handleCoverUpload($this->cover_image, $user);
+            if ($result['status'] ?? false) {
+                $updates['cover_image'] = $result['url'];
+            }
         }
 
         if (!empty($updates)) {

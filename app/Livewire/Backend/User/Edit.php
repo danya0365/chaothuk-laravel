@@ -10,6 +10,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
+use App\Services\UserImageService;
 
 #[Layout('layouts.backend')]
 #[Title('แก้ไขข้อมูลสมาชิก - Admin')]
@@ -82,29 +83,17 @@ class Edit extends Component
             $data['password'] = Hash::make($this->password);
         }
         if ($this->new_profile_image) {
-            // ลบไฟล์เดิม (เผื่อเป็น path เก่า)
-            if ($this->user->profile_image) {
-                $oldPath = \Illuminate\Support\Str::after($this->user->profile_image, '/storage/');
-                Storage::disk('public')->delete($oldPath);
+            $result = app(UserImageService::class)->handleAvatarUpload($this->new_profile_image, $this->user);
+            if ($result['status'] ?? false) {
+                $data['profile_image'] = $result['url'];
             }
-            // ลบโฟลเดอร์ avatar เดิมทิ้งทั้งหมดเพื่อให้เหลือแค่รูปใหม่รูปล่าสุด
-            Storage::disk('public')->deleteDirectory("users/{$this->user->id}/avatar");
-            
-            $path = $this->new_profile_image->store("users/{$this->user->id}/avatar", 'public');
-            $data['profile_image'] = asset('storage/' . $path);
         }
 
         if ($this->new_cover_image) {
-            // ลบไฟล์เดิม (เผื่อเป็น path เก่า)
-            if ($this->user->cover_image) {
-                $oldPath = \Illuminate\Support\Str::after($this->user->cover_image, '/storage/');
-                Storage::disk('public')->delete($oldPath);
+            $result = app(UserImageService::class)->handleCoverUpload($this->new_cover_image, $this->user);
+            if ($result['status'] ?? false) {
+                $data['cover_image'] = $result['url'];
             }
-            // ลบโฟลเดอร์ cover เดิมทิ้งทั้งหมด
-            Storage::disk('public')->deleteDirectory("users/{$this->user->id}/cover");
-            
-            $path = $this->new_cover_image->store("users/{$this->user->id}/cover", 'public');
-            $data['cover_image'] = asset('storage/' . $path);
         }
 
         $this->user->update($data);

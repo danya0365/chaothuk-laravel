@@ -59,6 +59,7 @@ Route::group(['prefix' => 'upload', 'as' => 'api.upload.'], function () {
     Route::post('/image', [UploadController::class, 'doUploadImage'])->name('image');
     Route::post('/original-image', [UploadController::class, 'doUploadOriginalImage'])->name('original-image');
     Route::post('/avatar', [UploadController::class, 'doUploadAvatar'])->name('avatar');
+    Route::post('/cover', [UploadController::class, 'doUploadCover'])->name('cover');
 });
 
 Route::group(['prefix' => 'configurations', 'as' => 'api.configurations.'], function () {
