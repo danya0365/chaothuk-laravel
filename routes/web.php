@@ -20,6 +20,16 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
     Route::get('/users/create', \App\Livewire\Backend\User\Create::class)->name('users.create');
     Route::get('/users/{user}', \App\Livewire\Backend\User\Show::class)->name('users.show');
     Route::get('/users/{user}/edit', \App\Livewire\Backend\User\Edit::class)->name('users.edit');
+
+    // Permissions Management
+    Route::get('/permissions', \App\Livewire\Backend\Permission\Index::class)->name('permissions.index');
+    Route::get('/permissions/create', \App\Livewire\Backend\Permission\Form::class)->name('permissions.create');
+    Route::get('/permissions/{permission}/edit', \App\Livewire\Backend\Permission\Form::class)->name('permissions.edit');
+
+    // Roles Management
+    Route::get('/roles', \App\Livewire\Backend\Role\Index::class)->name('roles.index');
+    Route::get('/roles/create', \App\Livewire\Backend\Role\Form::class)->name('roles.create');
+    Route::get('/roles/{role}/edit', \App\Livewire\Backend\Role\Form::class)->name('roles.edit');
 });
 
 Route::group(['prefix' => 'barcode', 'as' => 'barcode.'], function () {
