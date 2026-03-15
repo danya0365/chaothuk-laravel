@@ -104,6 +104,11 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
         Route::get('/reviews', \App\Livewire\Backend\Reputation\ReviewIndex::class)->name('reviews.index');
     });
 
+    // Session Management (Kick Users)
+    Route::group(['prefix' => 'sessions', 'as' => 'sessions.'], function () {
+        Route::get('/', \App\Livewire\Backend\Session\Index::class)->name('index');
+    });
+
     // Settings
     Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
         Route::get('/', \App\Livewire\Backend\Setting\Index::class)->name('index');
