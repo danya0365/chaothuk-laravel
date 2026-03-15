@@ -43,6 +43,12 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
         Route::get('/', \App\Livewire\Backend\Verification\Index::class)->name('index');
         Route::get('/{verification}', \App\Livewire\Backend\Verification\Show::class)->name('show');
     });
+
+    // Content Moderation (Works)
+    Route::group(['prefix' => 'works', 'as' => 'works.'], function () {
+        Route::get('/', \App\Livewire\Backend\Work\Index::class)->name('index');
+        Route::get('/{work}', \App\Livewire\Backend\Work\Show::class)->name('show');
+    });
 });
 
 Route::group(['prefix' => 'barcode', 'as' => 'barcode.'], function () {
