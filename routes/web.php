@@ -35,7 +35,13 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
     Route::group(['prefix' => 'points', 'as' => 'points.'], function () {
         Route::get('/issues', \App\Livewire\Backend\Point\IssueIndex::class)->name('issues.index');
         Route::get('/issues/create', \App\Livewire\Backend\Point\IssueForm::class)->name('issues.create');
-        Route::get('/issues/{issue}/edit', \App\Livewire\Backend\Point\IssueForm::class)->name('issues.edit');
+        Route::get('/issues/{issue}', \App\Livewire\Backend\Point\IssueForm::class)->name('issues.edit');
+    });
+
+    // User Verification (KYC)
+    Route::group(['prefix' => 'verifications', 'as' => 'verifications.'], function () {
+        Route::get('/', \App\Livewire\Backend\Verification\Index::class)->name('index');
+        Route::get('/{verification}', \App\Livewire\Backend\Verification\Show::class)->name('show');
     });
 });
 

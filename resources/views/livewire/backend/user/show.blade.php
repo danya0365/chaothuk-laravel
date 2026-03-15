@@ -36,6 +36,9 @@
                 <button @click="activeTab = 'badges'" :class="activeTab === 'badges' ? 'border-indigo-500 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-600'" class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors">
                     ตราสัญลักษณ์ (Badges)
                 </button>
+                <button @click="activeTab = 'verifications'" :class="activeTab === 'verifications' ? 'border-indigo-500 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-600'" class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors">
+                    ยืนยันตัวตน (Verifications)
+                </button>
             </nav>
         </div>
 
@@ -376,6 +379,11 @@
             <!-- TAB: Badges -->
             <div x-show="activeTab === 'badges'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" style="display: none;">
                 @livewire('backend.user.partials.badges-manager', ['user' => $user])
+            </div>
+
+            <!-- TAB: Verifications -->
+            <div x-show="activeTab === 'verifications'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" style="display: none;">
+                @livewire('backend.user.partials.verification-manager', ['user' => $user])
             </div>
 
         </div>
