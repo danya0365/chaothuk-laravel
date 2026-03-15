@@ -84,11 +84,18 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
     // System & Activity Logs
     Route::group(['prefix' => 'logs', 'as' => 'logs.'], function () {
         Route::get('/activity', \App\Livewire\Backend\ActivityLog\Index::class)->name('activity.index');
+        Route::get('/crons', \App\Livewire\Backend\Log\CronIndex::class)->name('crons.index');
         
         Route::group(['prefix' => 'work-sessions', 'as' => 'work-sessions.'], function () {
             Route::get('/', \App\Livewire\Backend\WorkSession\Index::class)->name('index');
             Route::get('/{session}', \App\Livewire\Backend\WorkSession\Show::class)->name('show');
         });
+    });
+
+    // Notifications (Broadcast)
+    Route::group(['prefix' => 'notifications', 'as' => 'notifications.'], function () {
+        Route::get('/', \App\Livewire\Backend\Notification\Index::class)->name('index');
+        Route::get('/create', \App\Livewire\Backend\Notification\Create::class)->name('create');
     });
 
     // Master Data & Configurations

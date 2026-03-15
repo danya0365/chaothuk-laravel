@@ -134,14 +134,28 @@
 
         <!-- Logs & Activities Section -->
         <h3 class="px-2 mt-8 text-xs font-semibold text-gray-500 uppercase tracking-wider dark:text-gray-400">
-            ระบบตรวจสอบการใช้งาน
+            ระบบตรวจสอบและแจ้งเตือน
         </h3>
+
+        <a href="{{ route('backend.notifications.index') }}" class="flex items-center px-2 py-2 text-sm font-medium rounded-md mt-1 {{ request()->routeIs('backend.notifications.*') ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 w-full' }}">
+            <svg class="w-5 h-5 mr-3 flex-shrink-0 {{ request()->routeIs('backend.notifications.*') ? 'text-indigo-700 dark:text-indigo-300' : 'text-gray-400 dark:text-gray-500' }}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+            </svg>
+            การแจ้งเตือน (Notifications)
+        </a>
 
         <a href="{{ route('backend.logs.activity.index') }}" class="flex items-center px-2 py-2 text-sm font-medium rounded-md mt-1 {{ request()->routeIs('backend.logs.activity.*') ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 w-full' }}">
             <svg class="w-5 h-5 mr-3 flex-shrink-0 {{ request()->routeIs('backend.logs.activity.*') ? 'text-indigo-700 dark:text-indigo-300' : 'text-gray-400 dark:text-gray-500' }}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
             ประวัติการใช้งาน (Activity Log)
+        </a>
+
+        <a href="{{ route('backend.logs.crons.index') }}" class="flex items-center px-2 py-2 text-sm font-medium rounded-md mt-1 {{ request()->routeIs('backend.logs.crons.*') ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 w-full' }}">
+            <svg class="w-5 h-5 mr-3 flex-shrink-0 {{ request()->routeIs('backend.logs.crons.*') ? 'text-indigo-700 dark:text-indigo-300' : 'text-gray-400 dark:text-gray-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            การทำงานเบื้องหลัง (Cron Logs)
         </a>
 
         <a href="{{ route('backend.logs.work-sessions.index') }}" class="flex items-center px-2 py-2 text-sm font-medium rounded-md mt-1 mb-2 {{ request()->routeIs('backend.logs.work-sessions.*') ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 w-full' }}">
