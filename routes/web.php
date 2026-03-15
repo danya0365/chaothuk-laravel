@@ -81,6 +81,16 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
         Route::get('/{dispute}', \App\Livewire\Backend\Dispute\Show::class)->name('show');
     });
 
+    // System & Activity Logs
+    Route::group(['prefix' => 'logs', 'as' => 'logs.'], function () {
+        Route::get('/activity', \App\Livewire\Backend\ActivityLog\Index::class)->name('activity.index');
+        
+        Route::group(['prefix' => 'work-sessions', 'as' => 'work-sessions.'], function () {
+            Route::get('/', \App\Livewire\Backend\WorkSession\Index::class)->name('index');
+            Route::get('/{session}', \App\Livewire\Backend\WorkSession\Show::class)->name('show');
+        });
+    });
+
     // Master Data & Configurations
     Route::group(['prefix' => 'categories', 'as' => 'categories.'], function () {
         Route::get('/', \App\Livewire\Backend\Category\Index::class)->name('index');
