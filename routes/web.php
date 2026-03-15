@@ -64,6 +64,12 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
         Route::get('/{post}', \App\Livewire\Backend\Post\Show::class)->name('show');
     });
 
+    // Content Moderation (Messenger / Chats)
+    Route::group(['prefix' => 'messenger', 'as' => 'messenger.'], function () {
+        Route::get('/', \App\Livewire\Backend\Messenger\Index::class)->name('index');
+        Route::get('/{channel}', \App\Livewire\Backend\Messenger\Show::class)->name('show');
+    });
+
     // Dispute & Report Management
     Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
         Route::get('/', \App\Livewire\Backend\UserReport\Index::class)->name('index');
