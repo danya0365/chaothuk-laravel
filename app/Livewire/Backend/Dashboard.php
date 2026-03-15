@@ -42,6 +42,24 @@ class Dashboard extends Component
             'pending_reports' => UserReport::where('status', 'pending')->count(),
         ];
 
+        // --- Chart Trends (Last 7 Days) ---
+        $chartDates = [];
+        $chartUserCounts = [];
+        $chartGmvCounts = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i)->startOfDay();
+            $chartDates[] = $date->format('d M');
+            
+            // New Users
+            $chartUserCounts[] = User::whereDate('created_at', $date)->count();
+            
+            // GMV (Gross Merchandise Value) from completed sessions
+            $chartGmvCounts[] = WorkSession::where('status', 'completed')
+                                           ->whereDate('updated_at', $date)
+                                           ->sum('price_agreed');
+        }
+
         // --- Activity Feeds ---
         $latestActivities = UserActivityLog::with('user')
             ->orderBy('created_at', 'desc')
@@ -52,7 +70,7 @@ class Dashboard extends Component
             ->take(5)
             ->get();
 
-        return view('livewire.backend.dashboard', compact('metrics', 'alerts', 'latestActivities', 'latestUsers'))
-            ->layout('layouts.backend', ['title' => 'ภาพรวมระบบแบบเจาะลึก (Enhanced Dashboard)']);
+        return view('livewire.backend.dashboard', compact('metrics', 'alerts', 'chartDates', 'chartUserCounts', 'chartGmvCounts', 'latestActivities', 'latestUsers'))
+            ->layout('layouts.backend', ['title' => 'ภาพรวมระบบแบบเจาะลึกทวีต (Business Command Center)']);
     }
 }

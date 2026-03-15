@@ -1,9 +1,11 @@
 import Cropper from "cropperjs";
 import maplibregl from "maplibre-gl";
+import ApexCharts from 'apexcharts';
 import "./bootstrap";
 
 window.Cropper = Cropper;
 window.maplibregl = maplibregl;
+window.ApexCharts = ApexCharts;
 
 // ─── Livewire v3 ships with its own Alpine.js ────────────────────────────────
 // DO NOT import Alpine separately or call Alpine.start() — it causes

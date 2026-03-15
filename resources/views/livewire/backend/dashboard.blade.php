@@ -160,8 +160,86 @@
 
         </div>
 
+        <!-- 📈 Charts Grid -->
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 mt-8">สถิติการเติบโต (Growth & Trends)</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- Users Trend Chart -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-6"
+                 x-data='{
+                     init() {
+                         const isDark = document.documentElement.classList.contains("dark");
+                         let options = {
+                             chart: { type: "area", height: 320, toolbar: { show: false }, fontFamily: "inherit", background: "transparent" },
+                             theme: { mode: isDark ? "dark" : "light" },
+                             series: [{ name: "ผู้ใช้ใหม่ (New Users)", data: @json($chartUserCounts) }],
+                             xaxis: { categories: @json($chartDates), tooltip: { enabled: false } },
+                             colors: ["#4F46E5"],
+                             fill: { type: "gradient", gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.05, stops: [0, 90, 100] } },
+                             dataLabels: { enabled: false },
+                             stroke: { curve: "smooth", width: 3 },
+                             grid: { borderColor: isDark ? "#374151" : "#f3f4f6", strokeDashArray: 4 },
+                             tooltip: { theme: isDark ? "dark" : "light" }
+                         };
+                         let chart = new window.ApexCharts(this.$refs.userChart, options);
+                         chart.render();
+
+                         // Listen for dark mode changes if implemented globally
+                         window.addEventListener("theme-changed", (e) => {
+                             chart.updateOptions({
+                                 theme: { mode: e.detail === "dark" ? "dark" : "light" },
+                                 grid: { borderColor: e.detail === "dark" ? "#374151" : "#f3f4f6" }
+                             });
+                         });
+                     }
+                 }'>
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-white">การเติบโตของผู้ใช้งาน (7 วันย้อนหลัง)</h3>
+                    <span class="text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-1 rounded">ผู้ใช้ใหม่</span>
+                </div>
+                <div x-ref="userChart" class="min-h-[320px]"></div>
+            </div>
+
+            <!-- GMV Trend Chart -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-6"
+                 x-data='{
+                     init() {
+                         const isDark = document.documentElement.classList.contains("dark");
+                         let options = {
+                             chart: { type: "bar", height: 320, toolbar: { show: false }, fontFamily: "inherit", background: "transparent" },
+                             theme: { mode: isDark ? "dark" : "light" },
+                             series: [{ name: "มูลค่างาน (GMV)", data: @json($chartGmvCounts) }],
+                             xaxis: { categories: @json($chartDates), tooltip: { enabled: false } },
+                             colors: ["#10B981"],
+                             dataLabels: { enabled: false },
+                             plotOptions: { bar: { borderRadius: 4, columnWidth: "45%" } },
+                             grid: { borderColor: isDark ? "#374151" : "#f3f4f6", strokeDashArray: 4 },
+                             yaxis: { labels: { formatter: function (val) { return val.toLocaleString() + " ฿"; } } },
+                             tooltip: { theme: isDark ? "dark" : "light" }
+                         };
+                         let chart = new window.ApexCharts(this.$refs.gmvChart, options);
+                         chart.render();
+
+                         window.addEventListener("theme-changed", (e) => {
+                             chart.updateOptions({
+                                 theme: { mode: e.detail === "dark" ? "dark" : "light" },
+                                 grid: { borderColor: e.detail === "dark" ? "#374151" : "#f3f4f6" }
+                             });
+                         });
+                     }
+                 }'>
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-white">มูลค่างานที่เสร็จสิ้น (GMV) (7 วันย้อนหลัง)</h3>
+                    <span class="text-sm font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded">Gross Merchandise Value</span>
+                </div>
+                <div x-ref="gmvChart" class="min-h-[320px]"></div>
+            </div>
+
+        </div>
+
         <!-- 📸 Feed & Lists -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 mt-8">รายละเอียดและความเคลื่อนไหว (Feeds & Details)</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-2">
             
             <!-- Latest Users -->
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 flex flex-col">
