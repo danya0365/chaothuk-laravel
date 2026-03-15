@@ -68,7 +68,7 @@
                         {{ $showApplyForm ? 'ยกเลิก' : 'สมัครเลย' }}
                     </button>
                 @else
-                    <a href="{{ route('login') }}"
+                    <a href="{{ route('frontend.auth.login') }}"
                        class="px-4 py-2 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-full text-sm transition">
                         เข้าสู่ระบบเพื่อสมัคร
                     </a>

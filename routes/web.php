@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BarcodeController;
+
 // Legacy Backend Routes Removed
 
 Route::get('/', \App\Livewire\Landing::class)->name('home');

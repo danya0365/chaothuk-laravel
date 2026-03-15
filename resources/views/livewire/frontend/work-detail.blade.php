@@ -374,7 +374,7 @@
                             {{ $showBookingForm ? 'ยกเลิก' : 'จองเลย' }}
                         </button>
                     @else
-                        <a href="{{ route('login') }}" class="px-4 py-1.5 bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-lg text-xs transition">
+                        <a href="{{ route('frontend.auth.login') }}" class="px-4 py-1.5 bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-lg text-xs transition">
                             เข้าสู่ระบบเพื่อจอง
                         </a>
                     @endauth

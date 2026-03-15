@@ -44,7 +44,7 @@
     <x-slot name="javascript">
         <script type="text/javascript">
             function alpineData() {
-                console.log('routes', route('home'));
+                console.log('routes', route('frontend.home'));
             }
         </script>
     </x-slot>

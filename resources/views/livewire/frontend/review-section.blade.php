@@ -12,7 +12,7 @@
                     {{ $showReviewForm ? 'ยกเลิก' : '+ เขียนรีวิว' }}
                 </button>
             @else
-                <a href="{{ route('login') }}" class="text-sm text-orange-400 hover:underline">เข้าสู่ระบบเพื่อรีวิว</a>
+                <a href="{{ route('frontend.auth.login') }}" class="text-sm text-orange-400 hover:underline">เข้าสู่ระบบเพื่อรีวิว</a>
             @endauth
         </div>
 

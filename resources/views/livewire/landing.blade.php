@@ -27,7 +27,7 @@
                 </p>
                 
                 <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                    <a href="{{ route('home') }}" class="w-full sm:w-auto px-8 py-3.5 text-base font-bold text-white bg-orange-600 hover:bg-orange-500 rounded-full shadow-lg shadow-orange-600/30 dark:shadow-orange-500/20 transition-all hover:-translate-y-1">
+                    <a href="{{ route('frontend.home') }}" class="w-full sm:w-auto px-8 py-3.5 text-base font-bold text-white bg-orange-600 hover:bg-orange-500 rounded-full shadow-lg shadow-orange-600/30 dark:shadow-orange-500/20 transition-all hover:-translate-y-1">
                         เข้าสู่แดชบอร์ด
                     </a>
                     <a href="{{ route('frontend.works') }}" class="w-full sm:w-auto px-8 py-3.5 text-base font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full shadow-sm transition-all hover:-translate-y-1">

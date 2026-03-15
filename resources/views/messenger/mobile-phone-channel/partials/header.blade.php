@@ -1,6 +1,6 @@
 <div class="chat-header p-4 flex flex-row flex-none justify-between items-center shadow">
     <div class="flex items-center justify-center space-x-2">
-        <a href="{{ route('home') }}">
+        <a href="{{ route('frontend.home') }}">
             <span class=" text-teal-600 hover:text-teal-700">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-4 h-4">

@@ -49,9 +49,9 @@
                     </button>
 
                     @auth
-                        <a href="{{ route('home') }}" class="text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-amber-400 transition">เข้าสู่แอป</a>
-                        <a href="{{ route('home') }}" class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-bold text-white transition-all duration-200 bg-orange-600 rounded-full hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 shadow-lg shadow-orange-600/30 dark:shadow-orange-500/20">
-                            แดชบอร์ด
+                        <a href="{{ route('frontend.works') }}" class="text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-amber-400 transition">ค้นหางานเช่า</a>
+                        <a href="{{ route('frontend.home') }}" class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-bold text-white transition-all duration-200 bg-orange-600 rounded-full hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 shadow-lg shadow-orange-600/30 dark:shadow-orange-500/20">
+                            เข้าสู่แดชบอร์ด
                         </a>
                     @else
                         <a href="{{ route('frontend.auth.login') }}" class="hidden sm:inline-block text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-amber-400 transition">เข้าสู่ระบบ</a>
