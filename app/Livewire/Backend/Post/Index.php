@@ -3,25 +3,28 @@
 namespace App\Livewire\Backend\Post;
 
 use App\Models\Post;
+use App\Models\Recruit;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 
 #[Layout('layouts.backend')]
-#[Title('จัดการรีวิว/ชุมชน (Posts) - Admin')]
+#[Title('จัดการเนื้อหา โพสต์และประกาศ (Content Moderation)')]
 class Index extends Component
 {
     use WithPagination;
 
     public $search = '';
     public $status = 'all'; // all, active, suspended
+    public $type = 'post'; // post, recruit
     
-    public $postIdToDelete = null;
+    public $itemIdToDelete = null;
 
     protected $queryString = [
         'search' => ['except' => ''],
         'status' => ['except' => 'all'],
+        'type' => ['except' => 'post'],
     ];
 
     public function updatingSearch()
@@ -34,47 +37,79 @@ class Index extends Component
         $this->resetPage();
     }
 
+    public function updatingType()
+    {
+        $this->resetPage();
+        $this->search = '';
+        $this->status = 'all';
+    }
+
     public function toggleSuspend($id)
     {
-        $post = Post::findOrFail($id);
-        $post->is_suspended = !$post->is_suspended;
-        $post->save();
+        if ($this->type === 'post') {
+            $item = Post::findOrFail($id);
+        } else {
+            $item = Recruit::findOrFail($id);
+        }
+        
+        $item->is_suspended = !$item->is_suspended;
+        $item->save();
 
-        $action = $post->is_suspended ? 'ระงับการแสดงผล' : 'ยกเลิกการระงับ';
-        session()->flash('success', "{$action} โพสต์/รีวิว สำเร็จ");
+        $action = $item->is_suspended ? 'ระงับการแสดงผล' : 'ยกเลิกการระงับ';
+        $label = $this->type === 'post' ? 'โพสต์/รีวิว' : 'ประกาศรับสมัคร';
+        session()->flash('success', "{$action} {$label} สำเร็จ");
     }
 
     public function confirmDelete($id)
     {
-        $this->postIdToDelete = $id;
+        $this->itemIdToDelete = $id;
     }
 
     public function cancelDelete()
     {
-        $this->postIdToDelete = null;
+        $this->itemIdToDelete = null;
     }
 
-    public function deletePost()
+    public function deleteItem()
     {
-        if ($this->postIdToDelete) {
-            $post = Post::findOrFail($this->postIdToDelete);
-            // Also delete replies if it's a parent post
-            $post->replies()->delete();
-            $post->delete();
-            $this->postIdToDelete = null;
-            session()->flash('success', 'ลบโพสต์ออกจากระบบสำเร็จ');
+        if ($this->itemIdToDelete) {
+            if ($this->type === 'post') {
+                $item = Post::findOrFail($this->itemIdToDelete);
+                // Also delete replies if it's a parent post
+                $item->replies()->delete();
+                $item->delete();
+                $label = 'โพสต์รีวิว/ชุมชน';
+            } else {
+                $item = Recruit::findOrFail($this->itemIdToDelete);
+                $item->delete();
+                $label = 'ประกาศรับสมัคร (Recruit)';
+            }
+            
+            $this->itemIdToDelete = null;
+            session()->flash('success', "ลบ {$label} ออกจากระบบสำเร็จ");
         }
     }
 
     public function render()
     {
-        $query = Post::with(['author', 'parent', 'works', 'recruits']);
+        if ($this->type === 'post') {
+            $query = Post::with(['author', 'parent', 'works', 'recruits']);
 
-        if (!empty($this->search)) {
-            $query->where(function ($q) {
-                $q->where('title', 'like', '%' . $this->search . '%')
-                  ->orWhere('content', 'like', '%' . $this->search . '%');
-            });
+            if (!empty($this->search)) {
+                $query->where(function ($q) {
+                    $q->where('title', 'like', '%' . $this->search . '%')
+                      ->orWhere('content', 'like', '%' . $this->search . '%');
+                });
+            }
+        } else {
+            $query = Recruit::with(['author', 'categories']);
+
+            if (!empty($this->search)) {
+                $query->where(function ($q) {
+                    $q->where('title', 'like', '%' . $this->search . '%')
+                      ->orWhere('description', 'like', '%' . $this->search . '%');
+                });
+            }
         }
 
         if ($this->status === 'active') {
@@ -83,10 +118,10 @@ class Index extends Component
              $query->where('is_suspended', true);
         }
 
-        $posts = $query->latest()->paginate(15);
+        $items = $query->latest()->paginate(15);
 
         return view('livewire.backend.post.index', [
-            'posts' => $posts,
+            'items' => $items,
         ]);
     }
 }
