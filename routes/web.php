@@ -74,7 +74,27 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
         Route::get('/', \App\Livewire\Backend\Dispute\Index::class)->name('index');
         Route::get('/{dispute}', \App\Livewire\Backend\Dispute\Show::class)->name('show');
     });
+
+    // Master Data & Configurations
+    Route::group(['prefix' => 'categories', 'as' => 'categories.'], function () {
+        Route::get('/', \App\Livewire\Backend\Category\Index::class)->name('index');
+        Route::get('/create', \App\Livewire\Backend\Category\Form::class)->name('create');
+        Route::get('/{category}/edit', \App\Livewire\Backend\Category\Form::class)->name('edit');
+    });
+
+    Route::group(['prefix' => 'banners', 'as' => 'banners.'], function () {
+        Route::get('/', \App\Livewire\Backend\Banner\Index::class)->name('index');
+        Route::get('/create', \App\Livewire\Backend\Banner\Form::class)->name('create');
+        Route::get('/{banner}/edit', \App\Livewire\Backend\Banner\Form::class)->name('edit');
+    });
+
+    Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
+        Route::get('/', \App\Livewire\Backend\Setting\Index::class)->name('index');
+    });
 });
+
+
+
 
 Route::group(['prefix' => 'barcode', 'as' => 'barcode.'], function () {
     Route::get('/qr/{code}', [BarcodeController::class, 'qr'])->name('qr');
