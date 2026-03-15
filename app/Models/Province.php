@@ -44,4 +44,9 @@ class Province extends Model
         $text = urlencode($this->name_en);
         return $this->profile_image ?? "https://placehold.co/{$size}?text={$text}";
     }
+
+    public function geography()
+    {
+        return $this->belongsTo(Geography::class, 'geography_id');
+    }
 }

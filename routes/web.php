@@ -117,6 +117,10 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
     Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
         Route::get('/', \App\Livewire\Backend\Setting\Index::class)->name('index');
     });
+
+    Route::group(['prefix' => 'locations', 'as' => 'locations.'], function () {
+        Route::get('/provinces', \App\Livewire\Backend\Location\ProvinceIndex::class)->name('provinces.index');
+    });
 });
 
 
