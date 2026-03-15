@@ -71,7 +71,15 @@
             </main>
 
             <!-- Footer -->
-            <footer class="py-4 px-6 text-center lg:text-right border-t border-gray-200 dark:border-gray-800 shrink-0 bg-white dark:bg-gray-800">
+            <footer class="py-4 px-6 text-center lg:flex lg:justify-between lg:items-center border-t border-gray-200 dark:border-gray-800 shrink-0 bg-white dark:bg-gray-800">
+                <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 lg:mb-0 text-left">
+                    เวอร์ชัน {{ config('app.version', '1.0.0') }} ({{ config('app.build', 'local') }})
+                    @if(config('app.env') !== 'production')
+                        <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-800/30 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-700">
+                            {{ strtoupper(config('app.env')) }}
+                        </span>
+                    @endif
+                </div>
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">
                     Livewire v3 Backend Component
                 </span>

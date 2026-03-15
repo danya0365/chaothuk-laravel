@@ -32,6 +32,7 @@ use App\Livewire\Frontend\Search;
 use App\Livewire\Frontend\Profile;
 use App\Livewire\Frontend\ProfileEdit;
 use App\Livewire\Frontend\Notifications;
+use App\Livewire\Frontend\About;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -74,6 +75,7 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
     Route::get('/reputation/{id?}', ReputationProfile::class)->name('reputation');
     Route::get('/map',           MapExplore::class)->name('map');
     Route::get('/portfolios/{id}', PortfolioDetail::class)->name('portfolios.show');
+    Route::get('/about',         About::class)->name('about');
 
     // ─── Auth Required ─────────────────────────────────────────────────
     Route::middleware('auth')->group(function () {

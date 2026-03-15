@@ -38,6 +38,10 @@ jobs:
                 COMMIT_SHA="${{ github.sha }}"
                 echo "APP_BUILD=${COMMIT_SHA:0:7}" >> .env
 
+                # Inject APP_ENV for develop branch
+                sed -i "/^APP_ENV=/d" .env
+                echo "APP_ENV=develop" >> .env
+
                 # Ensure the container is running
                 docker compose -f docker-compose.prod.yml up -d
                 

@@ -82,9 +82,17 @@
                     </a>
                 </div>
                 <div class="mt-8 md:mt-0 md:order-1">
-                    <p class="text-center text-sm text-gray-500 dark:text-gray-400">
+                    <p class="text-center md:text-left text-sm text-gray-500 dark:text-gray-400">
                         &copy; {{ date('Y') }} Chaothuk. แพลตฟอร์มขนส่งเพื่อคนไทย. All rights reserved.
                     </p>
+                    <div class="mt-2 text-center md:text-left text-xs text-gray-400 dark:text-gray-500">
+                        เวอร์ชัน {{ config('app.version', '1.0.0') }} ({{ config('app.build', 'local') }})
+                        @if(config('app.env') !== 'production')
+                            <span class="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-yellow-100/50 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 border border-yellow-200/50 dark:border-yellow-800/50">
+                                {{ strtoupper(config('app.env')) }}
+                            </span>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
