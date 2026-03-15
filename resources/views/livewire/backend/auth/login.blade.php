@@ -70,6 +70,30 @@
 
         <!-- Submit Button -->
         <div>
+            {{-- Demo Users Helper (Only visible outside production) --}}
+            @if(config('app.env') !== 'production')
+            <div class="mb-6 p-4 bg-indigo-50/50 dark:bg-indigo-900/10 border border-indigo-200 dark:border-indigo-800/30 rounded-lg">
+                <p class="text-xs text-indigo-700 dark:text-indigo-400 font-bold mb-3 flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    </svg>
+                    <span>บัญชีทดสอบสำหรับแอดมิน (คลิกเพื่อเติมอัตโนมัติ)</span>
+                </p>
+                <div class="grid grid-cols-1 gap-2">
+                    <button type="button" @click="$wire.email = '{{ config('auth.supervisor.email') }}'; $wire.password = '{{ config('auth.supervisor.password') }}'"
+                            class="py-2 px-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md border border-gray-200 dark:border-gray-700 text-left transition group shadow-sm flex items-center justify-between">
+                        <div>
+                            <div class="text-[10px] text-gray-500 font-medium group-hover:text-indigo-600 dark:group-hover:text-indigo-400">🛡️ Supervisor Admin</div>
+                            <div class="text-xs text-gray-900 dark:text-gray-300 truncate">{{ config('auth.supervisor.email') }}</div>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            @endif
+
             <button type="submit" 
                     class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-900 transition duration-150 ease-in-out">
                 <svg wire:loading wire:target="login" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

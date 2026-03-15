@@ -88,6 +88,16 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
         Route::get('/{category}/edit', \App\Livewire\Backend\Category\Form::class)->name('edit');
     });
 
+    Route::group(['prefix' => 'work-types', 'as' => 'work-types.'], function () {
+        Route::get('/', \App\Livewire\Backend\WorkType\Index::class)->name('index');
+        Route::get('/create', \App\Livewire\Backend\WorkType\Form::class)->name('create');
+        Route::get('/{workType}/edit', \App\Livewire\Backend\WorkType\Form::class)->name('edit');
+    });
+
+    Route::group(['prefix' => 'portfolios', 'as' => 'portfolios.'], function () {
+        Route::get('/', \App\Livewire\Backend\Portfolio\Index::class)->name('index');
+    });
+
     Route::group(['prefix' => 'banners', 'as' => 'banners.'], function () {
         Route::get('/', \App\Livewire\Backend\Banner\Index::class)->name('index');
         Route::get('/create', \App\Livewire\Backend\Banner\Form::class)->name('create');
