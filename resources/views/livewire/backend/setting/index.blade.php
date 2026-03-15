@@ -1,105 +1,155 @@
-<div class="p-6 sm:p-10 max-w-4xl mx-auto space-y-6">
-    <!-- Header Strategy -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">ตั้งค่าระบบ (Configurations)</h1>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">จัดการข้อมูลพื้นฐานและการทำงานหลักของระบบที่ส่งผลต่อหน้าเว็บไซต์และแอปพลิเคชัน</p>
-        </div>
-        <div class="flex">
-            <button type="button" wire:click="save" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
-                <svg wire:loading wire:target="save" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                <svg wire:loading.remove wire:target="save" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" /></svg>
-                บันทึกการตั้งค่า
-            </button>
+            <h2 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                การตั้งค่าระบบ (System Settings)
+            </h2>
+            <p class="text-gray-400 text-sm mt-1">
+                จัดการการตั้งค่าพื้นฐานของแพลตฟอร์ม, ค่าธรรมเนียม, และข้อมูลติดต่อ
+            </p>
         </div>
     </div>
 
     <!-- Alert Messages -->
     @if (session()->has('success'))
-        <div class="rounded-md bg-green-50 dark:bg-green-900/30 p-4 border border-green-200 dark:border-green-800 transition-all">
-            <div class="flex items-center">
-                <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
-                <p class="ml-3 text-sm font-medium text-green-800 dark:text-green-400">{{ session('success') }}</p>
-            </div>
-        </div>
-    @endif
-    @if (session()->has('error'))
-        <div class="rounded-md bg-red-50 dark:bg-red-900/30 p-4 border border-red-200 dark:border-red-800 transition-all">
-            <div class="flex items-center">
-                <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18C5.58172 18 2 14.4183 2 10C2 5.58172 5.58172 2 10 2C14.4183 2 18 5.58172 18 10C18 14.4183 14.4183 18 10 18ZM8.70711 7.29289C8.31658 6.90237 7.68342 6.90237 7.29289 7.29289C6.90237 7.68342 6.90237 8.31658 7.29289 8.70711L8.58579 10L7.29289 11.2929C6.90237 11.6834 6.90237 12.3166 7.29289 12.7071C7.68342 13.0976 8.31658 13.0976 8.70711 12.7071L10 11.4142L11.2929 12.7071C11.6834 13.0976 12.3166 13.0976 12.7071 12.7071C13.0976 12.3166 13.0976 11.6834 12.7071 11.2929L11.4142 10L12.7071 8.70711C13.0976 8.31658 13.0976 7.68342 12.7071 7.29289C12.3166 6.90237 11.6834 6.90237 11.2929 7.29289L10 8.58579L8.70711 7.29289Z" clip-rule="evenodd" /></svg>
-                <p class="ml-3 text-sm font-medium text-red-800 dark:text-red-400">{{ session('error') }}</p>
+        <div class="p-4 bg-emerald-500/10 border border-emerald-500/50 rounded-xl flex items-start gap-3 text-emerald-400">
+            <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div>
+                <p class="font-medium text-sm">{{ session('success') }}</p>
             </div>
         </div>
     @endif
 
-    <!-- Data Table / Forms -->
-    <div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden relative">
-        <form wire:submit="save" class="divide-y divide-gray-200 dark:divide-gray-700">
-            @forelse ($configs as $config)
-                <div class="p-6 md:p-8 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex flex-col md:flex-row md:items-start md:space-x-8">
-                    <!-- Label Section -->
-                    <div class="md:w-1/3 mb-4 md:mb-0">
-                        <label for="{{ $config->slug }}" class="block text-sm font-semibold text-gray-900 dark:text-white">
-                            {{ $config->name }}
-                        </label>
-                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 font-mono bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded inline-block">
-                            {{ $config->slug }}
-                        </p>
-                    </div>
+    <div class="flex flex-col lg:flex-row gap-6">
+        <!-- Sidebar Navigation -->
+        <div class="w-full lg:w-64 flex-shrink-0">
+            <div class="bg-slate-800/40 backdrop-blur-xl border border-slate-700/50 rounded-2xl overflow-hidden p-2 flex flex-col gap-1">
+                <button 
+                    wire:click="switchTab('general')"
+                    class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all {{ $activeTab === 'general' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'text-gray-400 hover:bg-slate-700/50 hover:text-gray-200 border border-transparent' }}"
+                >
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 0H4.5m-1.5 7.5h18m-18 7.5h18m-18-7.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm0 0H4.5m10.5 7.5c0 .828-.672 1.5-1.5 1.5s-1.5-.672-1.5-1.5.672-1.5 1.5-1.5 1.5.672 1.5 1.5Zm0 0H4.5=" />
+                    </svg>
+                    ข้อมูลทั่วไป (General)
+                </button>
+                
+                <button 
+                    wire:click="switchTab('payment')"
+                    class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all {{ $activeTab === 'payment' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'text-gray-400 hover:bg-slate-700/50 hover:text-gray-200 border border-transparent' }}"
+                >
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    การเงินและค่าธรรมเนียม
+                </button>
 
-                    <!-- Input Section -->
-                    <div class="md:w-2/3">
-                        @if ($config->value_type === 'text' || $config->value_type === \App\Enums\ConfigurationValueType::TEXT->value)
-                            <input type="text" wire:model="settings.{{ $config->slug }}" id="{{ $config->slug }}" class="block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        
-                        @elseif ($config->value_type === 'url' || $config->value_type === \App\Enums\ConfigurationValueType::URL->value)
-                            <input type="url" wire:model="settings.{{ $config->slug }}" id="{{ $config->slug }}" class="block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="https://...">
-
-                        @elseif ($config->value_type === 'textarea' || $config->value_type === \App\Enums\ConfigurationValueType::TEXTAREA->value)
-                            <textarea wire:model="settings.{{ $config->slug }}" id="{{ $config->slug }}" rows="3" class="block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
-
-                        @elseif ($config->value_type === 'option' || $config->value_type === \App\Enums\ConfigurationValueType::OPTION->value)
-                            <select wire:model="settings.{{ $config->slug }}" id="{{ $config->slug }}" class="mt-1 block w-full pl-3 pr-10 py-2 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md appearance-none shadow-sm">
-                                <option value="">-- เลือก --</option>
-                                @if(is_array($config->value_options))
-                                    @foreach($config->value_options as $option)
-                                        <option value="{{ $option }}">{{ __($option) }}</option>
-                                    @endforeach
-                                @endif
-                            </select>
-
-                        @elseif ($config->value_type === 'boolean' || $config->value_type === \App\Enums\ConfigurationValueType::BOOLEAN->value)
-                            <div class="flex items-center">
-                                <button type="button" wire:click="$set('settings.{{ $config->slug }}', {{ empty($settings[$config->slug]) || $settings[$config->slug] == '0' ? '1' : '0' }})" class="{{ !empty($settings[$config->slug]) && $settings[$config->slug] != '0' ? 'bg-indigo-600' : 'bg-gray-200 dark:bg-gray-600' }} relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" role="switch">
-                                    <span class="{{ !empty($settings[$config->slug]) && $settings[$config->slug] != '0' ? 'translate-x-5' : 'translate-x-0' }} pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"></span>
-                                </button>
-                                <span class="ml-3 font-medium text-sm text-gray-900 dark:text-gray-300">
-                                    {{ !empty($settings[$config->slug]) && $settings[$config->slug] != '0' ? 'เปิดใช้งาน' : 'ปิดการใช้งาน' }}
-                                </span>
-                            </div>
-
-                        @else
-                            <input type="text" wire:model="settings.{{ $config->slug }}" class="block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        @endif
-
-                        @error('settings.'.$config->slug)
-                            <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
-            @empty
-                <div class="p-8 text-center text-sm text-gray-500 dark:text-gray-400">
-                    ไม่พบข้อมูลคีย์การตั้งค่าในระบบ
-                </div>
-            @endforelse
-            
-            @if(count($configs) > 0)
-            <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900/50 flex items-center justify-end rounded-b-xl border-t border-gray-200 dark:border-gray-700">
-                <button type="submit" class="inline-flex justify-center px-6 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
-                    บันทึกการตั้งค่าทั้งหมด
+                <button 
+                    wire:click="switchTab('social')"
+                    class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all {{ $activeTab === 'social' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'text-gray-400 hover:bg-slate-700/50 hover:text-gray-200 border border-transparent' }}"
+                >
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+                    </svg>
+                    ช่องทางติดต่อ & โซเชียล
                 </button>
             </div>
-            @endif
-        </form>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1">
+            <form wire:submit="save" class="bg-slate-800/40 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-sm">
+                
+                <!-- General Tab -->
+                @if($activeTab === 'general')
+                    <div class="space-y-6">
+                        <h3 class="text-lg font-medium text-gray-200 border-b border-slate-700/50 pb-3">ข้อมูลทั่วไป (General Configuration)</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-2">ชื่อเว็บไซต์ (Site Name)</label>
+                                <input type="text" wire:model="settings.site_name" class="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700/50 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 rounded-xl text-sm text-gray-200 transition-all placeholder-gray-600" placeholder="e.g. Chaothuk">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-2">อีเมลติดต่อระดับแพลตฟอร์ม</label>
+                                <input type="email" wire:model="settings.contact_email" class="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700/50 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 rounded-xl text-sm text-gray-200 transition-all placeholder-gray-600">
+                            </div>
+                            
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-400 mb-2">คำอธิบายเว็บไซต์ (Site Description / SEO)</label>
+                                <textarea wire:model="settings.site_description" rows="3" class="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700/50 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 rounded-xl text-sm text-gray-200 transition-all placeholder-gray-600"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Payment & Fees Tab -->
+                @if($activeTab === 'payment')
+                    <div class="space-y-6">
+                        <h3 class="text-lg font-medium text-gray-200 border-b border-slate-700/50 pb-3">การเงินและค่าธรรมเนียม (Payment & Fees)</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-2">เปอร์เซ็นต์หักบัญชีแพลตฟอร์ม (%)</label>
+                                <div class="relative">
+                                    <input type="number" wire:model="settings.platform_fee_percent" class="w-full pl-4 pr-10 py-2.5 bg-slate-900/50 border border-slate-700/50 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 rounded-xl text-sm text-gray-200 transition-all placeholder-gray-600">
+                                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">%</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">ค่าธรรมเนียมที่หักจากผู้รับจ้างเมื่อจบงาน</p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-2">ขั้นต่ำในการถอนเงิน (บาท)</label>
+                                <div class="relative">
+                                    <input type="number" wire:model="settings.minimum_withdrawal" class="w-full pl-4 pr-12 py-2.5 bg-slate-900/50 border border-slate-700/50 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 rounded-xl text-sm text-gray-200 transition-all placeholder-gray-600">
+                                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">THB</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Social Tab -->
+                @if($activeTab === 'social')
+                    <div class="space-y-6">
+                        <h3 class="text-lg font-medium text-gray-200 border-b border-slate-700/50 pb-3">ช่องทางติดต่อ & โซเชียล (Social Links)</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-2">Facebook Page URL</label>
+                                <input type="url" wire:model="settings.facebook_url" class="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700/50 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 rounded-xl text-sm text-gray-200 transition-all placeholder-gray-600">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-2">Line Official Account URL</label>
+                                <input type="url" wire:model="settings.line_url" class="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700/50 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 rounded-xl text-sm text-gray-200 transition-all placeholder-gray-600">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-2">เบอร์โทรศัพท์ (Help Center)</label>
+                                <input type="text" wire:model="settings.contact_phone" class="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700/50 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 rounded-xl text-sm text-gray-200 transition-all placeholder-gray-600">
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                <div class="mt-8 pt-6 border-t border-slate-700/50 flex justify-end">
+                    <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-xl transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] flex items-center gap-2">
+                        <svg class="w-4 h-4" wire:loading.remove wire:target="save" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                        </svg>
+                        <svg class="w-4 h-4 animate-spin" wire:loading wire:target="save" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                        </svg>
+                        บันทึกการตั้งค่า
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>

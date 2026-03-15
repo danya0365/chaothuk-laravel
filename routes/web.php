@@ -98,6 +98,17 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
         Route::get('/create', \App\Livewire\Backend\Notification\Create::class)->name('create');
     });
 
+    // Reputations & Reviews
+    Route::group(['prefix' => 'reputations', 'as' => 'reputations.'], function () {
+        Route::get('/', \App\Livewire\Backend\Reputation\Index::class)->name('index');
+        Route::get('/reviews', \App\Livewire\Backend\Reputation\ReviewIndex::class)->name('reviews.index');
+    });
+
+    // Settings
+    Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
+        Route::get('/', \App\Livewire\Backend\Setting\Index::class)->name('index');
+    });
+
     // Master Data & Configurations
     Route::group(['prefix' => 'categories', 'as' => 'categories.'], function () {
         Route::get('/', \App\Livewire\Backend\Category\Index::class)->name('index');
