@@ -164,6 +164,31 @@ class UserImageService
     }
 
     /**
+     * Handle portfolio image upload
+     */
+    public function handlePortfolioUpload(UploadedFile $file): array
+    {
+        try {
+            $date = \Carbon\Carbon::now()->format('Y-m-d');
+            $random = Str::random(6);
+            $name = 'portfolio_' . $random . '.' . $file->extension();
+            $path = $file->storeAs("portfolios/{$date}", $name, 'public');
+            
+            return [
+                'status' => true,
+                'message' => 'Portfolio image uploaded successfully',
+                'url' => asset('storage/' . $path),
+                'path' => $path
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'status' => false,
+                'message' => $th->getMessage()
+            ];
+        }
+    }
+
+    /**
      * Handle generic document upload
      */
     public function handleDocumentUpload(UploadedFile $document): array

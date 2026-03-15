@@ -129,6 +129,8 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
 
     Route::group(['prefix' => 'portfolios', 'as' => 'portfolios.'], function () {
         Route::get('/', \App\Livewire\Backend\Portfolio\Index::class)->name('index');
+        Route::get('/create', \App\Livewire\Backend\Portfolio\Form::class)->name('create');
+        Route::get('/{portfolio}/edit', \App\Livewire\Backend\Portfolio\Form::class)->name('edit');
     });
 
     Route::group(['prefix' => 'banners', 'as' => 'banners.'], function () {
