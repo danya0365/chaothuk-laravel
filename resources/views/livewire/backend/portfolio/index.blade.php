@@ -43,7 +43,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @if(is_array($portfolio->images) && count($portfolio->images) > 0)
                                     <div class="h-12 w-16 flex-shrink-0 relative">
-                                        <img class="h-12 w-16 rounded object-cover border border-gray-200 dark:border-gray-600" src="{{ Storage::url($portfolio->images[0]) }}" alt="">
+                                        <img class="h-12 w-16 rounded object-cover border border-gray-200 dark:border-gray-600" src="{{ $portfolio->images[0] }}" alt="">
                                         @if(count($portfolio->images) > 1)
                                             <span class="absolute -top-2 -right-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-indigo-600 rounded-full">
                                                 +{{ count($portfolio->images) - 1 }}
