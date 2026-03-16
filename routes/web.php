@@ -40,6 +40,16 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
         Route::get('/issues/{issue}', \App\Livewire\Backend\Point\IssueForm::class)->name('issues.edit');
     });
 
+    // Wallet & Payments Management
+    Route::group(['prefix' => 'wallets', 'as' => 'wallets.'], function () {
+        Route::get('/', \App\Livewire\Backend\Wallet\Index::class)->name('index');
+        Route::get('/transactions', \App\Livewire\Backend\Wallet\Transactions::class)->name('transactions');
+    });
+
+    Route::group(['prefix' => 'payments', 'as' => 'payments.'], function () {
+        Route::get('/', \App\Livewire\Backend\Payment\Index::class)->name('index');
+    });
+
     // User Verification (KYC)
     Route::group(['prefix' => 'verifications', 'as' => 'verifications.'], function () {
         Route::get('/', \App\Livewire\Backend\Verification\Index::class)->name('index');

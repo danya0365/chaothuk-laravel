@@ -355,4 +355,15 @@ class User extends Authenticatable
         return $this->hasMany(UserReport::class, 'reported_user_id');
     }
 
+    // ─── Wallet & Payments ──────────────────────────────────────────────
+
+    public function wallet(): HasOne
+    {
+        return $this->hasOne(UserWallet::class);
+    }
+
+    public function getWalletBalance(): float
+    {
+        return $this->wallet ? (float) $this->wallet->balance : 0.00;
+    }
 }
