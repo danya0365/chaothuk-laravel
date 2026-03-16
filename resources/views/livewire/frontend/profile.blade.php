@@ -101,13 +101,10 @@
                             <span class="text-gray-500 text-[10px] md:text-xs">⭐ {{ number_format($work['avg_review_rating'] ?? 0, 1) }} · ❤️ {{ $work['like_count'] ?? 0 }}</span>
                             @if(isset($work['active_feature']))
                                 <object>
-                                    <span class="inline-flex items-center gap-1 bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded text-[9px] font-medium border border-green-500/30">
-                                        🌟 Featured (เหลือ {{ \Carbon\Carbon::parse($work['active_feature']['end_at'])->diffInDays(now()) + 1 }} วัน)
+                                    <span class="inline-flex items-center gap-1 bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded text-[9px] font-medium border border-green-500/30 shadow-[0_0_8px_rgba(34,197,94,0.2)]">
+                                        🌟 Featured
                                     </span>
                                 </object>
-                                <object><a href="{{ route('frontend.works.promote', $work['id']) }}" class="text-white hover:text-white bg-orange-600/80 hover:bg-orange-500 rounded px-1.5 py-0.5 text-[9px] truncate font-medium z-10 relative">ต่ออายุ</a></object>
-                            @else
-                                <object><a href="{{ route('frontend.works.promote', $work['id']) }}" class="text-white hover:text-white bg-orange-600/80 hover:bg-orange-500 rounded px-1.5 py-0.5 text-[9px] truncate font-medium z-10 relative">⭐ ดันฟีเจอร์</a></object>
                             @endif
                         </div>
                     </div>

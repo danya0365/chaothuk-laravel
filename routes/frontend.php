@@ -24,6 +24,7 @@ use App\Livewire\Frontend\WorkEdit;
 use App\Livewire\Frontend\WorkBookings;
 use App\Livewire\Frontend\WorkCreate;
 use App\Livewire\Frontend\MyWallet;
+use App\Livewire\Frontend\MyWorks;
 use App\Livewire\Frontend\WorkPromote;
 use App\Livewire\Frontend\RecruitBrowse;
 use App\Livewire\Frontend\RecruitCreate;
@@ -91,6 +92,7 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
         Route::get('/sessions',      MySessions::class)->name('sessions');
         Route::get('/sessions/{id}',  SessionDetail::class)->name('sessions.show');
         Route::get('/my-wallet',     MyWallet::class)->name('my_wallet');
+        Route::get('/my-works',      MyWorks::class)->name('my-works');
 
         // Works management
         Route::get('/works/{work}/promote',    WorkPromote::class)->name('works.promote');

@@ -13,7 +13,6 @@ class WorkBrowse extends Component
 {
     use WithPagination;
 
-    public string $tab = 'all';   // 'all' or 'my'
     public string $search = '';
     public string $provinceId = '';
     public string $workTypeId = '';
@@ -21,9 +20,7 @@ class WorkBrowse extends Component
     public ?float $userLat = null;
     public ?float $userLng = null;
 
-    protected $queryString = ['tab', 'search', 'provinceId', 'workTypeId', 'sortBy', 'userLat', 'userLng'];
-
-    public function updatedTab(): void { $this->resetPage(); }
+    protected $queryString = ['search', 'provinceId', 'workTypeId', 'sortBy', 'userLat', 'userLng'];
     public function updatedSearch(): void { $this->resetPage(); }
     public function updatedProvinceId(): void { $this->resetPage(); }
     public function updatedWorkTypeId(): void { $this->resetPage(); }
@@ -44,23 +41,11 @@ class WorkBrowse extends Component
         }
     }
 
-    public function deleteWork(int $workId): void
-    {
-        if (!auth()->check()) return;
-        $work = Work::where('id', $workId)->where('author_id', auth()->id())->first();
-        if ($work) {
-            $work->delete();
-        }
-    }
+
 
     public function render()
     {
         $query = Work::with(['author', 'province', 'workType']);
-
-        // Tab filter
-        if ($this->tab === 'my' && auth()->check()) {
-            $query = $query->where('author_id', auth()->id());
-        }
 
         // Search & filters
         $query = $query
@@ -98,12 +83,7 @@ class WorkBrowse extends Component
             ? WorkLike::where('author_id', auth()->id())->pluck('work_id')->toArray()
             : [];
 
-        // Stats for "my" tab
-        $myWorksCount = auth()->check()
-            ? Work::where('author_id', auth()->id())->count()
-            : 0;
-
-        return view('livewire.frontend.work-browse', compact('works', 'provinces', 'workTypes', 'likedIds', 'myWorksCount'))
-            ->layout('frontend.layout', ['title' => ($this->tab === 'my' ? 'งานของฉัน' : 'งาน') . ' — Chaothuk']);
+        return view('livewire.frontend.work-browse', compact('works', 'provinces', 'workTypes', 'likedIds'))
+            ->layout('frontend.layout', ['title' => 'งาน — Chaothuk']);
     }
 }

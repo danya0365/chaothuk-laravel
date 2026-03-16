@@ -28,10 +28,20 @@
             </a>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 md:gap-4">
             @auth
+                <div class="hidden sm:flex items-center gap-2 mr-2">
+                    <a href="{{ route('frontend.my-works') }}"
+                       class="relative flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-full text-gray-300 hover:text-white transition text-xs font-semibold focus:outline-none tracking-wide">
+                        💼 งานของฉัน
+                    </a>
+                    <a href="{{ route('frontend.my_wallet') }}"
+                       class="relative flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-full text-gray-300 hover:text-white transition text-xs font-semibold focus:outline-none tracking-wide">
+                        💳 กระเป๋าเงิน
+                    </a>
+                </div>
                 <a href="{{ route('frontend.notifications') }}"
-                   class="relative p-2 text-gray-400 hover:text-white transition">
+                   class="relative p-2 text-gray-400 hover:text-white transition focus:outline-none">
                     🔔
                 </a>
                 <div class="relative" x-data="{ open: false }">
@@ -98,6 +108,7 @@
             ['icon'=>'ℹ️','label'=>'เกี่ยวกับ','route'=>'frontend.about','auth'=>false],
         ];
         $authMoreNav = [
+            ['icon'=>'💼','label'=>'งานของฉัน','route'=>'frontend.my-works'],
             ['icon'=>'💳','label'=>'วอลเล็ต','route'=>'frontend.my_wallet'],
             ['icon'=>'📅','label'=>'ปฏิทิน','route'=>'frontend.calendar'],
             ['icon'=>'📋','label'=>'การจอง','route'=>'frontend.bookings'],
@@ -241,6 +252,7 @@
                     ['icon'=>'ℹ️','label'=>'เกี่ยวกับ','route'=>'frontend.about'],
                 ];
                 $mobileMoreAuth = [
+                    ['icon'=>'💼','label'=>'งานของฉัน','route'=>'frontend.my-works'],
                     ['icon'=>'💳','label'=>'วอลเล็ต','route'=>'frontend.my_wallet'],
                     ['icon'=>'📅','label'=>'ปฏิทิน','route'=>'frontend.calendar'],
                     ['icon'=>'📋','label'=>'การจอง','route'=>'frontend.bookings'],
