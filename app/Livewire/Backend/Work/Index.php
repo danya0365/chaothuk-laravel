@@ -4,6 +4,7 @@ namespace App\Livewire\Backend\Work;
 
 use App\Models\Work;
 use App\Models\Category;
+use App\Models\FeaturedWork;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
@@ -45,11 +46,31 @@ class Index extends Component
     public function toggleFeature($id)
     {
         $work = Work::findOrFail($id);
-        // Toggle display_priority between 0 and 100 for featuring
-        $work->display_priority = $work->display_priority > 0 ? 0 : 100;
-        $work->save();
+        
+        $activeFeature = FeaturedWork::where('work_id', $work->id)
+            ->where('is_approved', true)
+            ->where('end_at', '>=', now())
+            ->first();
 
-        $action = $work->display_priority > 0 ? 'แนะนำ' : 'เลิกแนะนำ';
+        if ($activeFeature) {
+            $activeFeature->update(['end_at' => now()->subSecond()]);
+            $action = 'เลิกแนะนำ';
+        } else {
+            FeaturedWork::create([
+                'work_id' => $work->id,
+                'author_id' => $work->author_id,
+                'start_at' => now(),
+                'end_at' => now()->addDays(30),
+                'amount_paid' => 0,
+                'payment_method' => 'admin_override',
+                'payment_status' => 'paid',
+                'is_approved' => true,
+                'approved_by' => auth()->id(),
+                'slot_position' => 0,
+            ]);
+            $action = 'แนะนำ';
+        }
+
         session()->flash('success', "ตั้งค่าให้งาน {$work->code} เป็นรายการ{$action} แล้ว");
     }
 
@@ -85,7 +106,7 @@ class Index extends Component
 
     public function render()
     {
-        $query = Work::with(['author', 'categories']);
+        $query = Work::with(['author', 'categories', 'activeFeature']);
 
         if (!empty($this->search)) {
             $query->where(function ($q) {

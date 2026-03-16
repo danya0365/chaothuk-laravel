@@ -7,6 +7,7 @@ use App\Models\WorkBooking;
 use App\Models\WorkReview;
 use App\Models\UserReputation;
 use App\Models\WorkAvailability;
+use App\Models\FeaturedWork;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -25,7 +26,7 @@ class Show extends Component
     public function mount(Work $work)
     {
         // Require extra relationships for a complete view
-        $this->work = $work->load(['author', 'categories', 'province', 'workType']);
+        $this->work = $work->load(['author', 'categories', 'province', 'workType', 'activeFeature']);
 
         // 1. Compute Provider Stats (Exactly Like Frontend)
         $authorId = $this->work->author_id;
@@ -77,10 +78,32 @@ class Show extends Component
 
     public function toggleFeature()
     {
-        $this->work->display_priority = $this->work->display_priority > 0 ? 0 : 100;
-        $this->work->save();
+        $activeFeature = FeaturedWork::where('work_id', $this->work->id)
+            ->where('is_approved', true)
+            ->where('end_at', '>=', now())
+            ->first();
 
-        $action = $this->work->display_priority > 0 ? 'แนะนำ' : 'เลิกแนะนำ';
+        if ($activeFeature) {
+            $activeFeature->update(['end_at' => now()->subSecond()]);
+            $action = 'เลิกแนะนำ';
+        } else {
+            FeaturedWork::create([
+                'work_id' => $this->work->id,
+                'author_id' => $this->work->author_id,
+                'start_at' => now(),
+                'end_at' => now()->addDays(30),
+                'amount_paid' => 0,
+                'payment_method' => 'admin_override',
+                'payment_status' => 'paid',
+                'is_approved' => true,
+                'approved_by' => auth()->id(),
+                'slot_position' => 0,
+            ]);
+            $action = 'แนะนำ';
+        }
+        
+        $this->work->load('activeFeature');
+        
         session()->flash('success', "ตั้งค่าให้งาน {$this->work->code} เป็นรายการ{$action} แล้ว");
     }
 
