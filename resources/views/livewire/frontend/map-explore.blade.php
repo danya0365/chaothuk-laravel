@@ -1,33 +1,33 @@
 <div class="relative" x-data="{ filter: 'all', showList: false }">
 
     {{-- Top Filter Bar --}}
-    <div class="absolute top-3 left-3 right-3 z-10 flex items-center gap-2 flex-wrap">
+    <div class="absolute top-2 md:top-3 left-2 md:left-3 right-2 md:right-3 z-10 flex items-center gap-1.5 md:gap-2 flex-wrap">
         <div class="flex gap-1 bg-gray-900/90 backdrop-blur rounded-xl p-1 shadow-lg">
             <button @click="filter = 'all'; window.filterMarkers('all')"
                     :class="filter === 'all' ? 'bg-orange-500 text-white' : 'text-gray-300 hover:text-white'"
-                    class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                    class="px-2.5 md:px-3 py-1 md:py-1.5 rounded-lg text-[10px] md:text-xs font-semibold transition">
                 ทั้งหมด
             </button>
             <button @click="filter = 'work'; window.filterMarkers('work')"
                     :class="filter === 'work' ? 'bg-orange-500 text-white' : 'text-gray-300 hover:text-white'"
-                    class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                    class="px-2.5 md:px-3 py-1 md:py-1.5 rounded-lg text-[10px] md:text-xs font-semibold transition">
                 📦 งาน
             </button>
             <button @click="filter = 'recruit'; window.filterMarkers('recruit')"
                     :class="filter === 'recruit' ? 'bg-purple-500 text-white' : 'text-gray-300 hover:text-white'"
-                    class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                    class="px-2.5 md:px-3 py-1 md:py-1.5 rounded-lg text-[10px] md:text-xs font-semibold transition">
                 👷 รับสมัคร
             </button>
         </div>
 
         {{-- Toggle list sidebar --}}
         <button @click="showList = !showList"
-                class="bg-gray-900/90 backdrop-blur text-gray-300 hover:text-white px-3 py-1.5 rounded-xl text-xs font-semibold shadow-lg transition">
+                class="bg-gray-900/90 backdrop-blur text-gray-300 hover:text-white px-2.5 md:px-3 py-1 md:py-1.5 rounded-xl text-[10px] md:text-xs font-semibold shadow-lg transition">
             <span x-text="showList ? '✕ ซ่อนรายการ' : '☰ แสดงรายการ'"></span>
         </button>
 
         {{-- Count --}}
-        <div class="bg-gray-900/90 backdrop-blur text-gray-400 px-3 py-1.5 rounded-xl text-xs shadow-lg">
+        <div class="bg-gray-900/90 backdrop-blur text-gray-400 px-2.5 md:px-3 py-1 md:py-1.5 rounded-xl text-[10px] md:text-xs shadow-lg">
             📍 <span class="text-white font-bold">{{ count($works) + count($recruits) }}</span> ตำแหน่ง
         </div>
     </div>
@@ -40,7 +40,7 @@
          x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full"
-         class="absolute top-14 right-3 bottom-3 w-72 bg-gray-900/95 backdrop-blur rounded-2xl shadow-2xl z-10 flex flex-col overflow-hidden">
+         class="absolute top-12 md:top-14 right-2 md:right-3 bottom-2 md:bottom-3 w-64 md:w-72 bg-gray-900/95 backdrop-blur rounded-2xl shadow-2xl z-10 flex flex-col overflow-hidden">
         <div class="p-3 border-b border-gray-800">
             <p class="text-white font-bold text-sm">📋 รายการทั้งหมด</p>
         </div>
@@ -73,13 +73,13 @@
     </div>
 
     {{-- Legend --}}
-    <div class="absolute bottom-4 left-3 bg-gray-900/90 backdrop-blur rounded-xl px-3 py-2 shadow-lg z-10 flex items-center gap-3 text-[11px]">
+    <div class="absolute bottom-3 md:bottom-4 left-2 md:left-3 bg-gray-900/90 backdrop-blur rounded-xl px-2.5 py-1.5 md:px-3 md:py-2 shadow-lg z-10 flex items-center gap-2 md:gap-3 text-[10px] md:text-[11px]">
         <span class="flex items-center gap-1">
-            <span class="w-3 h-3 rounded-full bg-orange-500 inline-block"></span>
+            <span class="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-orange-500 inline-block"></span>
             <span class="text-gray-300">งาน</span>
         </span>
         <span class="flex items-center gap-1">
-            <span class="w-3 h-3 rounded-full bg-purple-500 inline-block"></span>
+            <span class="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-purple-500 inline-block"></span>
             <span class="text-gray-300">รับสมัคร</span>
         </span>
     </div>

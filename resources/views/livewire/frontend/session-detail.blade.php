@@ -1,9 +1,9 @@
-<div class="max-w-4xl mx-auto px-4 py-6">
+<div class="max-w-4xl mx-auto px-3 sm:px-4 py-4 md:py-6">
 
     {{-- Header --}}
-    <div class="flex items-center gap-3 mb-6">
-        <a href="{{ route('frontend.sessions') }}" class="text-gray-400 hover:text-white transition">← กลับ</a>
-        <h1 class="text-2xl font-bold text-white">🕐 เซสชัน #{{ $id }}</h1>
+    <div class="flex flex-wrap items-center gap-2 md:gap-3 mb-4 md:mb-6">
+        <a href="{{ route('frontend.sessions') }}" class="text-gray-400 hover:text-white transition text-xs md:text-sm">← กลับ</a>
+        <h1 class="text-xl md:text-2xl font-bold text-white">🕐 เซสชัน #{{ $id }}</h1>
         @php
             $statusBadge = match($session->status) {
                 'active'    => 'bg-green-500/20 text-green-400',
@@ -20,12 +20,12 @@
                 default     => $session->status,
             };
         @endphp
-        <span class="text-xs font-bold px-3 py-1 rounded-full {{ $statusBadge }}">{{ $statusLabel }}</span>
+        <span class="text-[10px] md:text-xs font-bold px-2.5 md:px-3 py-0.5 md:py-1 rounded-full {{ $statusBadge }}">{{ $statusLabel }}</span>
     </div>
 
     {{-- Flash --}}
     @if($flashMessage)
-        <div class="bg-green-500/10 border border-green-500/30 text-green-400 rounded-lg px-4 py-3 text-sm mb-4">
+        <div class="bg-green-500/10 border border-green-500/30 text-green-400 rounded-lg px-3 md:px-4 py-2 md:py-3 text-xs md:text-sm mb-3 md:mb-4">
             {{ $flashMessage }}
         </div>
     @endif
@@ -33,33 +33,33 @@
     {{-- ═══════════════════════════════════════════════════════════════
          REAL-TIME MAP — FULL WIDTH, PREMIUM TRACKING UI
     ═══════════════════════════════════════════════════════════════ --}}
-    <div class="bg-gray-900 rounded-2xl overflow-hidden mb-6 relative" wire:ignore>
+    <div class="bg-gray-900 rounded-2xl overflow-hidden mb-4 md:mb-6 relative" wire:ignore>
 
         {{-- Map Container --}}
-        <div id="session-map" class="w-full" style="height: 420px;"></div>
+        <div id="session-map" class="w-full h-[300px] md:h-[420px]"></div>
 
         {{-- Live Stats Overlay (top-left) --}}
         @if($session->status === 'active')
-        <div class="absolute top-3 left-3 z-10 bg-gray-950/90 backdrop-blur-md rounded-xl px-4 py-3 shadow-2xl border border-gray-800/50">
-            <div class="flex items-center gap-2 mb-2">
-                <span class="relative flex h-3 w-3">
+        <div class="absolute top-2 left-2 md:top-3 md:left-3 z-10 bg-gray-950/90 backdrop-blur-md rounded-xl px-3 py-2 md:px-4 md:py-3 shadow-2xl border border-gray-800/50">
+            <div class="flex items-center gap-1.5 md:gap-2 mb-1.5 md:mb-2">
+                <span class="relative flex h-2.5 w-2.5 md:h-3 md:w-3">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 md:h-3 md:w-3 bg-green-500"></span>
                 </span>
-                <span class="text-green-400 text-xs font-bold tracking-wide uppercase">Live Tracking</span>
+                <span class="text-green-400 text-[10px] md:text-xs font-bold tracking-wide uppercase">Live Tracking</span>
             </div>
-            <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="grid grid-cols-3 gap-2 md:gap-3 text-center">
                 <div>
-                    <div class="text-white text-lg font-mono font-bold" id="stat-elapsed">00:00</div>
-                    <div class="text-gray-500 text-[10px]">เวลา</div>
+                    <div class="text-white text-base md:text-lg font-mono font-bold" id="stat-elapsed">00:00</div>
+                    <div class="text-gray-500 text-[9px] md:text-[10px]">เวลา</div>
                 </div>
                 <div>
-                    <div class="text-white text-lg font-mono font-bold" id="stat-distance">0 m</div>
-                    <div class="text-gray-500 text-[10px]">ระยะทาง</div>
+                    <div class="text-white text-base md:text-lg font-mono font-bold" id="stat-distance">0 m</div>
+                    <div class="text-gray-500 text-[9px] md:text-[10px]">ระยะทาง</div>
                 </div>
                 <div>
-                    <div class="text-white text-lg font-mono font-bold" id="stat-points">{{ count($locationLogs) }}</div>
-                    <div class="text-gray-500 text-[10px]">จุด GPS</div>
+                    <div class="text-white text-base md:text-lg font-mono font-bold" id="stat-points">{{ count($locationLogs) }}</div>
+                    <div class="text-gray-500 text-[9px] md:text-[10px]">จุด GPS</div>
                 </div>
             </div>
         </div>
@@ -67,13 +67,13 @@
 
         {{-- GPS Control (top-right) --}}
         @if($session->status === 'active')
-        <div class="absolute top-3 right-14 z-10">
+        <div class="absolute top-2 right-12 md:top-3 md:right-14 z-10">
             <button id="btn-gps-toggle"
                     onclick="window._tracker?.toggleTracking()"
-                    class="bg-green-500 hover:bg-green-400 text-white px-3 py-2 rounded-xl text-xs font-bold shadow-lg transition flex items-center gap-1.5">
-                <span id="gps-icon" class="relative flex h-2.5 w-2.5">
+                    class="bg-green-500 hover:bg-green-400 text-white px-2 py-1.5 md:px-3 md:py-2 rounded-xl text-[10px] md:text-xs font-bold shadow-lg transition flex items-center gap-1.5">
+                <span id="gps-icon" class="relative flex h-2 w-2 md:h-2.5 md:w-2.5">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-white"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 md:h-2.5 md:w-2.5 bg-white"></span>
                 </span>
                 <span id="gps-label">📡 GPS ON</span>
             </button>
@@ -82,26 +82,26 @@
 
         {{-- Current Speed Overlay (bottom-left) --}}
         @if($session->status === 'active')
-        <div class="absolute bottom-3 left-3 z-10 bg-gray-950/90 backdrop-blur-md rounded-xl px-3 py-2 shadow-lg border border-gray-800/50">
-            <div class="text-white text-2xl font-mono font-black" id="stat-speed">0</div>
-            <div class="text-gray-500 text-[10px]">km/h</div>
+        <div class="absolute bottom-2 left-2 md:bottom-3 md:left-3 z-10 bg-gray-950/90 backdrop-blur-md rounded-xl px-2 py-1.5 md:px-3 md:py-2 shadow-lg border border-gray-800/50">
+            <div class="text-white text-xl md:text-2xl font-mono font-black border-b border-gray-800 pb-0.5 mb-0.5 text-center" id="stat-speed">0</div>
+            <div class="text-gray-500 text-[9px] md:text-[10px] text-center">km/h</div>
         </div>
         @endif
 
         {{-- Legend (bottom-right) --}}
-        <div class="absolute bottom-3 right-3 z-10 bg-gray-950/90 backdrop-blur-md rounded-xl px-3 py-2 shadow-lg border border-gray-800/50 flex items-center gap-3 text-[10px]">
-            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-green-500"></span><span class="text-gray-400">เริ่ม</span></span>
-            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span><span class="text-gray-400">เส้นทาง</span></span>
-            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 ring-2 ring-blue-400/50"></span><span class="text-gray-400">ปัจจุบัน</span></span>
+        <div class="absolute bottom-2 right-2 md:bottom-3 md:right-3 z-10 bg-gray-950/90 backdrop-blur-md rounded-xl px-2 py-1.5 md:px-3 md:py-2 shadow-lg border border-gray-800/50 flex items-center gap-2 md:gap-3 text-[9px] md:text-[10px]">
+            <span class="flex items-center gap-1"><span class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-green-500"></span><span class="text-gray-400">เริ่ม</span></span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-orange-500"></span><span class="text-gray-400">เส้นทาง</span></span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-blue-500 ring-2 ring-blue-400/50"></span><span class="text-gray-400">ปัจจุบัน</span></span>
         </div>
     </div>
 
     {{-- Info Cards --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-6">
         {{-- Session Info --}}
-        <div class="bg-gray-900 rounded-xl p-4 space-y-3">
-            <h2 class="font-semibold text-white text-sm">📋 ข้อมูลเซสชัน</h2>
-            <div class="space-y-2 text-sm">
+        <div class="bg-gray-900 rounded-xl p-3 md:p-4 space-y-2 md:space-y-3">
+            <h2 class="font-semibold text-white text-xs md:text-sm">📋 ข้อมูลเซสชัน</h2>
+            <div class="space-y-1.5 md:space-y-2 text-xs md:text-sm">
                 <div class="flex justify-between">
                     <span class="text-gray-500">ประเภท</span>
                     <span class="text-white">{{ class_basename($session->sessionable_type) === 'Work' ? '📦 งาน' : '👷 รับสมัคร' }} #{{ $session->sessionable_id }}</span>
@@ -131,33 +131,33 @@
                 @if($session->price_agreed)
                 <div class="flex justify-between">
                     <span class="text-gray-500">ราคาตกลง</span>
-                    <span class="text-orange-400 font-bold text-lg">฿{{ number_format($session->price_agreed) }}</span>
+                    <span class="text-orange-400 font-bold text-base md:text-lg">฿{{ number_format($session->price_agreed) }}</span>
                 </div>
                 @endif
             </div>
         </div>
 
         {{-- People --}}
-        <div class="bg-gray-900 rounded-xl p-4 space-y-3">
-            <h2 class="font-semibold text-white text-sm">👥 ผู้เกี่ยวข้อง</h2>
-            <div class="space-y-3">
-                <div class="flex items-center gap-3">
-                    <x-avatar :src="$session->worker?->profile_image" :name="$session->worker?->name ?? 'W'" size="md" :border="false" />
-                    <div class="flex-1">
-                        <p class="text-white text-sm font-medium">{{ $session->worker?->name ?? '-' }}</p>
-                        <p class="text-gray-500 text-xs">👷 ผู้ให้บริการ {{ $isWorker ? '(คุณ)' : '' }}</p>
+        <div class="bg-gray-900 rounded-xl p-3 md:p-4 space-y-2 md:space-y-3">
+            <h2 class="font-semibold text-white text-xs md:text-sm">👥 ผู้เกี่ยวข้อง</h2>
+            <div class="space-y-2 md:space-y-3">
+                <div class="flex items-center gap-2 md:gap-3">
+                    <x-avatar :src="$session->worker?->profile_image" :name="$session->worker?->name ?? 'W'" size="md" :border="false" class="shrink-0" />
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white text-xs md:text-sm font-medium truncate">{{ $session->worker?->name ?? '-' }}</p>
+                        <p class="text-gray-500 text-[10px] md:text-xs truncate">👷 ผู้ให้บริการ {{ $isWorker ? '(คุณ)' : '' }}</p>
                     </div>
-                    <span class="text-xs px-2 py-0.5 rounded-full {{ $session->worker_confirm === 'confirmed' ? 'bg-green-500/20 text-green-400' : 'bg-gray-700 text-gray-500' }}">
+                    <span class="text-[9px] md:text-xs px-1.5 md:px-2 py-0.5 rounded-full whitespace-nowrap {{ $session->worker_confirm === 'confirmed' ? 'bg-green-500/20 text-green-400' : 'bg-gray-700 text-gray-500' }}">
                         {{ $session->worker_confirm === 'confirmed' ? '✓ ยืนยัน' : '… รอยืนยัน' }}
                     </span>
                 </div>
-                <div class="flex items-center gap-3">
-                    <x-avatar :src="$session->customer?->profile_image" :name="$session->customer?->name ?? 'C'" size="md" :border="false" />
-                    <div class="flex-1">
-                        <p class="text-white text-sm font-medium">{{ $session->customer?->name ?? '-' }}</p>
-                        <p class="text-gray-500 text-xs">👤 ลูกค้า {{ $isCustomer ? '(คุณ)' : '' }}</p>
+                <div class="flex items-center gap-2 md:gap-3">
+                    <x-avatar :src="$session->customer?->profile_image" :name="$session->customer?->name ?? 'C'" size="md" :border="false" class="shrink-0" />
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white text-xs md:text-sm font-medium truncate">{{ $session->customer?->name ?? '-' }}</p>
+                        <p class="text-gray-500 text-[10px] md:text-xs truncate">👤 ลูกค้า {{ $isCustomer ? '(คุณ)' : '' }}</p>
                     </div>
-                    <span class="text-xs px-2 py-0.5 rounded-full {{ $session->customer_confirm === 'confirmed' ? 'bg-green-500/20 text-green-400' : 'bg-gray-700 text-gray-500' }}">
+                    <span class="text-[9px] md:text-xs px-1.5 md:px-2 py-0.5 rounded-full whitespace-nowrap {{ $session->customer_confirm === 'confirmed' ? 'bg-green-500/20 text-green-400' : 'bg-gray-700 text-gray-500' }}">
                         {{ $session->customer_confirm === 'confirmed' ? '✓ ยืนยัน' : '… รอยืนยัน' }}
                     </span>
                 </div>
@@ -166,21 +166,21 @@
     </div>
 
     {{-- Action Buttons --}}
-    <div class="flex flex-wrap gap-2 mb-6">
+    <div class="flex flex-col sm:flex-row flex-wrap gap-2 mb-4 md:mb-6">
         @if(in_array($session->status, ['active', 'paused']))
             @if($session->status === 'active')
                 <button wire:click="pauseSession"
-                        class="px-4 py-2 bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 rounded-lg text-sm font-semibold hover:bg-yellow-500/30 transition">
+                        class="w-full sm:w-auto px-3 md:px-4 py-2 md:py-2 bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 rounded-lg text-xs md:text-sm font-semibold hover:bg-yellow-500/30 transition text-center justify-center flex items-center">
                     ⏸ หยุดชั่วคราว
                 </button>
             @else
                 <button wire:click="resumeSession"
-                        class="px-4 py-2 bg-green-500/20 text-green-400 border border-green-500/30 rounded-lg text-sm font-semibold hover:bg-green-500/30 transition">
+                        class="w-full sm:w-auto px-3 md:px-4 py-2 md:py-2 bg-green-500/20 text-green-400 border border-green-500/30 rounded-lg text-xs md:text-sm font-semibold hover:bg-green-500/30 transition text-center justify-center flex items-center">
                     ▶️ เริ่มต่อ
                 </button>
             @endif
             <button wire:click="stopSession" wire:confirm="ยืนยันหยุดงาน?"
-                    class="px-4 py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg text-sm font-semibold hover:bg-red-500/30 transition">
+                    class="w-full sm:w-auto px-3 md:px-4 py-2 md:py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg text-xs md:text-sm font-semibold hover:bg-red-500/30 transition text-center justify-center flex items-center">
                 ⏹ หยุดงาน
             </button>
         @endif
@@ -189,43 +189,43 @@
             @php $myConfirmField = $isWorker ? 'worker_confirm' : 'customer_confirm'; @endphp
             @if($session->$myConfirmField !== 'confirmed')
                 <button wire:click="confirmSession"
-                        class="px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-bold hover:bg-green-400 transition">
+                        class="w-full sm:w-auto px-3 md:px-4 py-2 md:py-2 bg-green-500 text-white rounded-lg text-xs md:text-sm font-bold hover:bg-green-400 transition text-center justify-center flex items-center">
                     ✅ ยืนยันเซสชัน
                 </button>
             @else
-                <span class="px-4 py-2 bg-green-500/10 text-green-400 rounded-lg text-sm">✅ คุณยืนยันแล้ว</span>
+                <span class="w-full sm:w-auto px-3 md:px-4 py-2 md:py-2 bg-green-500/10 text-green-400 rounded-lg text-xs md:text-sm text-center flex items-center justify-center">✅ คุณยืนยันแล้ว</span>
             @endif
         @endif
     </div>
 
     {{-- Location Log Table --}}
     @if(count($locationLogs) > 0)
-    <div class="bg-gray-900 rounded-xl overflow-hidden">
-        <div class="px-4 py-3 border-b border-gray-800 flex items-center justify-between">
-            <h2 class="font-semibold text-white text-sm">📊 GPS Logs ({{ count($locationLogs) }})</h2>
-            <button wire:click="refreshLocations" class="text-xs text-gray-500 hover:text-white transition">🔄 รีเฟรช</button>
+    <div class="bg-gray-900 rounded-xl overflow-hidden shadow-lg border border-gray-800">
+        <div class="px-3 md:px-4 py-2 md:py-3 border-b border-gray-800 flex items-center justify-between bg-gray-900/50">
+            <h2 class="font-semibold text-white text-xs md:text-sm">📊 GPS Logs ({{ count($locationLogs) }})</h2>
+            <button wire:click="refreshLocations" class="text-[10px] md:text-xs text-gray-500 hover:text-white transition px-2 py-1 rounded bg-gray-800 hover:bg-gray-700">🔄 รีเฟรช</button>
         </div>
-        <div class="overflow-x-auto max-h-64">
-            <table class="w-full text-xs">
-                <thead class="sticky top-0 bg-gray-900">
-                    <tr class="text-gray-500 border-b border-gray-800">
-                        <th class="px-4 py-2 text-left">#</th>
-                        <th class="px-4 py-2 text-left">เวลา</th>
-                        <th class="px-4 py-2 text-left">Lat</th>
-                        <th class="px-4 py-2 text-left">Lng</th>
-                        <th class="px-4 py-2 text-left">ความแม่นยำ</th>
-                        <th class="px-4 py-2 text-left">ความเร็ว</th>
+        <div class="overflow-x-auto max-h-64 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
+            <table class="w-full text-left border-collapse">
+                <thead class="sticky top-0 bg-gray-950 shadow-sm z-10">
+                    <tr class="text-gray-400 border-b border-gray-800 text-[9px] md:text-xs tracking-wider uppercase">
+                        <th class="px-3 md:px-4 py-2 font-medium">#</th>
+                        <th class="px-3 md:px-4 py-2 font-medium">เวลา</th>
+                        <th class="px-3 md:px-4 py-2 font-medium">Lat</th>
+                        <th class="px-3 md:px-4 py-2 font-medium">Lng</th>
+                        <th class="px-3 md:px-4 py-2 font-medium">ความแม่นยำ</th>
+                        <th class="px-3 md:px-4 py-2 font-medium">ความเร็ว</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-gray-800 text-[10px] md:text-xs font-mono">
                     @foreach($locationLogs as $i => $log)
-                        <tr class="border-b border-gray-800/50 {{ $loop->last ? 'text-green-400' : 'text-gray-400' }}">
-                            <td class="px-4 py-1.5">{{ $i + 1 }}</td>
-                            <td class="px-4 py-1.5 font-mono">{{ $log['recorded_at'] }}</td>
-                            <td class="px-4 py-1.5 font-mono">{{ number_format($log['lat'], 5) }}</td>
-                            <td class="px-4 py-1.5 font-mono">{{ number_format($log['lng'], 5) }}</td>
-                            <td class="px-4 py-1.5">{{ $log['accuracy'] ?? '-' }}m</td>
-                            <td class="px-4 py-1.5">{{ $log['speed'] ? number_format($log['speed'], 1) . ' km/h' : '-' }}</td>
+                        <tr class="hover:bg-gray-800/50 transition-colors {{ $loop->last ? 'text-green-400 bg-green-400/5' : 'text-gray-300' }}">
+                            <td class="px-3 md:px-4 py-2.5 whitespace-nowrap">{{ $i + 1 }}</td>
+                            <td class="px-3 md:px-4 py-2.5 whitespace-nowrap">{{ $log['recorded_at'] }}</td>
+                            <td class="px-3 md:px-4 py-2.5">{{ number_format($log['lat'], 5) }}</td>
+                            <td class="px-3 md:px-4 py-2.5">{{ number_format($log['lng'], 5) }}</td>
+                            <td class="px-3 md:px-4 py-2.5 whitespace-nowrap">{{ $log['accuracy'] ?? '-' }}m</td>
+                            <td class="px-3 md:px-4 py-2.5 whitespace-nowrap">{{ $log['speed'] ? number_format($log['speed'], 1) . ' km/h' : '-' }}</td>
                         </tr>
                     @endforeach
                 </tbody>
