@@ -30,6 +30,11 @@ class ReviewSection extends Component
     {
         if (!auth()->check()) return;
 
+        if (!auth()->user()->isPermission(\App\Enums\Permission::REVIEW_WORK->value)) {
+            $this->reviewMessage = '❌ คุณไม่มีสิทธิในการรีวิว';
+            return;
+        }
+
         $this->validate([
             'reviewContent' => 'required|min:5',
             'reviewRating'  => 'required|integer|min:1|max:5',
@@ -66,6 +71,10 @@ class ReviewSection extends Component
     public function submitReply(): void
     {
         if (!auth()->check() || !$this->replyingTo) return;
+
+        if (!auth()->user()->isPermission(\App\Enums\Permission::REPLY_REVIEW->value)) {
+            return;
+        }
 
         $this->validate([
             'replyContent' => 'required|min:2',

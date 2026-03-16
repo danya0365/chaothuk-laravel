@@ -24,6 +24,10 @@ class Form extends Component
 
     public function mount(Role $role = null)
     {
+        if (!auth()->user()->isPermission(\App\Enums\Permission::MANAGE_ROLE->value)) {
+            abort(403, 'Unauthorized action.');
+        }
+
         if ($role && $role->exists) {
             $this->role = $role;
             $this->name = $role->name;
@@ -57,6 +61,10 @@ class Form extends Component
 
     public function save()
     {
+        if (!auth()->user()->isPermission(\App\Enums\Permission::MANAGE_ROLE->value)) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $this->validate();
 
         $data = [
