@@ -54,6 +54,11 @@
                         <a href="{{ route('frontend.profile') }}" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800 transition">
                             👤 โปรไฟล์
                         </a>
+                        @if(auth()->user()->isCanAccessBackend())
+                            <a href="{{ route('backend.index') }}" class="flex items-center gap-2 px-3 py-2 text-sm text-rose-500 hover:text-rose-400 hover:bg-gray-800 transition">
+                                ⚙️ ระบบหลังบ้าน
+                            </a>
+                        @endif
                         <form method="POST" action="{{ route('frontend.auth.logout') }}">
                             @csrf
                             <button type="submit" class="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-gray-800 transition text-left">
@@ -170,6 +175,13 @@
 
     {{-- Bottom: profile or login --}}
     @auth
+        @if(auth()->user()->isCanAccessBackend())
+            <a href="{{ route('backend.index') }}"
+               class="flex flex-col items-center gap-0.5 w-full py-2.5 text-center transition text-rose-500 hover:text-rose-400 hover:bg-gray-800">
+                <span class="text-lg">⚙️</span>
+                <span class="text-[9px]">หลังบ้าน</span>
+            </a>
+        @endif
         <a href="{{ route('frontend.profile') }}"
            class="flex flex-col items-center gap-0.5 w-full py-2.5 text-center transition
                   {{ request()->routeIs('frontend.profile') ? 'text-orange-400 bg-orange-500/10' : 'text-gray-500 hover:text-gray-200 hover:bg-gray-800' }}">
@@ -253,6 +265,13 @@
                     </a>
                 @endforeach
                 {{-- Profile + Logout --}}
+                @if(auth()->user()->isCanAccessBackend())
+                    <a href="{{ route('backend.index') }}" @click="mobileMore = false"
+                       class="flex flex-col items-center justify-center py-3 rounded-xl transition text-rose-500 hover:text-rose-400 hover:bg-gray-800">
+                        <span class="text-xl mb-0.5">⚙️</span>
+                        <span class="text-[10px]">หลังบ้าน</span>
+                    </a>
+                @endif
                 <a href="{{ route('frontend.profile') }}" @click="mobileMore = false"
                    class="flex flex-col items-center justify-center py-3 rounded-xl transition
                           {{ request()->routeIs('frontend.profile') ? 'text-orange-400 bg-orange-500/10' : 'text-gray-400 hover:text-white hover:bg-gray-800' }}">
