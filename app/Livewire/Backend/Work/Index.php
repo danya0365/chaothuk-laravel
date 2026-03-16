@@ -19,6 +19,11 @@ class Index extends Component
     public $search = '';
     public $status = 'all'; // all, active, suspended
     public $category_id = 'all';
+    public $workIdToFeature = null;
+    public $featureDays = 7;
+    public $featureNote = '';
+    public $isAppendingFeature = false;
+    public $workIdToRevokeFeature = null;
     
     public $workIdToDelete = null;
 
@@ -43,8 +48,9 @@ class Index extends Component
         $this->resetPage();
     }
 
-    public function toggleFeature($id)
+    public function openFeatureModal($id)
     {
+        $this->workIdToFeature = $id;
         $work = Work::findOrFail($id);
         
         $activeFeature = FeaturedWork::where('work_id', $work->id)
@@ -53,14 +59,49 @@ class Index extends Component
             ->first();
 
         if ($activeFeature) {
-            $activeFeature->update(['end_at' => now()->subSecond()]);
-            $action = 'เลิกแนะนำ';
+            $this->isAppendingFeature = true;
+            $this->featureDays = 7; // Default to append 7 days
         } else {
+            $this->isAppendingFeature = false;
+            $this->featureDays = 7;
+        }
+        $this->featureNote = '';
+    }
+
+    public function closeFeatureModal()
+    {
+        $this->workIdToFeature = null;
+        $this->reset(['featureDays', 'featureNote', 'isAppendingFeature']);
+    }
+
+    public function saveFeature()
+    {
+        $this->validate([
+            'featureDays' => 'required|integer|min:1|max:365',
+            'featureNote' => 'nullable|string|max:255',
+        ]);
+
+        $work = Work::findOrFail($this->workIdToFeature);
+        
+        $activeFeature = FeaturedWork::where('work_id', $work->id)
+            ->where('is_approved', true)
+            ->where('end_at', '>=', now())
+            ->first();
+
+        if ($activeFeature) {
+            // Append to existing
+            $activeFeature->update([
+                'end_at' => \Carbon\Carbon::parse($activeFeature->end_at)->addDays($this->featureDays),
+                // Optionally log the note somewhere, or we can just append it to a field if we add one in the future.
+            ]);
+            $action = 'ขยายเวลาแนะนำเพิ่ม ' . $this->featureDays . ' วัน';
+        } else {
+            // Create new
             FeaturedWork::create([
                 'work_id' => $work->id,
                 'author_id' => $work->author_id,
                 'start_at' => now(),
-                'end_at' => now()->addDays(30),
+                'end_at' => now()->addDays($this->featureDays),
                 'amount_paid' => 0,
                 'payment_method' => 'admin_override',
                 'payment_status' => 'paid',
@@ -68,10 +109,39 @@ class Index extends Component
                 'approved_by' => auth()->id(),
                 'slot_position' => 0,
             ]);
-            $action = 'แนะนำ';
+            $action = 'ตั้งเป็นรายการแนะนำ ' . $this->featureDays . ' วัน';
         }
 
-        session()->flash('success', "ตั้งค่าให้งาน {$work->code} เป็นรายการ{$action} แล้ว");
+        $this->closeFeatureModal();
+        session()->flash('success', "{$action} ให้งาน {$work->code} แล้ว");
+    }
+
+    public function confirmRevokeFeature($id)
+    {
+        $this->workIdToRevokeFeature = $id;
+    }
+
+    public function closeRevokeFeatureModal()
+    {
+        $this->workIdToRevokeFeature = null;
+    }
+
+    public function revokeFeature()
+    {
+        if (!$this->workIdToRevokeFeature) return;
+
+        $work = Work::findOrFail($this->workIdToRevokeFeature);
+        $activeFeature = FeaturedWork::where('work_id', $work->id)
+            ->where('is_approved', true)
+            ->where('end_at', '>=', now())
+            ->first();
+
+        if ($activeFeature) {
+            $activeFeature->update(['end_at' => now()->subSecond()]);
+            session()->flash('success', "ยกเลิกการเข้าร่วมรายการแนะนำของงาน {$work->code} แล้ว");
+        }
+
+        $this->closeRevokeFeatureModal();
     }
 
     public function toggleSuspend($id)

@@ -57,6 +57,10 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
     });
 
     // Content Moderation (Works)
+    Route::group(['prefix' => 'featured-works', 'as' => 'featured-works.'], function () {
+        Route::get('/', \App\Livewire\Backend\FeaturedWork\Index::class)->name('index');
+    });
+
     Route::group(['prefix' => 'works', 'as' => 'works.'], function () {
         Route::get('/', \App\Livewire\Backend\Work\Index::class)->name('index');
         Route::get('/{work}', \App\Livewire\Backend\Work\Show::class)->name('show');

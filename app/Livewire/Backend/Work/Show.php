@@ -23,6 +23,13 @@ class Show extends Component
     public $recentBookings = [];
     public $recentReviews = [];
 
+    // Feature Modal State
+    public $showFeatureModal = false;
+    public $featureDays = 7;
+    public $featureNote = '';
+    public $isAppendingFeature = false;
+    public $confirmingRevokeFeature = false;
+
     public function mount(Work $work)
     {
         // Require extra relationships for a complete view
@@ -76,7 +83,80 @@ class Show extends Component
         $this->recentReviews = $this->work->reviews()->with('author')->latest()->take(10)->get();
     }
 
-    public function toggleFeature()
+    public function openFeatureModal()
+    {
+        $activeFeature = FeaturedWork::where('work_id', $this->work->id)
+            ->where('is_approved', true)
+            ->where('end_at', '>=', now())
+            ->first();
+
+        if ($activeFeature) {
+            $this->isAppendingFeature = true;
+            $this->featureDays = 7;
+        } else {
+            $this->isAppendingFeature = false;
+            $this->featureDays = 7;
+        }
+        $this->featureNote = '';
+        $this->showFeatureModal = true;
+    }
+
+    public function closeFeatureModal()
+    {
+        $this->showFeatureModal = false;
+        $this->reset(['featureDays', 'featureNote', 'isAppendingFeature']);
+    }
+
+    public function saveFeature()
+    {
+        $this->validate([
+            'featureDays' => 'required|integer|min:1|max:365',
+            'featureNote' => 'nullable|string|max:255',
+        ]);
+
+        $activeFeature = FeaturedWork::where('work_id', $this->work->id)
+            ->where('is_approved', true)
+            ->where('end_at', '>=', now())
+            ->first();
+
+        if ($activeFeature) {
+            $activeFeature->update([
+                'end_at' => \Carbon\Carbon::parse($activeFeature->end_at)->addDays($this->featureDays),
+            ]);
+            $action = 'ขยายเวลาแนะนำเพิ่ม ' . $this->featureDays . ' วัน';
+        } else {
+            FeaturedWork::create([
+                'work_id' => $this->work->id,
+                'author_id' => $this->work->author_id,
+                'start_at' => now(),
+                'end_at' => now()->addDays($this->featureDays),
+                'amount_paid' => 0,
+                'payment_method' => 'admin_override',
+                'payment_status' => 'paid',
+                'is_approved' => true,
+                'approved_by' => auth()->id(),
+                'slot_position' => 0,
+            ]);
+            $action = 'ตั้งเป็นรายการแนะนำ ' . $this->featureDays . ' วัน';
+        }
+        
+        $this->work->load('activeFeature');
+        $this->closeFeatureModal();
+        
+        session()->flash('success', "{$action} ให้งาน {$this->work->code} แล้ว");
+    }
+
+    public function confirmRevokeFeature()
+    {
+        $this->confirmingRevokeFeature = true;
+    }
+
+    public function closeRevokeFeatureModal()
+    {
+        $this->confirmingRevokeFeature = false;
+    }
+
+    public function revokeFeature()
     {
         $activeFeature = FeaturedWork::where('work_id', $this->work->id)
             ->where('is_approved', true)
@@ -85,26 +165,11 @@ class Show extends Component
 
         if ($activeFeature) {
             $activeFeature->update(['end_at' => now()->subSecond()]);
-            $action = 'เลิกแนะนำ';
-        } else {
-            FeaturedWork::create([
-                'work_id' => $this->work->id,
-                'author_id' => $this->work->author_id,
-                'start_at' => now(),
-                'end_at' => now()->addDays(30),
-                'amount_paid' => 0,
-                'payment_method' => 'admin_override',
-                'payment_status' => 'paid',
-                'is_approved' => true,
-                'approved_by' => auth()->id(),
-                'slot_position' => 0,
-            ]);
-            $action = 'แนะนำ';
+            $this->work->load('activeFeature');
+            session()->flash('success', "ยกเลิกการเข้าร่วมรายการแนะนำของงาน {$this->work->code} แล้ว");
         }
         
-        $this->work->load('activeFeature');
-        
-        session()->flash('success', "ตั้งค่าให้งาน {$this->work->code} เป็นรายการ{$action} แล้ว");
+        $this->closeRevokeFeatureModal();
     }
 
     public function toggleSuspend()
