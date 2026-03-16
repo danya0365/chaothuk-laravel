@@ -108,15 +108,17 @@
             ['icon'=>'ℹ️','label'=>'เกี่ยวกับ','route'=>'frontend.about','auth'=>false],
         ];
         $authMoreNav = [
-            ['icon'=>'💼','label'=>'งานของฉัน','route'=>'frontend.my-works'],
-            ['icon'=>'📝','label'=>'ประกาศของฉัน','route'=>'frontend.my-recruits'],
+            // Seller Links
+            ['icon'=>'💼','label'=>'บริการของฉัน','route'=>'frontend.my-works'],
+            ['icon'=>'📥','label'=>'ออเดอร์ลูกค้า','route'=>'frontend.my-orders'],
+            // Buyer Links
+            ['icon'=>'📝','label'=>'ประกาศหาคน','route'=>'frontend.my-recruits'],
+            ['icon'=>'🛒','label'=>'การว่าจ้าง','route'=>'frontend.my-hires'],
+            // General Links
             ['icon'=>'💳','label'=>'วอลเล็ต','route'=>'frontend.my_wallet'],
             ['icon'=>'📅','label'=>'ปฏิทิน','route'=>'frontend.calendar'],
-            ['icon'=>'📋','label'=>'การจอง','route'=>'frontend.bookings'],
-            ['icon'=>'💬','label'=>'แชท','route'=>'frontend.messenger'],
             ['icon'=>'⭐','label'=>'โปรด','route'=>'frontend.favorites'],
             ['icon'=>'🎨','label'=>'ผลงาน','route'=>'frontend.portfolios'],
-            ['icon'=>'🕐','label'=>'เซสชัน','route'=>'frontend.sessions'],
             ['icon'=>'🔔','label'=>'แจ้งเตือน','route'=>'frontend.notifications'],
         ];
     @endphp
@@ -253,13 +255,16 @@
                     ['icon'=>'ℹ️','label'=>'เกี่ยวกับ','route'=>'frontend.about'],
                 ];
                 $mobileMoreAuth = [
-                    ['icon'=>'💼','label'=>'งานของฉัน','route'=>'frontend.my-works'],
-                    ['icon'=>'📝','label'=>'ประกาศของฉัน','route'=>'frontend.my-recruits'],
+                    // Seller Links
+                    ['icon'=>'💼','label'=>'บริการของฉัน','route'=>'frontend.my-works'],
+                    ['icon'=>'📥','label'=>'ออเดอร์ลูกค้า','route'=>'frontend.my-orders'],
+                    // Buyer Links
+                    ['icon'=>'📝','label'=>'ประกาศหาคน','route'=>'frontend.my-recruits'],
+                    ['icon'=>'🛒','label'=>'การว่าจ้าง','route'=>'frontend.my-hires'],
+                    // General Links
                     ['icon'=>'💳','label'=>'วอลเล็ต','route'=>'frontend.my_wallet'],
                     ['icon'=>'📅','label'=>'ปฏิทิน','route'=>'frontend.calendar'],
-                    ['icon'=>'📋','label'=>'การจอง','route'=>'frontend.bookings'],
                     ['icon'=>'🎨','label'=>'ผลงาน','route'=>'frontend.portfolios'],
-                    ['icon'=>'🕐','label'=>'เซสชัน','route'=>'frontend.sessions'],
                     ['icon'=>'🔔','label'=>'แจ้งเตือน','route'=>'frontend.notifications'],
                 ];
             @endphp

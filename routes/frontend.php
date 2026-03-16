@@ -25,6 +25,8 @@ use App\Livewire\Frontend\WorkCreate;
 use App\Livewire\Frontend\MyWallet;
 use App\Livewire\Frontend\MyWorks;
 use App\Livewire\Frontend\MyRecruits;
+use App\Livewire\Frontend\MyOrders;
+use App\Livewire\Frontend\MyHires;
 use App\Livewire\Frontend\WorkPromote;
 use App\Livewire\Frontend\RecruitBrowse;
 use App\Livewire\Frontend\RecruitCreate;
@@ -93,6 +95,8 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
         Route::get('/my-wallet',     MyWallet::class)->name('my_wallet');
         Route::get('/my-works',      MyWorks::class)->name('my-works');
         Route::get('/my-recruits',   MyRecruits::class)->name('my-recruits');
+        Route::get('/my-orders',     MyOrders::class)->name('my-orders');
+        Route::get('/my-hires',      MyHires::class)->name('my-hires');
 
         // Works management
         Route::get('/works/{work}/promote',    WorkPromote::class)->name('works.promote');
