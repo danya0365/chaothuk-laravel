@@ -1,110 +1,114 @@
-<div class="max-w-6xl mx-auto px-4 py-6" x-data="{ viewMode: 'grid' }">
+<div class="max-w-6xl mx-auto px-3 sm:px-4 py-4 md:py-6" x-data="{ viewMode: 'grid' }">
 
     {{-- Header with Tabs + Create Button --}}
-    <div class="flex items-center justify-between mb-5">
+    <div class="flex items-center justify-between mb-3 md:mb-5">
         <div>
-            <h1 class="text-2xl font-bold text-white">📦 งาน</h1>
+            <h1 class="text-xl md:text-2xl font-bold text-white">📦 งาน</h1>
         </div>
         @auth
         <a href="{{ route('frontend.works.create') }}"
-           class="px-5 py-2.5 bg-orange-500 hover:bg-orange-400 text-white font-bold rounded-xl text-sm transition flex items-center gap-1.5">
+           class="px-3 py-1.5 md:px-5 md:py-2.5 bg-orange-500 hover:bg-orange-400 text-white font-bold rounded-lg md:rounded-xl text-xs md:text-sm transition flex items-center gap-1 md:gap-1.5">
             ＋ สร้างงานใหม่
         </a>
         @endauth
     </div>
 
     {{-- Tabs --}}
-    <div class="flex items-center gap-1 mb-5 bg-gray-900 rounded-xl p-1 w-fit">
+    <div class="flex items-center gap-1 mb-3 md:mb-5 bg-gray-900 rounded-xl p-1 w-fit">
         <button wire:click="$set('tab', 'all')"
-                class="px-5 py-2 rounded-lg text-sm font-semibold transition
+                class="px-3 py-1.5 md:px-5 md:py-2 rounded-lg text-xs md:text-sm font-semibold transition
                     {{ $tab === 'all' ? 'bg-orange-500 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800' }}">
             📦 งานทั้งหมด
         </button>
         @auth
         <button wire:click="$set('tab', 'my')"
-                class="px-5 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5
+                class="px-3 py-1.5 md:px-5 md:py-2 rounded-lg text-xs md:text-sm font-semibold transition flex items-center gap-1 md:gap-1.5
                     {{ $tab === 'my' ? 'bg-orange-500 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800' }}">
             👤 งานของฉัน
             @if($myWorksCount > 0)
-                <span class="bg-white/20 text-[10px] px-1.5 py-0.5 rounded-full font-bold">{{ $myWorksCount }}</span>
+                <span class="bg-white/20 text-[9px] md:text-[10px] px-1.5 py-0.5 rounded-full font-bold">{{ $myWorksCount }}</span>
             @endif
         </button>
         @endauth
     </div>
 
     {{-- Filters --}}
-    <div class="flex flex-col sm:flex-row gap-3 mb-4">
+    <div class="flex flex-col sm:flex-row flex-wrap gap-2 md:gap-3 mb-3 md:mb-4">
         <input wire:model.live.debounce.400ms="search" type="text"
                placeholder="🔍 ค้นหางาน..."
-               class="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 transition">
+               class="flex-1 w-full sm:min-w-[200px] bg-gray-800 border border-gray-700 rounded-lg md:rounded-xl px-3 py-2 md:px-4 md:py-2.5 text-xs md:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 transition">
 
-        <select wire:model.live="provinceId"
-                class="bg-gray-800 border border-gray-700 rounded-xl px-3 py-2.5 text-gray-300 focus:outline-none focus:border-orange-500 transition">
-            <option value="">📍 ทุกจังหวัด</option>
-            @foreach($provinces as $p)
-                <option value="{{ $p->id }}">{{ $p->name_th }}</option>
-            @endforeach
-        </select>
+        <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-row sm:gap-3 w-full sm:w-auto">
+            <select wire:model.live="provinceId"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg md:rounded-xl px-2 py-2 md:px-3 md:py-2.5 text-xs md:text-sm text-gray-300 focus:outline-none focus:border-orange-500 transition">
+                <option value="">📍 ทุกจังหวัด</option>
+                @foreach($provinces as $p)
+                    <option value="{{ $p->id }}">{{ $p->name_th }}</option>
+                @endforeach
+            </select>
 
-        <select wire:model.live="workTypeId"
-                class="bg-gray-800 border border-gray-700 rounded-xl px-3 py-2.5 text-gray-300 focus:outline-none focus:border-orange-500 transition">
-            <option value="">🚛 ทุกประเภท</option>
-            @foreach($workTypes as $wt)
-                <option value="{{ $wt->id }}">{{ $wt->title }}</option>
-            @endforeach
-        </select>
+            <select wire:model.live="workTypeId"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg md:rounded-xl px-2 py-2 md:px-3 md:py-2.5 text-xs md:text-sm text-gray-300 focus:outline-none focus:border-orange-500 transition">
+                <option value="">🚛 ทุกประเภท</option>
+                @foreach($workTypes as $wt)
+                    <option value="{{ $wt->id }}">{{ $wt->title }}</option>
+                @endforeach
+            </select>
+        </div>
 
-        <select wire:model.live="sortBy"
-                class="bg-gray-800 border border-gray-700 rounded-xl px-3 py-2.5 text-gray-300 focus:outline-none focus:border-orange-500 transition">
-            <option value="latest">ล่าสุด</option>
-            <option value="popular">ยอดนิยม</option>
-            <option value="rating">คะแนนสูงสุด</option>
-            <option value="price_asc">ราคาต่ำ → สูง</option>
-            <option value="price_desc">ราคาสูง → ต่ำ</option>
-            <option value="distance" x-show="$wire.userLat" disabled>📍 ระยะทางใกล้สุด</option>
-        </select>
+        <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-row sm:gap-3 w-full sm:w-auto">
+            <select wire:model.live="sortBy"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg md:rounded-xl px-2 py-2 md:px-3 md:py-2.5 text-xs md:text-sm text-gray-300 focus:outline-none focus:border-orange-500 transition">
+                <option value="latest">ล่าสุด</option>
+                <option value="popular">ยอดนิยม</option>
+                <option value="rating">คะแนนสูงสุด</option>
+                <option value="price_asc">ราคาต่ำ → สูง</option>
+                <option value="price_desc">ราคาสูง → ต่ำ</option>
+                <option value="distance" x-show="$wire.userLat" disabled>📍 ระยะทางใกล้สุด</option>
+            </select>
 
-        <div x-data="{
-            handleLocationPicked(e) {
-                @this.set('userLat', e.detail.lat);
-                @this.set('userLng', e.detail.lng);
-                @this.set('sortBy', 'distance');
-            }
-        }" @location-picked.window="handleLocationPicked" class="flex gap-2">
-            
-            <x-location-picker
-                wire:model.lat="userLat"
-                wire:model.lng="userLng"
-                label="📍 ใกล้ฉัน"
-                class="h-[46px] {{ $sortBy === 'distance' ? 'bg-orange-500/20 text-orange-400 border-orange-500/50 ring-1 ring-orange-500/50' : '' }}" />
+            <div x-data="{
+                handleLocationPicked(e) {
+                    @this.set('userLat', e.detail.lat);
+                    @this.set('userLng', e.detail.lng);
+                    @this.set('sortBy', 'distance');
+                }
+            }" @location-picked.window="handleLocationPicked" class="flex gap-2 w-full sm:w-auto">
                 
-            @if($userLat && $userLng)
-                <button type="button" wire:click="$set('userLat', null); $set('userLng', null); $set('sortBy', 'latest')"
-                        class="h-[46px] px-4 bg-gray-800 border border-gray-700 hover:bg-red-500/20 hover:text-red-400 hover:border-red-500/50 text-gray-400 rounded-xl transition flex items-center justify-center font-bold"
-                        title="ยกเลิกระยะทาง">
-                    ✕
-                </button>
-            @endif
+                <x-location-picker
+                    wire:model.lat="userLat"
+                    wire:model.lng="userLng"
+                    label="📍 ใกล้ฉัน"
+                    class="h-[36px] md:h-[46px] w-full text-xs md:text-sm {{ $sortBy === 'distance' ? 'bg-orange-500/20 text-orange-400 border-orange-500/50 ring-1 ring-orange-500/50' : '' }}" />
+                    
+                @if($userLat && $userLng)
+                    <button type="button" wire:click="$set('userLat', null); $set('userLng', null); $set('sortBy', 'latest')"
+                            class="h-[36px] md:h-[46px] px-3 md:px-4 bg-gray-800 border border-gray-700 hover:bg-red-500/20 hover:text-red-400 hover:border-red-500/50 text-gray-400 rounded-lg md:rounded-xl transition flex items-center justify-center font-bold"
+                            title="ยกเลิกระยะทาง">
+                        ✕
+                    </button>
+                @endif
+            </div>
         </div>
     </div>
 
     {{-- View Toggle + Count --}}
-    <div class="flex items-center justify-between mb-4">
-        <p class="text-gray-400 text-sm">
+    <div class="flex items-center justify-between mb-3 md:mb-4">
+        <p class="text-gray-400 text-xs md:text-sm">
             {{ $works->total() }} งาน
             @if($tab === 'my')
-                <span class="text-orange-400 text-xs">(ของฉัน)</span>
+                <span class="text-orange-400 text-[10px] md:text-xs">(ของฉัน)</span>
             @endif
         </p>
         <div class="flex gap-1 bg-gray-800 rounded-lg p-1">
             <button @click="viewMode = 'grid'"
                     :class="viewMode === 'grid' ? 'bg-orange-500 text-white' : 'text-gray-400 hover:text-white'"
-                    class="px-3 py-1.5 rounded-md text-xs font-semibold transition">
+                    class="px-2.5 py-1 md:px-3 md:py-1.5 rounded-md text-[10px] md:text-xs font-semibold transition">
                 ☷ รายการ
             </button>
             <button @click="viewMode = 'map'; $nextTick(() => window.dispatchEvent(new Event('init-browse-map')))"
                     :class="viewMode === 'map' ? 'bg-orange-500 text-white' : 'text-gray-400 hover:text-white'"
-                    class="px-3 py-1.5 rounded-md text-xs font-semibold transition">
+                    class="px-2.5 py-1 md:px-3 md:py-1.5 rounded-md text-[10px] md:text-xs font-semibold transition">
                 🗺️ แผนที่
             </button>
         </div>
@@ -116,20 +120,20 @@
     {{-- Grid View --}}
     <div wire:loading.remove x-show="viewMode === 'grid'">
         @if($works->isEmpty())
-            <div class="text-center py-20">
-                <div class="text-6xl mb-4">{{ $tab === 'my' ? '📭' : '📭' }}</div>
+            <div class="text-center py-10 md:py-20">
+                <div class="text-5xl md:text-6xl mb-3 md:mb-4">{{ $tab === 'my' ? '📭' : '📭' }}</div>
                 @if($tab === 'my')
-                    <p class="text-gray-400 mb-4">คุณยังไม่มีงาน</p>
+                    <p class="text-gray-400 text-sm md:text-base mb-3 md:mb-4">คุณยังไม่มีงาน</p>
                     <a href="{{ route('frontend.works.create') }}"
-                       class="inline-block px-6 py-2.5 bg-orange-500 hover:bg-orange-400 text-white font-bold rounded-xl transition">
+                       class="inline-block px-5 py-2 md:px-6 md:py-2.5 bg-orange-500 hover:bg-orange-400 text-white font-bold rounded-xl text-xs md:text-sm transition">
                         ＋ สร้างงานแรกของคุณ
                     </a>
                 @else
-                    <p class="text-gray-400">ไม่พบผลลัพธ์</p>
+                    <p class="text-gray-400 text-sm md:text-base">ไม่พบผลลัพธ์</p>
                 @endif
             </div>
         @else
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 mb-6 md:mb-8">
                 @foreach($works as $work)
                     <div class="group bg-gray-900 rounded-xl overflow-hidden hover:ring-2 hover:ring-orange-500/40 transition relative">
                         {{-- Owner badge --}}
@@ -153,17 +157,17 @@
                                      class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="{{ $work->title }}">
                             </div>
                         </a>
-                        <div class="p-3">
+                        <div class="p-2 md:p-3">
                             <a href="{{ route('frontend.works.show', $work->id) }}"
-                               class="font-semibold text-sm text-white hover:text-orange-400 transition line-clamp-2 block mb-1">
+                               class="font-semibold text-xs md:text-sm text-white hover:text-orange-400 transition line-clamp-2 block mb-0.5 md:mb-1">
                                 {{ $work->title }}
                             </a>
-                            <p class="text-orange-400 font-bold">฿{{ number_format($work->price) }}</p>
-                            <div class="flex items-center justify-between mt-2">
+                            <p class="text-orange-400 font-bold text-sm md:text-base">฿{{ number_format($work->price) }}</p>
+                            <div class="flex items-center justify-between mt-1 md:mt-2">
                                 <div class="flex flex-col gap-0.5">
-                                    <p class="text-gray-500 text-xs">📍 {{ $work->province?->name_th ?? '-' }}</p>
+                                    <p class="text-gray-500 text-[10px] md:text-xs">📍 {{ $work->province?->name_th ?? '-' }}</p>
                                     @if(isset($work->distance))
-                                        <p class="text-orange-400 text-[10px] font-semibold">
+                                        <p class="text-orange-400 text-[9px] md:text-[10px] font-semibold">
                                             @if($work->distance < 1)
                                                 ({{ number_format($work->distance * 1000) }} เมตร)
                                             @else
@@ -172,12 +176,12 @@
                                         </p>
                                     @endif
                                 </div>
-                                <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-1 md:gap-2">
                                     @if($work->avg_review_rating > 0)
-                                        <span class="text-yellow-400 text-xs">⭐ {{ number_format($work->avg_review_rating,1) }}</span>
+                                        <span class="text-yellow-400 text-[10px] md:text-xs">⭐ {{ number_format($work->avg_review_rating,1) }}</span>
                                     @endif
                                     <button wire:click="toggleLike({{ $work->id }})"
-                                            class="text-xs transition {{ in_array($work->id, $likedIds) ? 'text-red-400' : 'text-gray-600 hover:text-red-400' }}">
+                                            class="text-[10px] md:text-xs transition {{ in_array($work->id, $likedIds) ? 'text-red-400' : 'text-gray-600 hover:text-red-400' }}">
                                         ❤️ {{ $work->like_count }}
                                     </button>
                                 </div>
@@ -185,18 +189,18 @@
 
                             {{-- Owner quick actions --}}
                             @if($tab === 'my' && auth()->check() && auth()->id() === $work->author_id)
-                            <div class="flex items-center gap-2 mt-2 pt-2 border-t border-gray-800">
+                            <div class="flex items-center gap-1.5 md:gap-2 mt-2 pt-2 border-t border-gray-800">
                                 <a href="{{ route('frontend.works.edit', $work->id) }}"
-                                   class="flex-1 text-center text-xs py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition">
+                                   class="flex-1 text-center text-[10px] md:text-xs py-1.5 md:py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition">
                                     ✏️ แก้ไข
                                 </a>
                                 <a href="{{ route('frontend.works.bookings', $work->id) }}"
-                                   class="flex-1 text-center text-xs py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition">
+                                   class="flex-1 text-center text-[10px] md:text-xs py-1.5 md:py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition">
                                     📋 จอง
                                 </a>
                                 <button wire:click="deleteWork({{ $work->id }})"
                                         wire:confirm="ลบงานนี้?"
-                                        class="text-xs py-1.5 px-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg transition">
+                                        class="text-[10px] md:text-xs py-1.5 md:py-2 px-2 md:px-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg transition flex-shrink-0">
                                     🗑
                                 </button>
                             </div>
