@@ -349,6 +349,8 @@
     </nav>
 </div>
 
+<livewire:frontend.global-alerts />
+
 @livewireScripts
 @stack('scripts')
 </body>
