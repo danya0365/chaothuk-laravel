@@ -39,7 +39,7 @@
                 </thead>
                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     @forelse($channels as $channel)
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-750 transition" wire:key="channel-{{ $channel->id }}">
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 ease-in-out" wire:key="channel-{{ $channel->id }}">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                 {{ $channel->id }}
                             </td>
