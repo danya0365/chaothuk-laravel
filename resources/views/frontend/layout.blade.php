@@ -98,6 +98,7 @@
             ['icon'=>'ℹ️','label'=>'เกี่ยวกับ','route'=>'frontend.about','auth'=>false],
         ];
         $authMoreNav = [
+            ['icon'=>'💳','label'=>'วอลเล็ต','route'=>'frontend.my_wallet'],
             ['icon'=>'📅','label'=>'ปฏิทิน','route'=>'frontend.calendar'],
             ['icon'=>'📋','label'=>'การจอง','route'=>'frontend.bookings'],
             ['icon'=>'💬','label'=>'แชท','route'=>'frontend.messenger'],
@@ -240,6 +241,7 @@
                     ['icon'=>'ℹ️','label'=>'เกี่ยวกับ','route'=>'frontend.about'],
                 ];
                 $mobileMoreAuth = [
+                    ['icon'=>'💳','label'=>'วอลเล็ต','route'=>'frontend.my_wallet'],
                     ['icon'=>'📅','label'=>'ปฏิทิน','route'=>'frontend.calendar'],
                     ['icon'=>'📋','label'=>'การจอง','route'=>'frontend.bookings'],
                     ['icon'=>'🎨','label'=>'ผลงาน','route'=>'frontend.portfolios'],

@@ -38,7 +38,7 @@ class Profile extends Component
     {
         $uid = auth()->id();
         match ($this->tab) {
-            'works'      => $this->myWorks = Work::with(['province', 'workType'])
+            'works'      => $this->myWorks = Work::with(['province', 'workType', 'activeFeature'])
                                 ->where('author_id', $uid)->latest()->limit(20)->get()->toArray(),
             'recruits'   => $this->myRecruits = Recruit::with(['province', 'workType'])
                                 ->where('author_id', $uid)->latest()->limit(20)->get()->toArray(),

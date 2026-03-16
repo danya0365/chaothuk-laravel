@@ -62,6 +62,14 @@ class Work extends Model
         return $this->belongsTo(User::class, 'author_id');
     }
 
+    public function activeFeature()
+    {
+        return $this->hasOne(FeaturedWork::class)
+            ->where('is_approved', true)
+            ->where('payment_status', 'paid')
+            ->where('end_at', '>=', now());
+    }
+
     public function province(): BelongsTo
     {
         return $this->belongsTo(Province::class, 'province_id');
