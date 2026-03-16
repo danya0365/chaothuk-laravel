@@ -17,7 +17,7 @@ class Configuration extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['slug', 'name', 'value_type', 'value', 'value_options'];
+    protected $fillable = ['slug', 'name', 'value_type', 'value', 'value_options', 'group'];
 
     protected $casts = [
         'value_options' => 'json',

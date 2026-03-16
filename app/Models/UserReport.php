@@ -33,4 +33,9 @@ class UserReport extends Model
     {
         return $this->belongsTo(User::class, 'resolved_by');
     }
+
+    public function reportable()
+    {
+        return $this->morphTo();
+    }
 }

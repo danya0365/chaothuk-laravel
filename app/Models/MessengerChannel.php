@@ -101,10 +101,10 @@ class MessengerChannel extends Model
         return $customer ? $customer->author->getName() : __('No Customer');
     }
 
-    public function getCustomerAvatar(): string
+    public function getCustomerAvatar(): ?string
     {
         $customer = $this->getCustomer();
-        return $customer ? $customer->author->getAvatar() : 'https://ui-avatars.com/api/?name=NO&background=0D8ABC&color=fff&size=200';
+        return $customer ? $customer->author->getAvatar() : null;
     }
 
     public function getCustomerLastSeen(): string
@@ -118,9 +118,9 @@ class MessengerChannel extends Model
         return __('Admin');
     }
 
-    public static function getAdminAvatar(): string
+    public static function getAdminAvatar(): ?string
     {
-        return 'https://ui-avatars.com/api/?name=AD&background=0D8ABC&color=fff&size=200';
+        return null;
     }
 
     public function getAdminLastSeen(): string

@@ -24,8 +24,7 @@
                     files: null,
                     participants: {!! $messengerParticipants->toJson() !!},
                     getAvatar: (author) => {
-                        let name = author.name;
-                        return `https://ui-avatars.com/api/?name=${name ?? 'NO'}&background=0D8ABC&color=fff&size=200`;
+                        return author?.profile_image ?? '';
                     },
                     dateFormat: (dateString) => {
                         return moment(dateString).calendar(null, {

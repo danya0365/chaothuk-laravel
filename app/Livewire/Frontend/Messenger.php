@@ -42,8 +42,7 @@ class Messenger extends Component
                     'title'       => $ch->is_direct
                         ? ($otherUser?->name ?? $ch->title)
                         : $ch->title,
-                    'avatar'      => $otherUser?->profile_image
-                        ?? 'https://ui-avatars.com/api/?name=' . urlencode($otherUser?->name ?? 'Chat'),
+                    'avatar'      => $otherUser?->profile_image,
                     'last_msg'    => $lastMsg?->content ?? '',
                     'last_time'   => $lastMsg?->created_at?->diffForHumans() ?? '',
                     'is_direct'   => $ch->is_direct,
@@ -73,7 +72,7 @@ class Messenger extends Component
                 'type'     => $c->type,
                 'is_mine'  => $c->user_id === auth()->id(),
                 'user'     => $c->user?->name ?? '-',
-                'avatar'   => $c->user?->profile_image ?? 'https://ui-avatars.com/api/?name=' . urlencode($c->user?->name ?? 'U'),
+                'avatar'   => $c->user?->profile_image,
                 'time'     => $c->created_at?->format('H:i'),
             ])
             ->toArray();

@@ -1,18 +1,18 @@
-<div class="max-w-7xl mx-auto px-4 py-10">
+<div class="max-w-7xl mx-auto px-3 sm:px-4 py-6 md:py-10">
 
     {{-- Page Header --}}
-    <div class="mb-10">
-        <h1 class="text-3xl font-bold text-white">🏠 Dashboard</h1>
-        <p class="mt-2 text-gray-400">จัดการ Sanctum API Token เพื่อเรียกใช้ API endpoints</p>
+    <div class="mb-6 md:mb-10">
+        <h1 class="text-2xl md:text-3xl font-bold text-white">🏠 Dashboard</h1>
+        <p class="mt-1 md:mt-2 text-sm md:text-base text-gray-400">จัดการ Sanctum API Token เพื่อเรียกใช้ API endpoints</p>
     </div>
 
     {{-- Token Status Card --}}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
 
         {{-- Login / Token Section --}}
-        <div class="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur">
-            <h2 class="text-lg font-semibold text-white mb-1">🔑 API Token</h2>
-            <p class="text-sm text-gray-400 mb-5">Login เพื่อรับ Sanctum Bearer Token</p>
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-4 md:p-6 backdrop-blur">
+            <h2 class="text-base md:text-lg font-semibold text-white mb-1">🔑 API Token</h2>
+            <p class="text-xs md:text-sm text-gray-400 mb-4 md:mb-5">Login เพื่อรับ Sanctum Bearer Token</p>
 
             @if($apiToken)
                 {{-- Active Token --}}
@@ -77,9 +77,9 @@
         </div>
 
         {{-- API Health / Quick Info --}}
-        <div class="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur">
-            <h2 class="text-lg font-semibold text-white mb-1">📡 API Endpoints</h2>
-            <p class="text-sm text-gray-400 mb-5">Routes ที่มีอยู่ในระบบ</p>
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-4 md:p-6 backdrop-blur">
+            <h2 class="text-base md:text-lg font-semibold text-white mb-1">📡 API Endpoints</h2>
+            <p class="text-xs md:text-sm text-gray-400 mb-4 md:mb-5">Routes ที่มีอยู่ในระบบ</p>
 
             <div class="space-y-2">
                 @foreach([
@@ -108,18 +108,18 @@
     </div>
 
     {{-- Quick Navigation --}}
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
         @foreach([
             ['href' => route('frontend.works'),    'icon' => '💼', 'label' => 'Works Explorer',    'desc' => 'Browse & review works'],
             ['href' => route('frontend.recruits'), 'icon' => '👤', 'label' => 'Recruit Explorer',  'desc' => 'Browse & review recruits'],
             ['href' => route('frontend.me'),       'icon' => '🔮', 'label' => 'Me Explorer',       'desc' => 'View your profile & data'],
         ] as $item)
             <a href="{{ $item['href'] }}"
-               class="group flex items-center gap-4 p-5 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-orange-500/30 transition-all">
-                <span class="text-3xl">{{ $item['icon'] }}</span>
+               class="group flex items-center gap-3 md:gap-4 p-4 md:p-5 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-orange-500/30 transition-all">
+                <span class="text-2xl md:text-3xl">{{ $item['icon'] }}</span>
                 <div>
-                    <p class="font-semibold text-white text-sm group-hover:text-orange-400 transition-colors">{{ $item['label'] }}</p>
-                    <p class="text-xs text-gray-500 mt-0.5">{{ $item['desc'] }}</p>
+                    <p class="font-semibold text-white text-xs md:text-sm group-hover:text-orange-400 transition-colors">{{ $item['label'] }}</p>
+                    <p class="text-[10px] md:text-xs text-gray-500 mt-0.5">{{ $item['desc'] }}</p>
                 </div>
                 <svg class="ml-auto w-4 h-4 text-gray-600 group-hover:text-orange-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </a>

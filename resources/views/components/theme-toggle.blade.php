@@ -1,4 +1,7 @@
-<button x-on:click="changeUserTheme()" type="button"
+<button 
+    x-data="{ toggleTheme() { const html = document.documentElement; const isDark = html.classList.contains('dark'); if (isDark) { html.classList.remove('dark'); localStorage.theme = 'light'; } else { html.classList.add('dark'); localStorage.theme = 'dark'; } } }" 
+    @click="toggleTheme()" 
+    type="button"
     class="relative inline-flex flex-shrink-0 h-6 mr-5 transition-colors duration-200 ease-in-out border-2 border-transparent rounded-full cursor-pointer bg-zinc-200 dark:bg-zinc-700 w-11 focus:outline-none focus:ring-2 focus:ring-neutral-700 focus:ring-offset-2"
     role="switch" aria-checked="false">
     <span class="sr-only">Use setting</span>

@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -68,16 +70,28 @@ class User extends Authenticatable
         return $this->first_name . ' ' . $this->last_name;
     }
 
-    public function getAvatar($size = 64): string
+    public function getAvatar($size = 64): ?string
     {
-        $fullName = trim($this->getFullName());
-        $name = $fullName ? $fullName : $this->name;
-        return $this->profile_image ?? "https://ui-avatars.com/api/?name={$name}&background=0D8ABC&color=fff&size={$size}";
+        return $this->profile_image;
     }
 
-    public function getCoverImage($size = "1200x600"): string
+    public function getCoverImage($size = "1200x600"): ?string
     {
-        return $this->cover_image ?? "https://placehold.co/{$size}?text=Cover+Photo";
+        return $this->cover_image;
+    }
+
+    protected function profileImage(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value ? (str_contains($value, 'http') ? $value : Storage::url($value)) : null,
+        );
+    }
+
+    protected function coverImage(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value ? (str_contains($value, 'http') ? $value : Storage::url($value)) : null,
+        );
     }
 
     public function userPoints(): HasMany
@@ -231,7 +245,7 @@ class User extends Authenticatable
                 $userPermission['data'] = 1;
             }
 
-            if (!$userPermission['desc']) {
+            if (!isset($userPermission['desc']) || !$userPermission['desc']) {
                 $userPermission['desc'] = '';
             }
 
