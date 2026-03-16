@@ -109,6 +109,7 @@
         ];
         $authMoreNav = [
             ['icon'=>'💼','label'=>'งานของฉัน','route'=>'frontend.my-works'],
+            ['icon'=>'📝','label'=>'ประกาศของฉัน','route'=>'frontend.my-recruits'],
             ['icon'=>'💳','label'=>'วอลเล็ต','route'=>'frontend.my_wallet'],
             ['icon'=>'📅','label'=>'ปฏิทิน','route'=>'frontend.calendar'],
             ['icon'=>'📋','label'=>'การจอง','route'=>'frontend.bookings'],
@@ -253,6 +254,7 @@
                 ];
                 $mobileMoreAuth = [
                     ['icon'=>'💼','label'=>'งานของฉัน','route'=>'frontend.my-works'],
+                    ['icon'=>'📝','label'=>'ประกาศของฉัน','route'=>'frontend.my-recruits'],
                     ['icon'=>'💳','label'=>'วอลเล็ต','route'=>'frontend.my_wallet'],
                     ['icon'=>'📅','label'=>'ปฏิทิน','route'=>'frontend.calendar'],
                     ['icon'=>'📋','label'=>'การจอง','route'=>'frontend.bookings'],
