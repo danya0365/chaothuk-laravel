@@ -15,7 +15,6 @@ use App\Livewire\Frontend\MySessions;
 use App\Livewire\Frontend\PortfolioCreate;
 use App\Livewire\Frontend\PortfolioDetail;
 use App\Livewire\Frontend\PortfolioEdit;
-use App\Livewire\Frontend\ReputationProfile;
 use App\Livewire\Frontend\SessionDetail;
 use App\Livewire\Frontend\WorkAvailabilityManage;
 use App\Livewire\Frontend\WorkBrowse;
@@ -75,14 +74,13 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
     Route::get('/recruits/{id}', RecruitDetail::class)->name('recruits.show');
     Route::get('/search',        Search::class)->name('search');
     Route::get('/categories',    CategoryBrowse::class)->name('categories');
-    Route::get('/reputation/{id?}', ReputationProfile::class)->name('reputation');
+    Route::get('/profile/{id?}', Profile::class)->name('profile')->where('id', '[0-9]+');
     Route::get('/map',           MapExplore::class)->name('map');
     Route::get('/portfolios/{id}', PortfolioDetail::class)->name('portfolios.show');
     Route::get('/about',         About::class)->name('about');
 
     // ─── Auth Required ─────────────────────────────────────────────────
     Route::middleware('auth')->group(function () {
-        Route::get('/profile',       Profile::class)->name('profile');
         Route::get('/profile/edit',  ProfileEdit::class)->name('profile.edit');
         Route::get('/notifications', Notifications::class)->name('notifications');
         Route::get('/calendar',      Calendar::class)->name('calendar');

@@ -180,10 +180,7 @@
         </div>
         @endif
 
-        {{-- ═══════════════════════════════════════════════════════════════════
-             4. PROVIDER CARD (with reputation)
-        ═══════════════════════════════════════════════════════════════════ --}}
-        <a href="{{ route('frontend.reputation', $work->author_id) }}"
+        <a href="{{ route('frontend.profile', $work->author_id) }}"
            class="bg-gray-900 rounded-2xl p-3 md:p-4 flex items-center gap-3 md:gap-4 hover:ring-2 hover:ring-orange-500/40 transition block group relative">
             <x-avatar :src="$work->author?->profile_image" :name="$work->author?->name" size="w-12 h-12 md:w-14 md:h-14" :border="false" class="ring-2 ring-orange-500/30 flex-shrink-0" />
             <div class="flex-1 min-w-0 pr-4">

@@ -68,9 +68,7 @@
         </div>
     </div>
 
-    {{-- Author Card --}}
-    @if(isset($portfolio['user']))
-    <a href="{{ route('frontend.reputation', $portfolio['user']['id']) }}"
+    <a href="{{ route('frontend.profile', $portfolio['user']['id']) }}"
        class="bg-gray-900 rounded-xl md:rounded-2xl p-3 md:p-4 flex items-center gap-3 md:gap-4 hover:ring-2 hover:ring-orange-500/40 transition block group mb-3 md:mb-4">
         <x-avatar :src="$portfolio['user']['profile_image'] ?? null" :name="$portfolio['user']['name'] ?? 'U'" size="w-10 h-10 md:w-12 md:h-12" :border="false" class="ring-2 ring-orange-500/30" />
         <div class="flex-1 min-w-0">
