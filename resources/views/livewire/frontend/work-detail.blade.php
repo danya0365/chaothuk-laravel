@@ -1,9 +1,9 @@
-<div class="max-w-4xl mx-auto px-4 py-6">
+<div class="max-w-4xl mx-auto px-3 sm:px-4 py-4 md:py-6">
 
     @if(!$work)
-        <p class="text-gray-400 text-center py-20">ไม่พบงานนี้</p>
+        <p class="text-gray-400 text-center py-10 md:py-20">ไม่พบงานนี้</p>
     @else
-    <div class="space-y-4">
+    <div class="space-y-3 md:space-y-4">
 
         {{-- ═══════════════════════════════════════════════════════════════════
              1. HERO IMAGE + GALLERY
@@ -30,15 +30,15 @@
             </div>
             {{-- Thumbnail gallery --}}
             @if(count($galleryImages) > 0)
-            <div class="flex gap-2 overflow-x-auto pb-1">
+            <div class="flex gap-1.5 md:gap-2 overflow-x-auto pb-1">
                 <button @click="activeImage = '{{ $work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/800/450' }}'"
-                        class="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden ring-2 transition"
+                        class="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-lg overflow-hidden ring-2 transition"
                         :class="activeImage === '{{ $work->primary_image ?? '' }}' ? 'ring-orange-500' : 'ring-transparent hover:ring-gray-600'">
                     <img src="{{ $work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/800/450' }}" class="w-full h-full object-cover" alt="">
                 </button>
                 @foreach($galleryImages as $img)
                     <button @click="activeImage = '{{ $img }}'"
-                            class="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden ring-2 transition"
+                            class="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-lg overflow-hidden ring-2 transition"
                             :class="activeImage === '{{ $img }}' ? 'ring-orange-500' : 'ring-transparent hover:ring-gray-600'">
                         <img src="{{ $img }}" class="w-full h-full object-cover" alt="">
                     </button>
@@ -50,35 +50,35 @@
         {{-- ═══════════════════════════════════════════════════════════════════
              2. TITLE + PRICE + QUICK STATS BAR
         ═══════════════════════════════════════════════════════════════════ --}}
-        <div class="bg-gray-900 rounded-2xl p-5">
+        <div class="bg-gray-900 rounded-2xl p-4 md:p-5">
             {{-- Tags row --}}
-            <div class="flex items-center gap-2 flex-wrap mb-2">
-                <span class="bg-orange-500/20 text-orange-400 px-2.5 py-0.5 rounded-full text-xs font-semibold">
+            <div class="flex items-center gap-1.5 md:gap-2 flex-wrap mb-2">
+                <span class="bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded-full text-[10px] md:text-xs font-semibold">
                     {{ $work->workType?->title ?? '-' }}
                 </span>
                 @foreach($work->categories as $cat)
-                    <span class="bg-gray-800 text-gray-400 px-2 py-0.5 rounded-full text-[11px]">{{ $cat->name }}</span>
+                    <span class="bg-gray-800 text-gray-400 px-2 py-0.5 rounded-full text-[9px] md:text-[11px]">{{ $cat->name }}</span>
                 @endforeach
-                <span class="text-gray-600 text-[11px]">📍 {{ $work->province?->name_th ?? '-' }}</span>
+                <span class="text-gray-600 text-[10px] md:text-[11px]">📍 {{ $work->province?->name_th ?? '-' }}</span>
                 @if($work->code)
-                    <span class="bg-gray-800 text-gray-300 px-2 py-0.5 rounded-full text-[11px] font-mono">🔖 {{ $work->code }}</span>
+                    <span class="bg-gray-800 text-gray-300 px-2 py-0.5 rounded-full text-[9px] md:text-[11px] font-mono">🔖 {{ $work->code }}</span>
                 @endif
             </div>
 
             {{-- Title + Like --}}
-            <div class="flex items-start justify-between gap-4">
+            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 md:gap-4">
                 <div>
-                    <h1 class="text-2xl font-bold text-white leading-tight">{{ $work->title }}</h1>
-                    <p class="text-3xl font-black text-orange-400 mt-1">฿{{ number_format($work->price) }}</p>
+                    <h1 class="text-xl md:text-2xl font-bold text-white leading-tight">{{ $work->title }}</h1>
+                    <p class="text-2xl md:text-3xl font-black text-orange-400 mt-1">฿{{ number_format($work->price) }}</p>
                 </div>
                 <div class="flex items-center gap-2 flex-shrink-0">
                     <button wire:click="toggleFavorite"
-                            class="flex items-center gap-1.5 px-4 py-2 rounded-full border transition
+                            class="flex items-center gap-1.5 px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm rounded-full border transition
                                    {{ $isFavorited ? 'border-yellow-500 text-yellow-400 bg-yellow-500/10' : 'border-gray-700 text-gray-400 hover:border-yellow-500 hover:text-yellow-400' }}">
                         {{ $isFavorited ? '⭐' : '☆' }} บันทึก
                     </button>
                     <button wire:click="toggleLike"
-                            class="flex items-center gap-1.5 px-4 py-2 rounded-full border transition
+                            class="flex items-center gap-1.5 px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm rounded-full border transition
                                    {{ $isLiked ? 'border-red-500 text-red-400 bg-red-500/10' : 'border-gray-700 text-gray-400 hover:border-red-500 hover:text-red-400' }}">
                         ❤️ {{ $likeCount }}
                     </button>
@@ -86,7 +86,7 @@
             </div>
 
             {{-- Stats strip --}}
-            <div class="flex items-center gap-4 mt-3 pt-3 border-t border-gray-800 text-sm">
+            <div class="flex flex-wrap items-center gap-2.5 md:gap-4 mt-3 pt-3 border-t border-gray-800 text-xs md:text-sm">
                 @if($work->avg_review_rating > 0)
                     <span class="text-yellow-400 font-bold flex items-center gap-1">
                         ⭐ {{ number_format($work->avg_review_rating, 1) }}
@@ -95,7 +95,7 @@
                 @endif
                 <span class="text-gray-500 flex items-center gap-1">❤️ {{ $likeCount }} ถูกใจ</span>
                 <span class="text-gray-500 flex items-center gap-1">📋 {{ count($bookedDates) }} จอง</span>
-                <span class="text-gray-600 text-xs">เผยแพร่ {{ $work->created_at?->diffForHumans() }}</span>
+                <span class="text-gray-600 text-[10px] md:text-xs">เผยแพร่ {{ $work->created_at?->diffForHumans() }}</span>
             </div>
         </div>
 
@@ -103,33 +103,33 @@
              3. OWNER BAR (if owner)
         ═══════════════════════════════════════════════════════════════════ --}}
         @if($isOwner)
-        <div class="bg-gradient-to-r from-orange-500/10 to-orange-600/5 border border-orange-500/30 rounded-2xl p-4">
+        <div class="bg-gradient-to-r from-orange-500/10 to-orange-600/5 border border-orange-500/30 rounded-2xl p-3 md:p-4">
             <div class="flex items-center justify-between flex-wrap gap-2">
-                <span class="text-orange-400 text-sm font-bold">👑 คุณเป็นเจ้าของงานนี้</span>
-                <div class="flex gap-2 flex-wrap">
+                <span class="text-orange-400 text-xs md:text-sm font-bold w-full md:w-auto">👑 คุณเป็นเจ้าของงานนี้</span>
+                <div class="flex gap-1.5 md:gap-2 flex-wrap w-full md:w-auto">
                     <button wire:click="$toggle('showStartSession')"
-                            class="px-4 py-2 bg-green-500 hover:bg-green-400 text-white font-semibold rounded-xl text-sm transition">
+                            class="flex-1 md:flex-none px-3 py-1.5 md:px-4 md:py-2 bg-green-500 hover:bg-green-400 text-white font-semibold rounded-lg md:rounded-xl text-xs md:text-sm transition text-center">
                         🟢 เริ่มงาน
                     </button>
                     <a href="{{ route('frontend.works.edit', $work->id) }}"
-                       class="px-4 py-2 bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-xl text-sm transition">
+                       class="flex-1 md:flex-none px-3 py-1.5 md:px-4 md:py-2 bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-lg md:rounded-xl text-xs md:text-sm transition text-center">
                         ✏️ แก้ไข
                     </a>
                     <a href="{{ route('frontend.works.bookings', $work->id) }}"
-                       class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl text-sm transition ring-1 ring-gray-700">
-                        📋 จัดการจอง ({{ count($bookings) }})
+                       class="flex-1 md:flex-none px-3 py-1.5 md:px-4 md:py-2 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-lg md:rounded-xl text-xs md:text-sm transition ring-1 ring-gray-700 text-center whitespace-nowrap">
+                        📋 จอง ({{ count($bookings) }})
                     </a>
                     <a href="{{ route('frontend.works.availability', $work->id) }}"
-                       class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl text-sm transition ring-1 ring-gray-700">
-                        📅 ตารางว่าง
+                       class="flex-1 md:flex-none px-3 py-1.5 md:px-4 md:py-2 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-lg md:rounded-xl text-xs md:text-sm transition ring-1 ring-gray-700 text-center">
+                        📅 ว่าง
                     </a>
                 </div>
             </div>
 
             {{-- Start Session Form --}}
             @if($showStartSession)
-            <div class="mt-4 pt-4 border-t border-orange-500/20 space-y-3">
-                <h3 class="text-white font-semibold text-sm">🟢 เริ่มเซสชันงาน</h3>
+            <div class="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-orange-500/20 space-y-2.5 md:space-y-3">
+                <h3 class="text-white font-semibold text-xs md:text-sm">🟢 เริ่มเซสชันงาน</h3>
 
                 {{-- Walk-in toggle --}}
                 <label class="flex items-center gap-2 text-sm cursor-pointer">
@@ -184,13 +184,13 @@
              4. PROVIDER CARD (with reputation)
         ═══════════════════════════════════════════════════════════════════ --}}
         <a href="{{ route('frontend.reputation', $work->author_id) }}"
-           class="bg-gray-900 rounded-2xl p-4 flex items-center gap-4 hover:ring-2 hover:ring-orange-500/40 transition block group">
-            <x-avatar :src="$work->author?->profile_image" :name="$work->author?->name" size="w-14 h-14" :border="false" class="ring-2 ring-orange-500/30" />
-            <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2">
-                    <p class="font-bold text-white group-hover:text-orange-400 transition">{{ $work->author?->name }}</p>
+           class="bg-gray-900 rounded-2xl p-3 md:p-4 flex items-center gap-3 md:gap-4 hover:ring-2 hover:ring-orange-500/40 transition block group relative">
+            <x-avatar :src="$work->author?->profile_image" :name="$work->author?->name" size="w-12 h-12 md:w-14 md:h-14" :border="false" class="ring-2 ring-orange-500/30 flex-shrink-0" />
+            <div class="flex-1 min-w-0 pr-4">
+                <div class="flex items-center gap-1.5 md:gap-2 flex-wrap">
+                    <p class="font-bold text-sm md:text-base text-white group-hover:text-orange-400 transition truncate">{{ $work->author?->name }}</p>
                     @if($providerStats && $providerStats['trust_level'])
-                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full
+                        <span class="text-[9px] md:text-[10px] font-bold px-1.5 md:px-2 py-0.5 rounded-full whitespace-nowrap
                             {{ match($providerStats['trust_level']) {
                                 'diamond'  => 'bg-purple-500/20 text-purple-300',
                                 'platinum' => 'bg-blue-500/20 text-blue-300',
@@ -203,7 +203,7 @@
                         </span>
                     @endif
                 </div>
-                <div class="flex items-center gap-3 text-xs text-gray-400 mt-0.5">
+                <div class="flex items-center flex-wrap gap-2 md:gap-3 text-[10px] md:text-xs text-gray-400 mt-1">
                     <span>📦 {{ $providerStats['total_works'] ?? 0 }} งาน</span>
                     <span>✅ {{ $providerStats['completed_jobs'] ?? 0 }} สำเร็จ</span>
                     @if(($providerStats['completion_rate'] ?? 0) > 0)
@@ -216,26 +216,26 @@
                     @endif
                 </div>
             </div>
-            <span class="text-gray-500 text-sm group-hover:text-orange-400 transition flex-shrink-0">ดูโปรไฟล์ →</span>
+            <span class="text-gray-500 text-xs md:text-sm group-hover:text-orange-400 transition flex-shrink-0 absolute right-3 md:relative md:right-0">ดูโปรไฟล์ →</span>
         </a>
 
 
         {{-- ═══════════════════════════════════════════════════════════════════
              5. DESCRIPTION + DETAILS
         ═══════════════════════════════════════════════════════════════════ --}}
-        <div class="bg-gray-900 rounded-2xl p-5">
-            <h2 class="font-bold text-white mb-3 flex items-center gap-2">📝 รายละเอียด</h2>
-            <p class="text-gray-300 leading-relaxed whitespace-pre-wrap">{{ $work->description }}</p>
+        <div class="bg-gray-900 rounded-2xl p-4 md:p-5">
+            <h2 class="font-bold text-white mb-2 md:mb-3 flex items-center gap-2 text-sm md:text-base">📝 รายละเอียด</h2>
+            <p class="text-gray-300 leading-relaxed whitespace-pre-wrap text-sm md:text-base">{{ $work->description }}</p>
 
             {{-- Details JSON table --}}
             @if(is_array($work->details) && count($work->details) > 0)
-                <div class="mt-4 pt-4 border-t border-gray-800">
-                    <h3 class="text-sm font-semibold text-gray-400 mb-2">📋 ข้อมูลเพิ่มเติม</h3>
-                    <div class="grid grid-cols-2 gap-2">
+                <div class="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-gray-800">
+                    <h3 class="text-xs md:text-sm font-semibold text-gray-400 mb-2">📋 ข้อมูลเพิ่มเติม</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         @foreach($work->details as $key => $value)
                             <div class="bg-gray-800/50 rounded-lg px-3 py-2">
-                                <span class="text-gray-500 text-[11px]">{{ $key }}</span>
-                                <p class="text-white text-sm font-medium">{{ is_array($value) ? implode(', ', $value) : $value }}</p>
+                                <span class="text-gray-500 text-[10px] md:text-[11px]">{{ $key }}</span>
+                                <p class="text-white text-xs md:text-sm font-medium">{{ is_array($value) ? implode(', ', $value) : $value }}</p>
                             </div>
                         @endforeach
                     </div>
@@ -251,18 +251,18 @@
             $dayShort = [1 => 'จ', 2 => 'อ', 3 => 'พ', 4 => 'พฤ', 5 => 'ศ', 6 => 'ส', 7 => 'อา'];
         @endphp
         @if(!empty($availabilities))
-        <div class="bg-gray-900 rounded-2xl p-5">
-            <h2 class="font-bold text-white mb-3 flex items-center gap-2">🕐 ตารางเวลาให้บริการ</h2>
-            <div class="grid grid-cols-7 gap-1.5">
+        <div class="bg-gray-900 rounded-2xl p-4 md:p-5">
+            <h2 class="font-bold text-white mb-2 md:mb-3 flex items-center gap-2 text-sm md:text-base">🕐 ตารางเวลาให้บริการ</h2>
+            <div class="grid grid-cols-7 gap-1 md:gap-1.5">
                 @for($d = 1; $d <= 7; $d++)
-                    <div class="text-center rounded-xl p-2 {{ isset($availabilities[$d]) ? 'bg-green-500/10 border border-green-500/30' : 'bg-gray-800/50 border border-gray-800' }}">
-                        <span class="block text-xs font-bold {{ isset($availabilities[$d]) ? 'text-green-400' : 'text-gray-600' }}">
+                    <div class="text-center rounded-lg md:rounded-xl p-1 md:p-2 {{ isset($availabilities[$d]) ? 'bg-green-500/10 border border-green-500/30' : 'bg-gray-800/50 border border-gray-800' }}">
+                        <span class="block text-[10px] md:text-xs font-bold {{ isset($availabilities[$d]) ? 'text-green-400' : 'text-gray-600' }}">
                             {{ $dayShort[$d] }}
                         </span>
                         @if(isset($availabilities[$d]))
-                            <span class="block text-[10px] text-green-300 mt-0.5 leading-tight">{{ $availabilities[$d] }}</span>
+                            <span class="block text-[8px] md:text-[10px] text-green-300 mt-0.5 leading-[1.1]">{{ str_replace(' ', "\n", $availabilities[$d]) }}</span>
                         @else
-                            <span class="block text-[10px] text-gray-600 mt-0.5">ปิด</span>
+                            <span class="block text-[8px] md:text-[10px] text-gray-600 mt-0.5">ปิด</span>
                         @endif
                     </div>
                 @endfor
@@ -317,13 +317,14 @@
                  prevMonth() { if (this.currentMonth === 0) { this.currentMonth = 11; this.currentYear--; } else { this.currentMonth--; } },
                  nextMonth() { if (this.currentMonth === 11) { this.currentMonth = 0; this.currentYear++; } else { this.currentMonth++; } }
              }">
+             }">
 
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="font-bold text-white">📅 เลือกวันจอง</h2>
-                <div class="flex items-center gap-2">
-                    <button @click="prevMonth()" class="w-8 h-8 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm flex items-center justify-center transition">‹</button>
-                    <span class="text-white font-semibold text-sm min-w-[140px] text-center" x-text="monthName"></span>
-                    <button @click="nextMonth()" class="w-8 h-8 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm flex items-center justify-center transition">›</button>
+            <div class="flex items-center justify-between mb-3 md:mb-4">
+                <h2 class="font-bold text-white text-sm md:text-base">📅 เลือกวันจอง</h2>
+                <div class="flex items-center gap-1 md:gap-2">
+                    <button @click="prevMonth()" class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm flex items-center justify-center transition">‹</button>
+                    <span class="text-white font-semibold text-xs md:text-sm min-w-[100px] md:min-w-[140px] text-center" x-text="monthName"></span>
+                    <button @click="nextMonth()" class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm flex items-center justify-center transition">›</button>
                 </div>
             </div>
 
@@ -365,50 +366,50 @@
             </div>
 
             {{-- Inline Booking Form --}}
-            <div id="booking-form" class="mt-4 pt-4 border-t border-gray-800">
-                <div class="flex items-center justify-between mb-3">
-                    <h3 class="font-bold text-white text-sm">📋 จองงานนี้</h3>
+            <div id="booking-form" class="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-gray-800">
+                <div class="flex items-center justify-between mb-2 md:mb-3">
+                    <h3 class="font-bold text-white text-xs md:text-sm">📋 จองงานนี้ <span class="text-orange-400 font-normal" x-show="selectedDate" x-text="selectedDate ? '(' + selectedDate + ')' : ''"></span></h3>
                     @auth
                         <button wire:click="$toggle('showBookingForm')"
-                                class="px-4 py-1.5 bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-lg text-xs transition">
+                                class="px-3 py-1 md:px-4 md:py-1.5 bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-lg text-xs transition">
                             {{ $showBookingForm ? 'ยกเลิก' : 'จองเลย' }}
                         </button>
                     @else
-                        <a href="{{ route('frontend.auth.login') }}" class="px-4 py-1.5 bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-lg text-xs transition">
+                        <a href="{{ route('frontend.auth.login') }}" class="px-3 py-1 md:px-4 md:py-1.5 bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-lg text-xs transition">
                             เข้าสู่ระบบเพื่อจอง
                         </a>
                     @endauth
                 </div>
 
                 @if($bookingMessage2)
-                    <div class="bg-green-500/10 border border-green-500/30 text-green-400 rounded-lg px-4 py-3 text-sm">
+                    <div class="bg-green-500/10 border border-green-500/30 text-green-400 rounded-lg px-3 py-2.5 md:px-4 md:py-3 text-xs md:text-sm mb-3">
                         {{ $bookingMessage2 }}
                     </div>
                 @endif
 
                 @if($showBookingForm)
-                    <form wire:submit="submitBooking" class="space-y-3">
-                        <div class="grid grid-cols-2 gap-3">
+                    <form wire:submit="submitBooking" class="space-y-2.5 md:space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 md:gap-3">
                             <div>
-                                <label class="block text-gray-400 text-xs mb-1">เบอร์โทร *</label>
+                                <label class="block text-gray-400 text-[10px] md:text-xs mb-1">เบอร์โทร *</label>
                                 <input wire:model="bookingPhone" type="tel" placeholder="08x-xxx-xxxx"
-                                       class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
-                                @error('bookingPhone')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+                                       class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-xs md:text-sm focus:outline-none focus:border-orange-500">
+                                @error('bookingPhone')<p class="text-red-400 text-[10px] md:text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
                             <div>
-                                <label class="block text-gray-400 text-xs mb-1">วันที่ *</label>
+                                <label class="block text-gray-400 text-[10px] md:text-xs mb-1">วันที่ *</label>
                                 <input wire:model="bookingDate" type="date"
-                                       class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
-                                @error('bookingDate')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+                                       class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-xs md:text-sm focus:outline-none focus:border-orange-500">
+                                @error('bookingDate')<p class="text-red-400 text-[10px] md:text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
                         </div>
                         <div>
-                            <label class="block text-gray-400 text-xs mb-1">ข้อความเพิ่มเติม</label>
+                            <label class="block text-gray-400 text-[10px] md:text-xs mb-1">ข้อความเพิ่มเติม</label>
                             <textarea wire:model="bookingMessage" rows="2" placeholder="บอกรายละเอียดที่ต้องการ..."
-                                      class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500 resize-none"></textarea>
+                                      class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-xs md:text-sm focus:outline-none focus:border-orange-500 resize-none"></textarea>
                         </div>
                         <button type="submit"
-                                class="w-full py-2.5 bg-orange-500 hover:bg-orange-400 text-white font-bold rounded-lg transition">
+                                class="w-full py-2 md:py-2.5 bg-orange-500 hover:bg-orange-400 text-white font-bold rounded-lg transition text-xs md:text-sm mt-1">
                             ✅ ยืนยันการจอง
                         </button>
                     </form>
@@ -420,10 +421,10 @@
              7. MAP
         ═══════════════════════════════════════════════════════════════════ --}}
         @if($work->latitude && $work->longitude)
-        <div wire:ignore class="bg-gray-900 rounded-2xl p-5">
-            <h2 class="font-bold text-white mb-3">📍 ตำแหน่งงาน</h2>
-            <div id="work-map" class="w-full h-64 md:h-72 rounded-xl overflow-hidden"></div>
-            <p class="text-gray-600 text-[11px] mt-2">{{ $work->latitude }}, {{ $work->longitude }}</p>
+        <div wire:ignore class="bg-gray-900 rounded-2xl p-4 md:p-5">
+            <h2 class="font-bold text-white mb-2 md:mb-3 text-sm md:text-base">📍 ตำแหน่งงาน</h2>
+            <div id="work-map" class="w-full h-48 md:h-72 rounded-xl overflow-hidden"></div>
+            <p class="text-gray-600 text-[10px] md:text-[11px] mt-2">{{ $work->latitude }}, {{ $work->longitude }}</p>
         </div>
         @endif
 
@@ -431,9 +432,9 @@
              7.5 WORKER PORTFOLIOS
         ═══════════════════════════════════════════════════════════════════ --}}
         @if(count($workerPortfolios) > 0)
-        <div class="bg-gray-900 rounded-2xl p-5">
-            <h2 class="font-bold text-white mb-3 flex items-center gap-2">🎨 ผลงานของช่างท่านนี้</h2>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <div class="bg-gray-900 rounded-2xl p-4 md:p-5">
+            <h2 class="font-bold text-white mb-2 md:mb-3 flex items-center gap-2 text-sm md:text-base">🎨 ผลงานของช่างท่านนี้</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
                 @foreach($workerPortfolios as $wp)
                 <a href="{{ route('frontend.portfolios.show', $wp['id']) }}"
                    class="rounded-xl overflow-hidden bg-gray-800 group hover:ring-1 hover:ring-orange-500/30 transition">
@@ -446,7 +447,7 @@
                         <div class="aspect-square flex items-center justify-center text-gray-600 text-3xl bg-gray-800">🖼</div>
                     @endif
                     <div class="p-2">
-                        <p class="text-white text-xs font-semibold truncate">{{ $wp['title'] }}</p>
+                        <p class="text-white text-[10px] md:text-xs font-semibold truncate">{{ $wp['title'] }}</p>
                     </div>
                 </a>
                 @endforeach

@@ -2,7 +2,7 @@
 {{-- Usage: @include('livewire.frontend._review-item', ['post' => $post, 'depth' => 0]) --}}
 @php $depth = $depth ?? 0; @endphp
 
-<div class="{{ $depth > 0 ? 'ml-8 border-l-2 border-gray-800 pl-4' : 'border-t border-gray-800' }} py-3">
+<div class="{{ $depth > 0 ? 'border-l-2 border-gray-800 pl-2 md:pl-4' : 'border-t border-gray-800' }} py-2 md:py-3">
     <div class="flex items-start gap-3">
         <x-avatar :src="$post->author?->profile_image" :name="$post->author?->name" :size="$depth > 0 ? 'w-7 h-7' : 'w-8 h-8'" :border="false" />
         <div class="flex-1 min-w-0">
