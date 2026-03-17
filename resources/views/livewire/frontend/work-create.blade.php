@@ -36,6 +36,13 @@
         <h1 class="text-lg md:text-2xl font-bold text-white">📦 สร้างงานใหม่</h1>
     </div>
 
+    @if($isBlocked)
+        <div class="bg-gray-900 rounded-2xl p-6 text-center space-y-4">
+            <div class="text-4xl">🔒</div>
+            <h2 class="text-xl font-bold text-white">ฟีเจอร์นี้ถูกล็อค</h2>
+            <p class="text-gray-400 text-sm">คุณยังไม่มีสิทธิในการสร้างงานใหม่ กรุณาติดต่อผู้ดูแลระบบหรือทำการยืนยันตัวตนให้ครบถ้วนก่อนใช้งาน</p>
+        </div>
+    @else
     <form wire:submit="submit" class="space-y-3 md:space-y-4">
         <div class="bg-gray-900 rounded-2xl p-4 md:p-5 space-y-3 md:space-y-4">
 
@@ -227,5 +234,6 @@
             <span wire:loading wire:target="submit">⏳ กำลังสร้าง...</span>
         </button>
     </form>
+    @endif
 
 </div>

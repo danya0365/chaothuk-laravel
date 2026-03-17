@@ -17,9 +17,18 @@ class RecruitCreate extends Component
     public ?float $latitude = null;
     public ?float $longitude = null;
 
+    public bool $isBlocked = false;
+
     // Image URLs (set via JS after upload to /api/upload/image)
     public ?string $primaryImage = null;
     public array $galleryImages = [];
+
+    public function mount()
+    {
+        if (!auth()->check() || !auth()->user()->isPermission(\App\Enums\Permission::CREATE_RECRUIT->value)) {
+            $this->isBlocked = true;
+        }
+    }
 
     public function removePrimaryImage(): void
     {
@@ -35,6 +44,8 @@ class RecruitCreate extends Component
 
     public function submit(): void
     {
+        if ($this->isBlocked) return;
+
         $this->validate([
             'title'       => 'required|min:5|max:255',
             'description' => 'required|min:10',

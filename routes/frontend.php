@@ -15,7 +15,6 @@ use App\Livewire\Frontend\MySessions;
 use App\Livewire\Frontend\PortfolioCreate;
 use App\Livewire\Frontend\PortfolioDetail;
 use App\Livewire\Frontend\PortfolioEdit;
-use App\Livewire\Frontend\ReputationProfile;
 use App\Livewire\Frontend\SessionDetail;
 use App\Livewire\Frontend\WorkAvailabilityManage;
 use App\Livewire\Frontend\WorkBrowse;
@@ -23,6 +22,12 @@ use App\Livewire\Frontend\WorkDetail;
 use App\Livewire\Frontend\WorkEdit;
 use App\Livewire\Frontend\WorkBookings;
 use App\Livewire\Frontend\WorkCreate;
+use App\Livewire\Frontend\MyWallet;
+use App\Livewire\Frontend\MyWorks;
+use App\Livewire\Frontend\MyRecruits;
+use App\Livewire\Frontend\MyOrders;
+use App\Livewire\Frontend\MyHires;
+use App\Livewire\Frontend\WorkPromote;
 use App\Livewire\Frontend\RecruitBrowse;
 use App\Livewire\Frontend\RecruitCreate;
 use App\Livewire\Frontend\RecruitDetail;
@@ -72,14 +77,13 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
     Route::get('/recruits/{id}', RecruitDetail::class)->name('recruits.show');
     Route::get('/search',        Search::class)->name('search');
     Route::get('/categories',    CategoryBrowse::class)->name('categories');
-    Route::get('/reputation/{id?}', ReputationProfile::class)->name('reputation');
+    Route::get('/profile/{id?}', Profile::class)->name('profile')->where('id', '[0-9]+');
     Route::get('/map',           MapExplore::class)->name('map');
     Route::get('/portfolios/{id}', PortfolioDetail::class)->name('portfolios.show');
     Route::get('/about',         About::class)->name('about');
 
     // ─── Auth Required ─────────────────────────────────────────────────
     Route::middleware('auth')->group(function () {
-        Route::get('/profile',       Profile::class)->name('profile');
         Route::get('/profile/edit',  ProfileEdit::class)->name('profile.edit');
         Route::get('/notifications', Notifications::class)->name('notifications');
         Route::get('/calendar',      Calendar::class)->name('calendar');
@@ -88,8 +92,14 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
         Route::get('/favorites',     Favorites::class)->name('favorites');
         Route::get('/sessions',      MySessions::class)->name('sessions');
         Route::get('/sessions/{id}',  SessionDetail::class)->name('sessions.show');
+        Route::get('/my-wallet',     MyWallet::class)->name('my_wallet');
+        Route::get('/my-works',      MyWorks::class)->name('my-works');
+        Route::get('/my-recruits',   MyRecruits::class)->name('my-recruits');
+        Route::get('/my-orders',     MyOrders::class)->name('my-orders');
+        Route::get('/my-hires',      MyHires::class)->name('my-hires');
 
         // Works management
+        Route::get('/works/{work}/promote',    WorkPromote::class)->name('works.promote');
         Route::get('/works/{id}/edit',         WorkEdit::class)->name('works.edit');
         Route::get('/works/{id}/bookings',     WorkBookings::class)->name('works.bookings');
         Route::get('/works/{id}/availability', WorkAvailabilityManage::class)->name('works.availability');

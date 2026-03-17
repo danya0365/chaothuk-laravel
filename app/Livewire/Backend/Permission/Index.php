@@ -16,6 +16,13 @@ class Index extends Component
 
     public $search = '';
 
+    public function mount()
+    {
+        if (!auth()->user()->isPermission(\App\Enums\Permission::MANAGE_PERMISSION->value)) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public function updatingSearch()
     {
         $this->resetPage();
@@ -23,6 +30,10 @@ class Index extends Component
 
     public function deletePermission($id)
     {
+        if (!auth()->user()->isPermission(\App\Enums\Permission::MANAGE_PERMISSION->value)) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $permission = Permission::findOrFail($id);
         $permission->delete();
         

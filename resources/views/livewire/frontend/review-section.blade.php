@@ -7,10 +7,14 @@
                 <span class="text-gray-500 text-xs md:text-sm">({{ $reviews->count() }})</span>
             </div>
             @auth
-                <button wire:click="$toggle('showReviewForm')"
-                        class="px-2.5 md:px-3 py-1 md:py-1.5 border border-gray-700 rounded-full text-[10px] md:text-xs text-gray-400 hover:border-orange-500 hover:text-orange-400 transition">
-                    {{ $showReviewForm ? 'ยกเลิก' : '+ เขียนรีวิว' }}
-                </button>
+                @if(auth()->user()->isPermission(\App\Enums\Permission::REVIEW_WORK->value))
+                    <button wire:click="$toggle('showReviewForm')"
+                            class="px-2.5 md:px-3 py-1 md:py-1.5 border border-gray-700 rounded-full text-[10px] md:text-xs text-gray-400 hover:border-orange-500 hover:text-orange-400 transition">
+                        {{ $showReviewForm ? 'ยกเลิก' : '+ เขียนรีวิว' }}
+                    </button>
+                @else
+                    <span class="text-[10px] md:text-xs text-gray-500 italic">ไม่มีสิทธิรีวิว</span>
+                @endif
             @else
                 <a href="{{ route('frontend.auth.login') }}" class="text-xs md:text-sm text-orange-400 hover:underline">เข้าสู่ระบบเพื่อรีวิว</a>
             @endauth

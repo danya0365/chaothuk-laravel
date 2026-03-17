@@ -22,7 +22,7 @@ return new class extends Migration
 
             // Payment tracking
             $table->decimal('amount_paid', 10, 2)->default(0);
-            $table->string('payment_method')->nullable(); // 'points', 'transfer', 'credit_card', etc.
+            $table->string('payment_method')->nullable(); // 'wallet', 'points', 'transfer', 'credit_card', etc.
             $table->unsignedBigInteger('point_transaction_id')->nullable();
             $table->string('payment_status')->default('pending'); // pending, paid, refunded
 

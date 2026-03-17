@@ -13,24 +13,7 @@
         @endauth
     </div>
 
-    {{-- Tabs --}}
-    <div class="flex items-center gap-1 mb-4 md:mb-5 bg-gray-900 rounded-xl p-1 w-fit">
-        <button wire:click="$set('tab', 'all')"
-                class="px-3 py-1.5 md:px-5 md:py-2 rounded-lg text-xs md:text-sm font-semibold transition
-                    {{ $tab === 'all' ? 'bg-green-600 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800' }}">
-            👷 ทั้งหมด
-        </button>
-        @auth
-        <button wire:click="$set('tab', 'my')"
-                class="px-3 py-1.5 md:px-5 md:py-2 rounded-lg text-xs md:text-sm font-semibold transition flex items-center gap-1 md:gap-1.5
-                    {{ $tab === 'my' ? 'bg-green-600 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800' }}">
-            👤 ของฉัน
-            @if($myRecruitsCount > 0)
-                <span class="bg-white/20 text-[10px] px-1.5 py-0.5 rounded-full font-bold">{{ $myRecruitsCount }}</span>
-            @endif
-        </button>
-        @endauth
-    </div>
+
 
     {{-- Filters --}}
     <div class="flex flex-col sm:flex-row gap-2.5 md:gap-3 mb-3 md:mb-4">
@@ -90,9 +73,7 @@
     <div class="flex items-center justify-between mb-4">
         <p class="text-gray-400 text-sm">
             {{ $recruits->total() }} ประกาศ
-            @if($tab === 'my')
-                <span class="text-green-400 text-xs">(ของฉัน)</span>
-            @endif
+
         </p>
     </div>
 
@@ -104,15 +85,7 @@
         @if($recruits->isEmpty())
             <div class="text-center py-12 md:py-20">
                 <div class="text-5xl md:text-6xl mb-3 md:mb-4">📭</div>
-                @if($tab === 'my')
-                    <p class="text-gray-400 mb-3 md:mb-4 text-sm md:text-base">คุณยังไม่มีประกาศหางาน</p>
-                    <a href="{{ route('frontend.recruits.create') }}"
-                       class="inline-block px-4 py-2 md:px-6 md:py-2.5 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl transition text-xs md:text-sm">
-                        ＋ สร้างประกาศแรกของคุณ
-                    </a>
-                @else
                     <p class="text-gray-400 text-sm md:text-base">ไม่พบผลลัพธ์</p>
-                @endif
             </div>
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
@@ -160,24 +133,7 @@
                             </div>
                         </a>
 
-                        {{-- Owner quick actions --}}
-                        @if($tab === 'my' && auth()->check() && auth()->id() === $recruit->author_id)
-                        <div class="flex items-center gap-1.5 md:gap-2 mt-2 md:mt-3 pt-2 md:pt-3 border-t border-gray-800">
-                            <a href="{{ route('frontend.recruits.show', $recruit->id) }}"
-                               class="flex-1 text-center text-[10px] md:text-xs py-1 md:py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition">
-                                👁 ดู
-                            </a>
-                            <a href="{{ route('frontend.recruits.edit', $recruit->id) }}"
-                               class="flex-1 text-center text-[10px] md:text-xs py-1 md:py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition">
-                                ✏️ แก้ไข
-                            </a>
-                            <button wire:click="deleteRecruit({{ $recruit->id }})"
-                                    wire:confirm="ลบประกาศนี้?"
-                                    class="text-[10px] md:text-xs py-1 md:py-1.5 px-2 md:px-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg transition">
-                                🗑 ลบ
-                            </button>
-                        </div>
-                        @endif
+
                     </div>
                 @endforeach
             </div>

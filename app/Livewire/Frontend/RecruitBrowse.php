@@ -12,7 +12,6 @@ class RecruitBrowse extends Component
 {
     use WithPagination;
 
-    public string $tab = 'all';
     public string $search = '';
     public string $provinceId = '';
     public string $workTypeId = '';
@@ -20,29 +19,16 @@ class RecruitBrowse extends Component
     public ?float $userLat = null;
     public ?float $userLng = null;
 
-    protected $queryString = ['tab', 'search', 'provinceId', 'workTypeId', 'sortBy', 'userLat', 'userLng'];
-
-    public function updatedTab(): void { $this->resetPage(); }
+    protected $queryString = ['search', 'provinceId', 'workTypeId', 'sortBy', 'userLat', 'userLng'];
     public function updatedSearch(): void { $this->resetPage(); }
     public function updatedProvinceId(): void { $this->resetPage(); }
     public function updatedWorkTypeId(): void { $this->resetPage(); }
 
-    public function deleteRecruit(int $recruitId): void
-    {
-        if (!auth()->check()) return;
-        $recruit = Recruit::where('id', $recruitId)->where('author_id', auth()->id())->first();
-        if ($recruit) {
-            $recruit->delete();
-        }
-    }
+
 
     public function render()
     {
         $query = Recruit::with(['author', 'province', 'workType']);
-
-        if ($this->tab === 'my' && auth()->check()) {
-            $query = $query->where('author_id', auth()->id());
-        }
 
         $query = $query
             ->when($this->search, fn($q) => $q->where(fn($q2) =>
@@ -70,11 +56,7 @@ class RecruitBrowse extends Component
         $provinces  = Province::orderBy('name_th')->get();
         $workTypes  = WorkType::orderBy('title')->get();
 
-        $myRecruitsCount = auth()->check()
-            ? Recruit::where('author_id', auth()->id())->count()
-            : 0;
-
-        return view('livewire.frontend.recruit-browse', compact('recruits', 'provinces', 'workTypes', 'myRecruitsCount'))
-            ->layout('frontend.layout', ['title' => ($this->tab === 'my' ? 'ประกาศของฉัน' : 'รับสมัคร') . ' — Chaothuk']);
+        return view('livewire.frontend.recruit-browse', compact('recruits', 'provinces', 'workTypes'))
+            ->layout('frontend.layout', ['title' => 'รับสมัคร — Chaothuk']);
     }
 }

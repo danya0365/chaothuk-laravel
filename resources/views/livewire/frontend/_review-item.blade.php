@@ -22,10 +22,12 @@
 
             {{-- Reply button --}}
             @auth
-            <button wire:click="startReply({{ $post->id }})"
-                    class="text-[10px] md:text-[11px] text-gray-500 hover:text-orange-400 mt-0.5 md:mt-1 transition">
-                💬 ตอบกลับ
-            </button>
+                @if(auth()->user()->isPermission(\App\Enums\Permission::REPLY_REVIEW->value))
+                    <button wire:click="startReply({{ $post->id }})"
+                            class="text-[10px] md:text-[11px] text-gray-500 hover:text-orange-400 mt-0.5 md:mt-1 transition">
+                        💬 ตอบกลับ
+                    </button>
+                @endif
             @endauth
 
             {{-- Reply form (inline) --}}

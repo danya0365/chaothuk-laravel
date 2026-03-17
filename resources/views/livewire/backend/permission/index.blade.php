@@ -6,12 +6,14 @@
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">ควบคุมและดูแลสิทธิย่อยต่างๆ ในระบบ</p>
         </div>
         <div class="mt-4 sm:mt-0">
+            @if(auth()->user()->isPermission(\App\Enums\Permission::MANAGE_PERMISSION->value))
             <a href="{{ route('backend.permissions.create') }}" wire:navigate class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-900 transition duration-150 ease-in-out">
                 <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
                 เพิ่มสิทธิใหม่
             </a>
+            @endif
         </div>
     </div>
 
@@ -74,6 +76,7 @@
                                 {{ $permission->desc ?? '-' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                @if(auth()->user()->isPermission(\App\Enums\Permission::MANAGE_PERMISSION->value))
                                 <a href="{{ route('backend.permissions.edit', $permission->id) }}" wire:navigate class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-4">แก้ไข</a>
                                 
                                 <button 
@@ -82,6 +85,7 @@
                                     class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
                                     ลบ
                                 </button>
+                                @endif
                             </td>
                         </tr>
                     @empty

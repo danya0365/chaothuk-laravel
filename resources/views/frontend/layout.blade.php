@@ -28,10 +28,20 @@
             </a>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 md:gap-4">
             @auth
+                <div class="hidden sm:flex items-center gap-2 mr-2">
+                    <a href="{{ route('frontend.my-works') }}"
+                       class="relative flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-full text-gray-300 hover:text-white transition text-xs font-semibold focus:outline-none tracking-wide">
+                        💼 งานของฉัน
+                    </a>
+                    <a href="{{ route('frontend.my_wallet') }}"
+                       class="relative flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-full text-gray-300 hover:text-white transition text-xs font-semibold focus:outline-none tracking-wide">
+                        💳 กระเป๋าเงิน
+                    </a>
+                </div>
                 <a href="{{ route('frontend.notifications') }}"
-                   class="relative p-2 text-gray-400 hover:text-white transition">
+                   class="relative p-2 text-gray-400 hover:text-white transition focus:outline-none">
                     🔔
                 </a>
                 <div class="relative" x-data="{ open: false }">
@@ -98,12 +108,17 @@
             ['icon'=>'ℹ️','label'=>'เกี่ยวกับ','route'=>'frontend.about','auth'=>false],
         ];
         $authMoreNav = [
+            // Seller Links
+            ['icon'=>'💼','label'=>'บริการของฉัน','route'=>'frontend.my-works'],
+            ['icon'=>'📥','label'=>'ออเดอร์ลูกค้า','route'=>'frontend.my-orders'],
+            // Buyer Links
+            ['icon'=>'📝','label'=>'ประกาศหาคน','route'=>'frontend.my-recruits'],
+            ['icon'=>'🛒','label'=>'การว่าจ้าง','route'=>'frontend.my-hires'],
+            // General Links
+            ['icon'=>'💳','label'=>'วอลเล็ต','route'=>'frontend.my_wallet'],
             ['icon'=>'📅','label'=>'ปฏิทิน','route'=>'frontend.calendar'],
-            ['icon'=>'📋','label'=>'การจอง','route'=>'frontend.bookings'],
-            ['icon'=>'💬','label'=>'แชท','route'=>'frontend.messenger'],
             ['icon'=>'⭐','label'=>'โปรด','route'=>'frontend.favorites'],
             ['icon'=>'🎨','label'=>'ผลงาน','route'=>'frontend.portfolios'],
-            ['icon'=>'🕐','label'=>'เซสชัน','route'=>'frontend.sessions'],
             ['icon'=>'🔔','label'=>'แจ้งเตือน','route'=>'frontend.notifications'],
         ];
     @endphp
@@ -240,10 +255,16 @@
                     ['icon'=>'ℹ️','label'=>'เกี่ยวกับ','route'=>'frontend.about'],
                 ];
                 $mobileMoreAuth = [
+                    // Seller Links
+                    ['icon'=>'💼','label'=>'บริการของฉัน','route'=>'frontend.my-works'],
+                    ['icon'=>'📥','label'=>'ออเดอร์ลูกค้า','route'=>'frontend.my-orders'],
+                    // Buyer Links
+                    ['icon'=>'📝','label'=>'ประกาศหาคน','route'=>'frontend.my-recruits'],
+                    ['icon'=>'🛒','label'=>'การว่าจ้าง','route'=>'frontend.my-hires'],
+                    // General Links
+                    ['icon'=>'💳','label'=>'วอลเล็ต','route'=>'frontend.my_wallet'],
                     ['icon'=>'📅','label'=>'ปฏิทิน','route'=>'frontend.calendar'],
-                    ['icon'=>'📋','label'=>'การจอง','route'=>'frontend.bookings'],
                     ['icon'=>'🎨','label'=>'ผลงาน','route'=>'frontend.portfolios'],
-                    ['icon'=>'🕐','label'=>'เซสชัน','route'=>'frontend.sessions'],
                     ['icon'=>'🔔','label'=>'แจ้งเตือน','route'=>'frontend.notifications'],
                 ];
             @endphp
@@ -327,6 +348,8 @@
         </button>
     </nav>
 </div>
+
+<livewire:frontend.global-alerts />
 
 @livewireScripts
 @stack('scripts')
