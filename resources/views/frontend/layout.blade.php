@@ -17,8 +17,8 @@
 {{-- ─── Top Bar ─────────────────────────────────────────────────────── --}}
 <header class="sticky top-0 z-40 bg-gray-900/95 backdrop-blur border-b border-gray-800 md:ml-[70px]">
     <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-        <a href="{{ route('frontend.home') }}" class="flex items-center gap-2 font-bold text-lg text-orange-400">
-            🚛 <span class="hidden sm:inline">Chaothuk</span>
+        <a href="{{ route('frontend.home') }}" class="flex items-center gap-2">
+            <img src="{{ asset('assets/chaothuk_logo-dark.png') }}" alt="Chaothuk" class="h-7 md:h-8 w-auto">
         </a>
 
         <div class="flex-1 max-w-sm mx-4">

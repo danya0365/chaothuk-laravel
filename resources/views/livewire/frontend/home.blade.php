@@ -3,7 +3,11 @@
     {{-- Hero --}}
     <section class="relative rounded-2xl md:rounded-3xl overflow-hidden bg-gradient-to-br from-orange-600 via-orange-500 to-amber-400 p-6 md:p-12">
         <div class="relative z-10">
-            <h1 class="text-2xl md:text-4xl font-black text-white mb-1.5 md:mb-2">🚛 Chaothuk</h1>
+            <h1 class="mb-1.5 md:mb-2">
+                <span class="inline-block bg-white rounded-xl px-3 py-2 md:px-4 md:py-2.5 shadow-lg">
+                    <img src="{{ asset('assets/chaothuk_logo-light.png') }}" alt="Chaothuk" class="h-8 md:h-12 w-auto">
+                </span>
+            </h1>
             <p class="text-orange-100 text-sm md:text-lg mb-4 md:mb-6">แพลตฟอร์มขนส่งและรับสมัครงาน สำหรับคนไทย</p>
             <div class="flex gap-2.5 md:gap-3 flex-wrap">
                 <a href="{{ route('frontend.works') }}"
