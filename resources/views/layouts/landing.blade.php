@@ -33,10 +33,8 @@
                 <!-- Logo -->
                 <div class="flex items-center">
                     <a href="/" class="flex items-center gap-1.5 md:gap-2">
-                        <span class="text-2xl md:text-3xl">🚛</span>
-                        <span class="font-black text-xl md:text-2xl bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-amber-500 dark:from-orange-400 dark:to-amber-300 tracking-tight">
-                            Chaothuk
-                        </span>
+                        <img src="{{ asset('assets/chaothuk_logo-light.png') }}" alt="Chaothuk" class="h-8 md:h-10 w-auto dark:hidden">
+                        <img src="{{ asset('assets/chaothuk_logo-dark.png') }}" alt="Chaothuk" class="hidden h-8 md:h-10 w-auto dark:block">
                     </a>
                 </div>
 
