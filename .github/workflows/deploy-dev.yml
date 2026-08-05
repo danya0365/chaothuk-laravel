@@ -21,7 +21,7 @@ jobs:
 
             APP_DIR="/var/www/html/chaothuk-dev"
             BRANCH="dev.chaothuk"
-            PHP_PATH="/usr/bin/php8.3"
+            PHP_PATH="/usr/bin/php8.5"
             COMPOSER_PATH="composer.phar"
 
             cd "$APP_DIR"
