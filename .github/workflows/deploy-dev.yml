@@ -34,7 +34,7 @@ jobs:
 
             $PHP_PATH $COMPOSER_PATH install --no-interaction --prefer-dist --optimize-autoloader
 
-            npm ci
+            npm install
             npm run build
 
             $PHP_PATH artisan migrate --force
