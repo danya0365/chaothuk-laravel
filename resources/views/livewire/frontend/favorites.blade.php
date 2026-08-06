@@ -32,7 +32,7 @@
                         {{-- Image --}}
                         <a href="{{ route($tab === 'work' ? 'frontend.works.show' : 'frontend.recruits.show', $item['id']) }}"
                            class="w-12 h-12 md:w-16 md:h-16 rounded-lg overflow-hidden bg-gray-800 flex-shrink-0">
-                            <img src="{{ $item['primary_image'] ?? 'https://picsum.photos/seed/'.($item['id'] ?? 0).'/200/200' }}"
+                            <img src="{{ image_url($item['primary_image'], 'https://picsum.photos/seed/'.($item['id'] ?? 0).'/200/200') }}"
                                  class="w-full h-full object-cover" alt="">
                         </a>
                         {{-- Info --}}

@@ -36,7 +36,7 @@
                         <a href="{{ route('frontend.works.show', $work['id']) }}"
                            class="bg-gray-900 rounded-xl overflow-hidden hover:ring-1 hover:ring-orange-500/50 transition group">
                             <div class="aspect-video bg-gray-800 overflow-hidden">
-                                <img src="{{ $work['primary_image'] ?? 'https://picsum.photos/seed/'.$work['id'].'/400/225' }}"
+                                <img src="{{ image_url($work['primary_image'], 'https://picsum.photos/seed/'.$work['id'].'/400/225') }}"
                                      class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="">
                             </div>
                             <div class="p-3">
@@ -63,7 +63,7 @@
                         <a href="{{ route('frontend.recruits.show', $recruit['id']) }}"
                            class="bg-gray-900 rounded-xl overflow-hidden hover:ring-1 hover:ring-purple-500/50 transition group">
                             <div class="aspect-video bg-gray-800 overflow-hidden">
-                                <img src="{{ $recruit['primary_image'] ?? 'https://picsum.photos/seed/r'.$recruit['id'].'/400/225' }}"
+                                <img src="{{ image_url($recruit['primary_image'], 'https://picsum.photos/seed/r'.$recruit['id'].'/400/225') }}"
                                      class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="">
                             </div>
                             <div class="p-3">

@@ -34,7 +34,7 @@ class CategoryBrowse extends Component
                 'id'            => $w->id,
                 'title'         => $w->title,
                 'price'         => $w->price,
-                'primary_image' => $w->primary_image,
+                'primary_image' => image_url($w->primary_image),
                 'province'      => $w->province?->name_th,
                 'work_type'     => $w->workType?->title,
             ])
@@ -49,7 +49,7 @@ class CategoryBrowse extends Component
                 'id'            => $r->id,
                 'title'         => $r->title,
                 'budget'        => $r->budget,
-                'primary_image' => $r->primary_image,
+                'primary_image' => image_url($r->primary_image),
                 'province'      => $r->province?->name_th,
             ])
             ->toArray();

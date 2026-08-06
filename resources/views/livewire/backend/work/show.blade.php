@@ -72,13 +72,15 @@
             <div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
                 @php
                     $galleryImages = is_array($work->images) ? $work->images : (is_string($work->images) ? json_decode($work->images, true) ?? [] : []);
+                    $primaryImageUrl = image_url($work->primary_image, 'https://placehold.co/800x450?text=No+Image');
+                    $galleryImageUrls = array_map(fn ($i) => image_url($i), $galleryImages);
                 @endphp
-                <div x-data="{ activeImage: '{{ $work->primary_image ? (str_contains($work->primary_image, 'http') ? $work->primary_image : Storage::url($work->primary_image)) : 'https://placehold.co/800x450?text=No+Image' }}', allImages: @js(array_merge([$work->primary_image ? (str_contains($work->primary_image, 'http') ? $work->primary_image : Storage::url($work->primary_image)) : 'https://placehold.co/800x450?text=No+Image'], array_map(fn($i) => str_contains($i, 'http') ? $i : Storage::url($i), $galleryImages))) }"
+                <div x-data="{ activeImage: @js($primaryImageUrl), allImages: @js(array_merge([$primaryImageUrl], $galleryImageUrls)) }"
                      class="p-4 sm:p-6 space-y-4 bg-gray-50 dark:bg-gray-900/50">
-                    
+
                     <div class="rounded-xl overflow-hidden aspect-video bg-gray-200 dark:bg-gray-900 relative">
                         <img :src="activeImage" class="w-full h-full object-contain" alt="{{ $work->title }}">
-                        
+
                         {{-- Status badge (Frontend Style) --}}
                         @php
                             $statusBadge = match($work->work_status) {
@@ -96,17 +98,16 @@
                     {{-- Thumbnail gallery --}}
                     @if(count($galleryImages) > 0)
                     <div class="flex gap-2 overflow-x-auto pb-1 mt-2">
-                        <button @click="activeImage = '{{ $work->primary_image ? (str_contains($work->primary_image, 'http') ? $work->primary_image : Storage::url($work->primary_image)) : 'https://placehold.co/800x450?text=No+Image' }}'"
+                        <button @click="activeImage = @js($primaryImageUrl)"
                                 class="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden ring-2 transition focus:outline-none"
-                                :class="activeImage === '{{ $work->primary_image ? (str_contains($work->primary_image, 'http') ? $work->primary_image : Storage::url($work->primary_image)) : 'https://placehold.co/800x450?text=No+Image' }}' ? 'ring-indigo-500' : 'ring-transparent hover:ring-gray-300 dark:hover:ring-gray-600'">
-                            <img src="{{ $work->primary_image ? (str_contains($work->primary_image, 'http') ? $work->primary_image : Storage::url($work->primary_image)) : 'https://placehold.co/800x450?text=No+Image' }}" class="w-full h-full object-cover" alt="">
+                                :class="activeImage === @js($primaryImageUrl) ? 'ring-indigo-500' : 'ring-transparent hover:ring-gray-300 dark:hover:ring-gray-600'">
+                            <img src="{{ $primaryImageUrl }}" class="w-full h-full object-cover" alt="">
                         </button>
-                        @foreach($galleryImages as $img)
-                            @php $imgUrl = str_contains($img, 'http') ? $img : Storage::url($img); @endphp
-                            <button @click="activeImage = '{{ $imgUrl }}'"
+                        @foreach($galleryImages as $i => $img)
+                            <button @click="activeImage = @js($galleryImageUrls[$i])"
                                     class="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden ring-2 transition focus:outline-none"
-                                    :class="activeImage === '{{ $imgUrl }}' ? 'ring-indigo-500' : 'ring-transparent hover:ring-gray-300 dark:hover:ring-gray-600'">
-                                <img src="{{ $imgUrl }}" class="w-full h-full object-cover" alt="">
+                                    :class="activeImage === @js($galleryImageUrls[$i]) ? 'ring-indigo-500' : 'ring-transparent hover:ring-gray-300 dark:hover:ring-gray-600'">
+                                <img src="{{ $galleryImageUrls[$i] }}" class="w-full h-full object-cover" alt="">
                             </button>
                         @endforeach
                     </div>

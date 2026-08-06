@@ -82,7 +82,7 @@
                 <div class="rounded-2xl border border-white/10 bg-white/5 overflow-hidden mb-4">
                     {{-- Image --}}
                     @if(!empty($w['primary_image']))
-                        <img src="{{ $w['primary_image'] }}" alt="{{ $w['title'] }}" class="w-full h-32 md:h-48 object-cover opacity-80">
+                        <img src="{{ image_url($w['primary_image']) }}" alt="{{ $w['title'] }}" class="w-full h-32 md:h-48 object-cover opacity-80">
                     @endif
 
                     <div class="p-4 md:p-6">

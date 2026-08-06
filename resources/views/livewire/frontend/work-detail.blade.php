@@ -10,8 +10,10 @@
         ═══════════════════════════════════════════════════════════════════ --}}
         @php
             $galleryImages = is_array($work->images) ? $work->images : (is_string($work->images) ? json_decode($work->images, true) ?? [] : []);
+            $primaryImageUrl = image_url($work->primary_image, 'https://picsum.photos/seed/'.$work->id.'/800/450');
+            $galleryImageUrls = array_map(fn ($i) => image_url($i), $galleryImages);
         @endphp
-        <div x-data="{ activeImage: '{{ $work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/800/450' }}', allImages: @js(array_merge([$work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/800/450'], $galleryImages)) }"
+        <div x-data="{ activeImage: @js($primaryImageUrl), allImages: @js(array_merge([$primaryImageUrl], $galleryImageUrls)) }"
              class="space-y-2">
             <div class="rounded-2xl overflow-hidden aspect-video bg-gray-800 relative">
                 <img :src="activeImage" class="w-full h-full object-cover" alt="{{ $work->title }}">
@@ -31,16 +33,16 @@
             {{-- Thumbnail gallery --}}
             @if(count($galleryImages) > 0)
             <div class="flex gap-1.5 md:gap-2 overflow-x-auto pb-1">
-                <button @click="activeImage = '{{ $work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/800/450' }}'"
+                <button @click="activeImage = @js($primaryImageUrl)"
                         class="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-lg overflow-hidden ring-2 transition"
-                        :class="activeImage === '{{ $work->primary_image ?? '' }}' ? 'ring-orange-500' : 'ring-transparent hover:ring-gray-600'">
-                    <img src="{{ $work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/800/450' }}" class="w-full h-full object-cover" alt="">
+                        :class="activeImage === @js($primaryImageUrl) ? 'ring-orange-500' : 'ring-transparent hover:ring-gray-600'">
+                    <img src="{{ $primaryImageUrl }}" class="w-full h-full object-cover" alt="">
                 </button>
-                @foreach($galleryImages as $img)
-                    <button @click="activeImage = '{{ $img }}'"
+                @foreach($galleryImages as $i => $img)
+                    <button @click="activeImage = @js($galleryImageUrls[$i])"
                             class="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-lg overflow-hidden ring-2 transition"
-                            :class="activeImage === '{{ $img }}' ? 'ring-orange-500' : 'ring-transparent hover:ring-gray-600'">
-                        <img src="{{ $img }}" class="w-full h-full object-cover" alt="">
+                            :class="activeImage === @js($galleryImageUrls[$i]) ? 'ring-orange-500' : 'ring-transparent hover:ring-gray-600'">
+                        <img src="{{ $galleryImageUrls[$i] }}" class="w-full h-full object-cover" alt="">
                     </button>
                 @endforeach
             </div>

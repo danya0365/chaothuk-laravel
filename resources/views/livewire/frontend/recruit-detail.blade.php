@@ -7,7 +7,7 @@
 
         {{-- Image + header --}}
         <div class="rounded-2xl overflow-hidden aspect-video bg-gray-800">
-            <img src="{{ $recruit->primary_image ?? 'https://picsum.photos/seed/r'.$recruit->id.'/800/450' }}"
+            <img src="{{ image_url($recruit->primary_image, 'https://picsum.photos/seed/r'.$recruit->id.'/800/450') }}"
                  class="w-full h-full object-cover" alt="{{ $recruit->title }}">
         </div>
 

@@ -36,7 +36,7 @@ class Landing extends Component
                 'id'            => $f->work->id,
                 'title'         => $f->work->title,
                 'price'         => $f->work->price,
-                'primary_image' => $f->work->primary_image,
+                'primary_image' => image_url($f->work->primary_image),
                 'province'      => $f->work->province?->name_th,
                 'type'          => $f->work->workType?->title,
                 'rating'        => $f->work->avg_review_rating,
@@ -54,7 +54,7 @@ class Landing extends Component
                 'id'           => $w->id,
                 'title'        => $w->title,
                 'price'        => $w->price,
-                'primary_image'=> $w->primary_image,
+                'primary_image'=> image_url($w->primary_image),
                 'province'     => $w->province?->name_th,
                 'type'         => $w->workType?->title,
             ])

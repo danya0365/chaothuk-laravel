@@ -112,7 +112,7 @@
 
                         <a href="{{ route('frontend.works.show', $work->id) }}">
                             <div class="aspect-video bg-gray-800 overflow-hidden">
-                                <img src="{{ $work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/400/300' }}"
+                                <img src="{{ image_url($work->primary_image, 'https://picsum.photos/seed/'.$work->id.'/400/300') }}"
                                      class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="{{ $work->title }}">
                             </div>
                         </a>

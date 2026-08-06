@@ -60,7 +60,7 @@ class Profile extends Component
                 'id'             => $w->id,
                 'title'          => $w->title,
                 'price'          => $w->price,
-                'image'          => $w->primary_image,
+                'image'          => image_url($w->primary_image),
                 'province'       => $w->province?->name_th,
                 'type'           => $w->workType?->title,
                 'rating'         => $w->avg_review_rating,

@@ -71,7 +71,7 @@
                 @php $r = $selectedRecruit['data']; @endphp
                 <div class="rounded-2xl border border-white/10 bg-white/5 overflow-hidden mb-4">
                     @if(!empty($r['primary_image']))
-                        <img src="{{ $r['primary_image'] }}" alt="{{ $r['title'] }}" class="w-full h-32 md:h-48 object-cover opacity-80">
+                        <img src="{{ image_url($r['primary_image']) }}" alt="{{ $r['title'] }}" class="w-full h-32 md:h-48 object-cover opacity-80">
                     @endif
                     <div class="p-4 md:p-6">
                         <div class="flex items-start justify-between gap-3 md:gap-4 mb-3 md:mb-4">

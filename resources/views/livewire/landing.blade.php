@@ -185,7 +185,7 @@
                 @foreach($latestWorks as $work)
                     <a href="{{ route('frontend.works.show', $work['id']) }}" class="group bg-gray-50 dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 hover:-translate-y-1">
                         <div class="aspect-video bg-gray-200 dark:bg-gray-800 overflow-hidden relative">
-                            <img src="{{ $work['primary_image'] ?? 'https://picsum.photos/seed/'.$work['id'].'/400/300' }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="{{ $work['title'] }}">
+                            <img src="{{ image_url($work['primary_image'], 'https://picsum.photos/seed/'.$work['id'].'/400/300') }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="{{ $work['title'] }}">
                             @if($work['type'])
                                 <div class="absolute top-3 left-3 bg-white/90 dark:bg-gray-900/90 backdrop-blur rounded-full px-3 py-1 text-xs font-semibold text-gray-800 dark:text-gray-200 shadow-sm">
                                     {{ $work['type'] }}

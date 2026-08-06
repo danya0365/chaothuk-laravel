@@ -93,7 +93,7 @@
                     <div class="group bg-gray-900 rounded-xl p-3 md:p-4 hover:ring-2 hover:ring-green-500/40 transition relative">
                         <a href="{{ route('frontend.recruits.show', $recruit->id) }}" class="flex gap-3 md:gap-4">
                             <div class="w-14 h-14 md:w-16 md:h-16 rounded-xl overflow-hidden flex-shrink-0 bg-gray-800">
-                                <img src="{{ $recruit->primary_image ?? 'https://picsum.photos/seed/r'.$recruit->id.'/200/200' }}"
+                                <img src="{{ image_url($recruit->primary_image, 'https://picsum.photos/seed/r'.$recruit->id.'/200/200') }}"
                                      class="w-full h-full object-cover group-hover:scale-105 transition" alt="">
                             </div>
                             <div class="flex-1 min-w-0">
