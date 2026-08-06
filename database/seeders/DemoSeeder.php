@@ -14,6 +14,7 @@ use App\Models\WorkAvailability;
 use App\Models\WorkBlockedDate;
 use App\Models\WorkBooking;
 use App\Models\WorkSession;
+use App\Models\WorkType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -99,6 +100,7 @@ class DemoSeeder extends Seeder
             [
                 'author_id'   => $worker1->id,
                 'title'       => 'รถกะบะรับจ้างขนส่ง กรุงเทพ-ปริมณฑล',
+                'work_type'   => 'รถกะบะ',
                 'description' => 'ให้บริการขนส่งสินค้าทุกประเภท รวดเร็ว ตรงเวลา ราคาสมเหตุสมผล',
                 'price'       => 1500,
                 'img_seed'    => 10,
@@ -108,6 +110,7 @@ class DemoSeeder extends Seeder
             [
                 'author_id'   => $worker1->id,
                 'title'       => 'รับจ้างขนย้ายบ้าน ครบวงจร',
+                'work_type'   => 'รถกะบะ',
                 'description' => 'ย้ายบ้านครบชุด มีทีมงาน 3 คน รถกะบะ 1 คัน บริการครบ',
                 'price'       => 3500,
                 'img_seed'    => 20,
@@ -117,6 +120,7 @@ class DemoSeeder extends Seeder
             [
                 'author_id'   => $worker2->id,
                 'title'       => 'รถบรรทุก 6 ล้อ วิ่งต่างจังหวัด',
+                'work_type'   => 'รถบรรทุก',
                 'description' => 'รับงานขนส่งสินค้าต่างจังหวัด สินค้าปลอดภัย จัดส่งรวดเร็ว',
                 'price'       => 5000,
                 'img_seed'    => 30,
@@ -126,6 +130,7 @@ class DemoSeeder extends Seeder
             [
                 'author_id'   => $worker2->id,
                 'title'       => 'มอเตอร์ไซค์รับส่งของด่วน ในกรุงเทพ',
+                'work_type'   => 'มอเตอร์ไซค์',
                 'description' => 'ส่งของด่วนในกรุงเทพ ระยะเวลา 1 ชั่วโมงถึงปลายทาง',
                 'price'       => 200,
                 'img_seed'    => 40,
@@ -145,8 +150,8 @@ class DemoSeeder extends Seeder
                     'price'            => $data['price'],
                     'code'             => strtoupper(substr(md5($data['title']), 0, 8)),
                     'province_id'      => 1,
-                    'work_type_id'     => 1,
-                    'primary_image'    => \App\Services\MockImageService::publicRel('work', 'pickup-1'),
+                    'work_type_id'     => WorkType::where('title', $data['work_type'])->value('id') ?? 1,
+                    'primary_image'    => \App\Services\MockImageService::publicRel('work', config("mock-images.work_type_slugs.{$data['work_type']}") . '-1'),
                     'avg_review_rating' => 0,
                     'latitude'         => $data['latitude'],
                     'longitude'        => $data['longitude'],
@@ -161,7 +166,8 @@ class DemoSeeder extends Seeder
             [
                 'author_id'   => $employer1->id,
                 'title'       => 'ต้องการคนขับรถบรรทุก มีประสบการณ์',
-                'description' => 'รับสมัครคนขับรถบรรทุก 10 ล้อ มีใบขับขี่ประเภท 2 สวัสดิการดี',
+                'work_type'   => 'รถบรรทุก',
+                'description' => 'รับสมัครคนขับรถบรรทุก 10 ล้อ มีใบขับขี่ประเภทที่ 2 สวัสดิการดี',
                 'budget'      => 25000,
                 'img_seed'    => 50,
                 'latitude'    => 13.6900,
@@ -170,6 +176,7 @@ class DemoSeeder extends Seeder
             [
                 'author_id'   => $employer2->id,
                 'title'       => 'หาพนักงานขับรถตู้ส่วนตัว ประจำ',
+                'work_type'   => 'รถกะบะ',
                 'description' => 'ต้องการพนักงานขับรถตู้ มีอาหาร สวัสดิการครบ',
                 'budget'      => 18000,
                 'img_seed'    => 60,
@@ -188,8 +195,8 @@ class DemoSeeder extends Seeder
                     'description'    => $data['description'],
                     'budget'         => $data['budget'],
                     'province_id'    => 1,
-                    'work_type_id'   => 1,
-                    'primary_image'  => \App\Services\MockImageService::publicRel('recruit', 'pickup-1'),
+                    'work_type_id'   => WorkType::where('title', $data['work_type'])->value('id') ?? 1,
+                    'primary_image'  => \App\Services\MockImageService::publicRel('recruit', config("mock-images.work_type_slugs.{$data['work_type']}") . '-1'),
                     'recruit_status' => 'stand-by',
                     'latitude'       => $data['latitude'],
                     'longitude'      => $data['longitude'],

@@ -11,18 +11,22 @@ class RecruitFactory extends Factory
 {
     public function definition(): array
     {
+        // Title keys the vehicle type → work_type_id must match, or the mock
+        // image (assigned by work_type_id) won't match the visible title.
         $thaiTitles = [
-            'ต้องการคนขับรถกะบะ ประจำบริษัท',
-            'รับสมัครคนขับรถบรรทุก 10 ล้อ',
-            'หาคนขับมอเตอร์ไซค์ส่งของ ด่วน',
-            'ต้องการพนักงานขับรถตู้ส่วนตัว',
-            'รับสมัครช่างซ่อมรถ มีประสบการณ์',
-            'ต้องการคนช่วยขนของ รายวัน',
-            'หาคนขับรถส่งสินค้า ทำงานเป็นกะ',
-            'รับสมัครพนักงานโลจิสติกส์',
-            'ต้องการผู้ช่วยในโกดัง',
-            'หาคนขับรถพ่วงรถบรรทุก',
+            'ต้องการคนขับรถกะบะ ประจำบริษัท'   => 'รถกะบะ',
+            'รับสมัครคนขับรถกะบะ ขนของ'       => 'รถกะบะ',
+            'รับสมัครคนขับรถบรรทุก 10 ล้อ'     => 'รถบรรทุก',
+            'หาคนขับรถพ่วงรถบรรทุก'           => 'รถบรรทุก',
+            'หาคนขับรถสิบล้อ ขนวัสดุ'          => 'รถสิบล้อ',
+            'รับสมัครคนขับรถสิบล้อ'            => 'รถสิบล้อ',
+            'หาคนขับมอเตอร์ไซค์ส่งของ ด่วน'    => 'มอเตอร์ไซค์',
+            'รับสมัครไรเดอร์มอเตอร์ไซค์'       => 'มอเตอร์ไซค์',
+            'ต้องการพนักงานขับรถตู้ส่วนตัว'    => 'รถกะบะ',
+            'ต้องการผู้ช่วยในโกดัง'            => 'รถบรรทุก',
         ];
+        $title = $this->faker->randomElement(array_keys($thaiTitles));
+        $workTypeTitle = $thaiTitles[$title];
 
         $descriptions = [
             'ต้องการคนขับรถที่มีใบขับขี่ถูกต้อง มีประสบการณ์อย่างน้อย 2 ปี',
@@ -35,8 +39,8 @@ class RecruitFactory extends Factory
         return [
             'author_id'     => User::factory(),
             'province_id'   => Province::inRandomOrder()->value('id') ?? 1,
-            'work_type_id'  => WorkType::inRandomOrder()->value('id') ?? 1,
-            'title'         => $this->faker->randomElement($thaiTitles),
+            'work_type_id'  => WorkType::where('title', $workTypeTitle)->value('id') ?? 1,
+            'title'         => $title,
             'description'   => $this->faker->randomElement($descriptions),
             'budget'       => $this->faker->numberBetween(10000, 80000),
             // image fields assigned post-create by MockSeeder (local mock pool)
