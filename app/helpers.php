@@ -16,10 +16,17 @@ if (! function_exists('image_url')) {
             return $path;
         }
 
-        if (str_starts_with($path, '/')) {
-            return url($path);
+        // Paths already root-relative (leading "/") or that start with a known
+        // public disk prefix (e.g. "storage/..." from MockImageService) are
+        // served as-is from the public web root — do NOT pass through
+        // Storage::url(), which would resolve them relative to the disk root
+        // and double-prefix (storage/storage/...).
+        if (str_starts_with($path, '/') || str_starts_with($path, 'storage/')) {
+            return url('/' . ltrim($path, '/'));
         }
 
+        // Anything else (user uploads, etc.) is disk-relative to the public
+        // disk root (storage/app/public).
         return Storage::url($path);
     }
 }
