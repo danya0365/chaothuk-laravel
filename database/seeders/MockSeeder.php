@@ -143,7 +143,9 @@ class MockSeeder extends Seeder
             ->sequence(fn ($seq) => [
                 'author_id'    => $workerIds[array_rand($workerIds)],
                 'province_id'  => $provinceIds[array_rand($provinceIds)],
-                'work_type_id' => $workTypeIds[array_rand($workTypeIds)],
+                // NOTE: work_type_id NOT overridden here — it must come from
+                // the factory (derived from the title) so the mock image
+                // (assigned by work_type_id) matches the visible title.
             ])
             ->create();
 
@@ -177,7 +179,8 @@ class MockSeeder extends Seeder
             ->sequence(fn ($seq) => [
                 'author_id'    => $employerIds[array_rand($employerIds)],
                 'province_id'  => $provinceIds[array_rand($provinceIds)],
-                'work_type_id' => $workTypeIds[array_rand($workTypeIds)],
+                // NOTE: work_type_id NOT overridden — factory derives it from
+                // the title so mock image matches visible title.
             ])
             ->create();
 
