@@ -36,6 +36,9 @@ class DemoSeeder extends Seeder
 {
     public function run(): void
     {
+        // Ensure locally-generated mock images (ComfyUI / flux) are in public storage
+        \App\Services\MockImageService::copyToPublic();
+
         $categoryIds = Category::pluck('id')->toArray() ?: [1];
 
         // ─── Demo Users ───────────────────────────────────────────────────────
@@ -143,7 +146,7 @@ class DemoSeeder extends Seeder
                     'code'             => strtoupper(substr(md5($data['title']), 0, 8)),
                     'province_id'      => 1,
                     'work_type_id'     => 1,
-                    'primary_image'    => 'https://picsum.photos/seed/' . $data['img_seed'] . '/800/600',
+                    'primary_image'    => \App\Services\MockImageService::publicRel('work', 'pickup-1'),
                     'avg_review_rating' => 0,
                     'latitude'         => $data['latitude'],
                     'longitude'        => $data['longitude'],
@@ -186,7 +189,7 @@ class DemoSeeder extends Seeder
                     'budget'         => $data['budget'],
                     'province_id'    => 1,
                     'work_type_id'   => 1,
-                    'primary_image'  => 'https://picsum.photos/seed/' . $data['img_seed'] . '/800/600',
+                    'primary_image'  => \App\Services\MockImageService::publicRel('recruit', 'pickup-1'),
                     'recruit_status' => 'stand-by',
                     'latitude'       => $data['latitude'],
                     'longitude'      => $data['longitude'],
@@ -256,15 +259,16 @@ class DemoSeeder extends Seeder
             ['title' => 'ขนย้ายออฟฟิศ 3 ชั้น',    'desc' => 'ขนย้ายอุปกรณ์สำนักงาน คอมพิวเตอร์ โต๊ะ เก้าอี้ ครบขบวน เสร็จใน 1 วัน'],
             ['title' => 'ส่งสินค้าออนไลน์รายวัน',   'desc' => 'รับส่งพัสดุ 50-100 ชิ้น/วัน ครอบคลุมกรุงเทพ-ปริมณฑล'],
         ];
+        $portfolioSlugs = \App\Services\MockImageService::pool('portfolio');
         foreach ($portfolios as $i => $p) {
             Portfolio::firstOrCreate(
                 ['user_id' => $worker1->id, 'title' => $p['title']],
                 [
                     'description'  => $p['desc'],
                     'images'       => [
-                        'https://picsum.photos/seed/demo-port-' . $i . 'a/800/600',
-                        'https://picsum.photos/seed/demo-port-' . $i . 'b/800/600',
-                        'https://picsum.photos/seed/demo-port-' . $i . 'c/800/600',
+                        \App\Services\MockImageService::publicRel('portfolio', $portfolioSlugs[$i % count($portfolioSlugs)]),
+                        \App\Services\MockImageService::publicRel('portfolio', $portfolioSlugs[($i + 1) % count($portfolioSlugs)]),
+                        \App\Services\MockImageService::publicRel('portfolio', $portfolioSlugs[($i + 2) % count($portfolioSlugs)]),
                     ],
                     'work_type_id' => $workTypeId,
                 ]

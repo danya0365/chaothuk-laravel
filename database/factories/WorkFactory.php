@@ -40,11 +40,10 @@ class WorkFactory extends Factory
             'title'            => $this->faker->randomElement($thaiTitles),
             'description'      => $this->faker->randomElement($descriptions),
             'price'            => $this->faker->numberBetween(500, 50000),
-            'primary_image'    => 'https://picsum.photos/seed/' . $this->faker->numberBetween(1, 200) . '/800/600',
-            'images'           => json_encode([
-                'https://picsum.photos/seed/' . $this->faker->numberBetween(1, 200) . '/800/600',
-                'https://picsum.photos/seed/' . $this->faker->numberBetween(1, 200) . '/800/600',
-            ]),
+            // image fields assigned post-create by MockSeeder from the local
+            // ComfyUI mock pool (see MockImageService) — empty here on purpose.
+            'primary_image'    => null,
+            'images'           => [],
             'avg_review_rating' => $this->faker->randomFloat(1, 3.0, 5.0),
             'like_count'       => $this->faker->numberBetween(0, 500),
             'reply_count'      => $this->faker->numberBetween(0, 50),

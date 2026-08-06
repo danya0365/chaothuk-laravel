@@ -38,11 +38,10 @@ class RecruitFactory extends Factory
             'work_type_id'  => WorkType::inRandomOrder()->value('id') ?? 1,
             'title'         => $this->faker->randomElement($thaiTitles),
             'description'   => $this->faker->randomElement($descriptions),
-            'budget'        => $this->faker->numberBetween(10000, 80000),
-            'primary_image' => 'https://picsum.photos/seed/' . $this->faker->numberBetween(201, 400) . '/800/600',
-            'images'        => json_encode([
-                'https://picsum.photos/seed/' . $this->faker->numberBetween(201, 400) . '/800/600',
-            ]),
+            'budget'       => $this->faker->numberBetween(10000, 80000),
+            // image fields assigned post-create by MockSeeder (local mock pool)
+            'primary_image' => null,
+            'images'        => [],
             'recruit_status' => $this->faker->randomElement(['stand-by', 'busy', 'close']),
             'latitude'       => $this->faker->latitude(13.0, 19.5),
             'longitude'      => $this->faker->longitude(98.0, 104.5),
