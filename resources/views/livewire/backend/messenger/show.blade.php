@@ -81,8 +81,8 @@
                             
                             <div class="mt-1 text-sm text-gray-800 dark:text-gray-200 whitespace-pre-line bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg rounded-tl-none p-3 inline-block shadow-sm">
                                 @if($conversation->type === 'image')
-                                    <a href="{{ Storage::url($conversation->content) }}" target="_blank" class="block">
-                                        <img src="{{ Storage::url($conversation->content) }}" alt="Image" class="max-w-xs rounded-md shadow-sm border border-gray-200 dark:border-gray-700 hover:opacity-90 transition">
+                                    <a href="{{ image_url($conversation->content) }}" target="_blank" class="block">
+                                        <img src="{{ image_url($conversation->content) }}" alt="Image" class="max-w-xs rounded-md shadow-sm border border-gray-200 dark:border-gray-700 hover:opacity-90 transition">
                                     </a>
                                 @elseif($conversation->type === 'location')
                                     <div class="flex items-center space-x-2 text-blue-600 dark:text-blue-400">

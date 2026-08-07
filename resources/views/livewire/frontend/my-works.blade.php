@@ -63,7 +63,7 @@
                         <div class="flex items-start gap-4 flex-1">
                             <a href="{{ route('frontend.works.show', $work->id) }}" class="flex-shrink-0 group">
                                 <div class="w-24 h-16 md:w-32 md:h-20 rounded-lg overflow-hidden relative bg-gray-800">
-                                    <img src="{{ $work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/200/150' }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="">
+                                    <img src="{{ image_url($work->primary_image, 'https://picsum.photos/seed/'.$work->id.'/200/150') }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="">
                                     {{-- Status Indicator --}}
                                     <div class="absolute top-1 left-1">
                                         @php

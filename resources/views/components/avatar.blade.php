@@ -34,7 +34,7 @@
 
 <div {{ $attributes->merge(['class' => "relative rounded-full overflow-hidden flex-shrink-0 bg-gray-800 $sizeClasses $borderClasses"]) }}>
     @if($src)
-        <img src="{{ $src }}" class="w-full h-full object-cover" alt="{{ $name }}">
+        <img src="{{ image_url($src) }}" class="w-full h-full object-cover" alt="{{ $name }}">
     @else
         <div class="w-full h-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
             <span class="text-white font-black {{ $textClasses }}">{{ mb_strtoupper(mb_substr($name, 0, 1)) }}</span>

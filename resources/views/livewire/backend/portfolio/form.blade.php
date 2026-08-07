@@ -155,7 +155,7 @@
                         <!-- Existing Images -->
                         @foreach($existingImages as $index => $imageUrl)
                             <div class="relative group aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-900">
-                                <img src="{{ $imageUrl }}" class="w-full h-full object-cover">
+                                <img src="{{ image_url($imageUrl) }}" class="w-full h-full object-cover">
                                 <button type="button" wire:click="removeExistingImage({{ $index }})" class="absolute top-2 right-2 bg-red-600 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 shadow-sm">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />

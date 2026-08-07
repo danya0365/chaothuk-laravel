@@ -440,7 +440,7 @@
                     @php $wpImages = $wp['images'] ?? []; @endphp
                     @if(count($wpImages) > 0)
                         <div class="aspect-square overflow-hidden">
-                            <img src="{{ $wpImages[0] }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="">
+                            <img src="{{ image_url($wpImages[0]) }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="">
                         </div>
                     @else
                         <div class="aspect-square flex items-center justify-center text-gray-600 text-3xl bg-gray-800">🖼</div>

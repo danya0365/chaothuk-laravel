@@ -107,7 +107,7 @@
                 <div class="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-2">
                     @foreach($galleryImages as $index => $imgUrl)
                     <div class="relative rounded-lg overflow-hidden aspect-square bg-gray-800">
-                        <img src="{{ $imgUrl }}" class="w-full h-full object-cover" alt="">
+                        <img src="{{ image_url($imgUrl) }}" class="w-full h-full object-cover" alt="">
                         <button type="button" wire:click="removeGalleryImage({{ $index }})"
                                 class="absolute top-1 right-1 w-5 h-5 bg-red-500 hover:bg-red-400 text-white rounded-full flex items-center justify-center text-[10px] transition">✕</button>
                     </div>

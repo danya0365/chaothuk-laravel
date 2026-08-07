@@ -72,7 +72,7 @@
                 <div class="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-2 md:mb-3">
                     @foreach($images as $index => $imgUrl)
                     <div class="relative rounded-xl overflow-hidden aspect-square bg-gray-800 group">
-                        <img src="{{ $imgUrl }}" class="w-full h-full object-cover" alt="ผลงาน {{ $index + 1 }}">
+                        <img src="{{ image_url($imgUrl) }}" class="w-full h-full object-cover" alt="ผลงาน {{ $index + 1 }}">
                         <button type="button" wire:click="removeImage({{ $index }})"
                                 class="absolute top-1 right-1 md:top-1.5 md:right-1.5 w-5 h-5 md:w-6 md:h-6 bg-red-500 hover:bg-red-400 text-white rounded-full flex items-center justify-center text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition">✕</button>
                         @if($index === 0)

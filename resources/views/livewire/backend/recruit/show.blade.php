@@ -97,10 +97,10 @@
                                     :class="activeImage === @js($galleryImageUrls[$i]) ? 'ring-indigo-500' : 'ring-transparent hover:ring-gray-300 dark:hover:ring-gray-600'">
                                 <img src="{{ $galleryImageUrls[$i] }}" class="w-full h-full object-cover" alt="">
                             </button>
-                            <button @click="activeImage = '{{ $imgUrl }}'"
+                            <button @click="activeImage = @js($galleryImageUrls[$i])"
                                     class="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden ring-2 transition focus:outline-none"
-                                    :class="activeImage === '{{ $imgUrl }}' ? 'ring-indigo-500' : 'ring-transparent hover:ring-gray-300 dark:hover:ring-gray-600'">
-                                <img src="{{ $imgUrl }}" class="w-full h-full object-cover" alt="">
+                                    :class="activeImage === @js($galleryImageUrls[$i]) ? 'ring-indigo-500' : 'ring-transparent hover:ring-gray-300 dark:hover:ring-gray-600'">
+                                <img src="{{ $galleryImageUrls[$i] }}" class="w-full h-full object-cover" alt="">
                             </button>
                         @endforeach
                     </div>

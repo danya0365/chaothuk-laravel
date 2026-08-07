@@ -58,7 +58,7 @@
                 <h2 class="text-lg font-bold text-white mb-4">สรุปการสั่งซื้อ</h2>
                 
                 <div class="flex items-center gap-4 p-3 bg-gray-800 rounded-lg mb-6">
-                    <img src="{{ $work->primary_image ?? 'https://picsum.photos/seed/'.$work->id.'/100/100' }}" class="w-16 h-16 rounded-lg object-cover" alt="">
+                    <img src="{{ image_url($work->primary_image, 'https://picsum.photos/seed/'.$work->id.'/100/100') }}" class="w-16 h-16 rounded-lg object-cover" alt="">
                     <div class="min-w-0">
                         <p class="font-semibold text-white truncate text-sm">{{ $work->title }}</p>
                         <p class="text-xs text-gray-500 mt-1">ราคาอ้างอิง: ฿{{ number_format($work->price) }}</p>

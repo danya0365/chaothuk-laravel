@@ -87,8 +87,8 @@
                     @if($post->images && is_array($post->images) && count($post->images) > 0)
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mb-6">
                             @foreach($post->images as $image)
-                                <a href="{{ Storage::url($image) }}" target="_blank" class="block aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:opacity-90 transition">
-                                    <img src="{{ Storage::url($image) }}" alt="Post image" class="w-full h-full object-cover">
+                                <a href="{{ image_url($image) }}" target="_blank" class="block aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:opacity-90 transition">
+                                    <img src="{{ image_url($image) }}" alt="Post image" class="w-full h-full object-cover">
                                 </a>
                             @endforeach
                         </div>

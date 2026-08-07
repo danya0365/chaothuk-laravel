@@ -13,7 +13,7 @@
     {{-- Image Gallery --}}
     @php $images = $portfolio['images'] ?? []; @endphp
     @if(count($images) > 0)
-    <div x-data="{ activeImage: '{{ $images[0] }}', lightbox: false }"
+    <div x-data="{ activeImage: @js(image_url($images[0])), lightbox: false }"
          class="space-y-2 md:space-y-3 mb-4 md:mb-6">
         {{-- Main image --}}
         <div class="rounded-xl md:rounded-2xl overflow-hidden bg-gray-800 aspect-video cursor-pointer" @click="lightbox = true">
@@ -24,10 +24,10 @@
         @if(count($images) > 1)
         <div class="flex gap-2 overflow-x-auto pb-1">
             @foreach($images as $idx => $img)
-            <button @click="activeImage = '{{ $img }}'"
+            <button @click="activeImage = @js(image_url($img))"
                     class="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden ring-2 transition"
-                    :class="activeImage === '{{ $img }}' ? 'ring-orange-500' : 'ring-transparent hover:ring-gray-600'">
-                <img src="{{ $img }}" class="w-full h-full object-cover" alt="">
+                    :class="activeImage === @js(image_url($img)) ? 'ring-orange-500' : 'ring-transparent hover:ring-gray-600'">
+                <img src="{{ image_url($img) }}" class="w-full h-full object-cover" alt="">
             </button>
             @endforeach
         </div>
@@ -90,7 +90,7 @@
                 @php $pImages = $p['images'] ?? []; @endphp
                 @if(count($pImages) > 0)
                     <div class="aspect-square overflow-hidden">
-                        <img src="{{ $pImages[0] }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="">
+                        <img src="{{ image_url($pImages[0]) }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="">
                     </div>
                 @else
                     <div class="aspect-square flex items-center justify-center text-gray-600 text-3xl">🖼</div>

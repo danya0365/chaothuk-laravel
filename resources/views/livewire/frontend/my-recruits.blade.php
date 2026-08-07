@@ -67,7 +67,7 @@
                         
                         <div class="flex gap-4">
                             <div class="w-16 h-16 rounded-xl overflow-hidden bg-gray-800 flex-shrink-0">
-                                <img src="{{ $recruit->primary_image ?? 'https://picsum.photos/seed/r'.$recruit->id.'/200/200' }}"
+                                <img src="{{ image_url($recruit->primary_image, 'https://picsum.photos/seed/r'.$recruit->id.'/200/200') }}"
                                      class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="">
                             </div>
                             <div class="flex-1 min-w-0 pr-16">

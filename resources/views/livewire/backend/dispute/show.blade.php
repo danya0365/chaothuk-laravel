@@ -68,8 +68,8 @@
                             </h4>
                             <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                                 @foreach($dispute->evidence as $image)
-                                    <a href="{{ Storage::url($image) }}" target="_blank" class="block aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:opacity-75 transition bg-gray-100 dark:bg-gray-900">
-                                        <img src="{{ Storage::url($image) }}" alt="Evidence" class="w-full h-full object-cover">
+                                    <a href="{{ image_url($image) }}" target="_blank" class="block aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:opacity-75 transition bg-gray-100 dark:bg-gray-900">
+                                        <img src="{{ image_url($image) }}" alt="Evidence" class="w-full h-full object-cover">
                                     </a>
                                 @endforeach
                             </div>

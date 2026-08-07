@@ -71,7 +71,7 @@
                     <div class="flex items-start gap-3 md:gap-4">
                         {{-- Image --}}
                         <div class="w-12 h-12 md:w-16 md:h-16 rounded-lg overflow-hidden bg-gray-800 flex-shrink-0">
-                            <img src="{{ $item['primary_image'] ?? 'https://picsum.photos/seed/'.($item['id'] ?? 0).'/200/200' }}"
+                            <img src="{{ image_url($item['primary_image'] ?? null, 'https://picsum.photos/seed/'.($item['id'] ?? 0).'/200/200') }}"
                                  class="w-full h-full object-cover" alt="">
                         </div>
                         <div class="flex-1 min-w-0">

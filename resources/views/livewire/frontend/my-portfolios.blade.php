@@ -31,7 +31,7 @@
                     @php $images = $portfolio['images'] ?? []; @endphp
                     @if(count($images) > 0)
                         <div class="h-40 md:h-48 overflow-hidden bg-gray-800">
-                            <img src="{{ $images[0] }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="">
+                            <img src="{{ image_url($images[0]) }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="">
                         </div>
                     @else
                         <div class="h-40 md:h-48 bg-gray-800 flex items-center justify-center text-gray-600 text-3xl md:text-4xl">🖼</div>
