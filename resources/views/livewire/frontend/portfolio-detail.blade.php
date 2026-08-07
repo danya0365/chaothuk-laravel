@@ -107,6 +107,4 @@
     </div>
     @endif
 
-    @endif
-
 </div>
