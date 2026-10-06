@@ -6,7 +6,7 @@
 <p>
   <img alt="PHP" src="https://img.shields.io/badge/PHP-8.2-777BB4?style=for-the-badge&logo=php&logoColor=white"/>
   <img alt="Laravel" src="https://img.shields.io/badge/Laravel-11-FF2D20?style=for-the-badge&logo=laravel&logoColor=white"/>
-  <img alt="Livewire" src="https://img.shields.io/badge/Livewire-3-FB70A9?style=for-the-badge&logo=livewire&logoColor=white"/>
+  <img alt="Livewire" src="https://img.shields.io/badge/Livewire-4.2-FB70A9?style=for-the-badge&logo=livewire&logoColor=white"/>
   <img alt="MySQL" src="https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/>
   <img alt="Docker" src="https://img.shields.io/badge/Docker-Sail-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
   <img alt="License" src="https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge"/>
@@ -18,304 +18,71 @@
 
 </div>
 
-## 📖 Overview
+## 📖 ระบบนี้คืออะไร
 
-**Chaothuk (เช่าถูก)** is a full-featured **Thai freelance and hiring marketplace** powered by Laravel 11. The platform includes:
+ตลาดกลางที่เชื่อม **ผู้ให้บริการ (Workers)** กับ **ผู้ว่าจ้าง (Employers)** ในประเทศไทย
 
-- 🌐 **Livewire Frontend** — SPA-like web app with dark premium UI at `/frontend`
-- 📱 **REST API** — Sanctum-protected JSON API for mobile apps at `/api`
-- 🖥️ **Admin Backend** — Blade-based admin panel for platform management
-- 👷 **Workers** list services as **Works**, employers post **Recruits**
-- 🤝 Book, negotiate, confirm engagements with **real-time GPS tracking**
-- 🎯 Gamified **Issue Points** reward system
+- 👷 **Workers** ลงประกาศ **Works** — "ฉันทำงานนี้ได้" (รถรับจ้าง, ช่าง, งานบ้าน)
+- 💼 **Employers** ลงประกาศ **Recruits** — "ฉันต้องการคนมาทำ"
+- 🤝 ทั้งสองฝ่าย **จอง → ต่อรอง → ยืนยัน → เริ่มงาน → ติดตาม GPS → รีวิว**
+- 🎯 ระบบ **Issue Points** กระตุ้นพฤติกรรม + **Reputation** คะแนน 4 มิติ
+- 💬 **Messenger** ทั้งแบบ login และ guest (เบอร์มือถือ)
 
----
+### 3 หน้าจอ
 
-## ✨ Features
+| หน้าจอ                  | เทคโนโลยี                      | ใครใช้                 |
+| ------------------------ | ------------------------------ | ---------------------- |
+| **Frontend** `/frontend` | Livewire 4.2 (44 component)    | ผู้ใช้ทั่วไป · UI หลัก |
+| **REST API** `/api`      | Laravel Sanctum (103 endpoint) | **Mobile app**         |
+| **Admin** `/backend`     | Livewire 4.2 (53 component)    | ผู้ดูแลระบบ            |
 
-### 🌐 Livewire Frontend (`/frontend`)
+### Tech Stack
 
-A full SPA-like web application built with **Livewire 3** and **Alpine.js**, featuring a premium dark theme with orange accents.
-
-#### Pages & Routes (31 routes)
-
-| Route | Page | Auth |
-|-------|------|:----:|
-| `/frontend` | 🏠 Home — Featured works, categories, search | |
-| `/frontend/works` | 📦 Browse Works — Grid/list with filters & pagination | |
-| `/frontend/works/{id}` | 📦 Work Detail — Images, reviews, bookings, sessions | |
-| `/frontend/works/create` | ➕ Create Work | ✅ |
-| `/frontend/works/{id}/edit` | ✏️ Edit Work | ✅ |
-| `/frontend/works/{id}/bookings` | 📋 Work Bookings management | ✅ |
-| `/frontend/works/{id}/availability` | 📅 Work Availability management | ✅ |
-| `/frontend/recruits` | 👷 Browse Recruits — Job postings with filters | |
-| `/frontend/recruits/{id}` | 👷 Recruit Detail — Apply, book | |
-| `/frontend/recruits/create` | ➕ Create Recruit | ✅ |
-| `/frontend/recruits/{id}/edit` | ✏️ Edit Recruit | ✅ |
-| `/frontend/recruits/{id}/bookings` | 📋 Recruit Bookings management | ✅ |
-| `/frontend/categories` | 🏷️ Category Browse | |
-| `/frontend/map` | 🗺️ MapLibre Interactive Map — Explore by location | |
-| `/frontend/search` | 🔍 Full Search — Works & recruits | |
-| `/frontend/reputation/{id?}` | ⭐ Reputation Profile | |
-| `/frontend/profile` | 👤 My Profile — Info, works, recruits, bookings, reviews | ✅ |
-| `/frontend/calendar` | 📅 Calendar | ✅ |
-| `/frontend/bookings` | 📋 My Bookings | ✅ |
-| `/frontend/messenger` | 💬 Messenger | ✅ |
-| `/frontend/favorites` | ⭐ Favorites | ✅ |
-| `/frontend/portfolios` | 🎨 Portfolios | ✅ |
-| `/frontend/portfolios/create` | ➕ Create Portfolio | ✅ |
-| `/frontend/portfolios/{id}/edit` | ✏️ Edit Portfolio | ✅ |
-| `/frontend/sessions` | 🕐 My Sessions — Active & completed sessions | ✅ |
-| `/frontend/sessions/{id}` | 🕐 Session Detail — **Real-time GPS tracking** | ✅ |
-| `/frontend/notifications` | 🔔 Notifications | ✅ |
-
-#### 🔐 Frontend Auth Flow
-
-| Route | Page |
-|-------|------|
-| `/frontend/auth/login` | เข้าสู่ระบบ — Email/password login with remember me |
-| `/frontend/auth/register` | สมัครสมาชิก — Name, email, password registration |
-| `/frontend/auth/forgot-password` | ลืมรหัสผ่าน — Password reset via email |
-| `POST /frontend/auth/logout` | ออกจากระบบ — Logout with redirect to login |
-
-- Guest users on `/frontend/*` auth-required pages are redirected to `/frontend/auth/login`
-- All auth pages use the same dark premium theme
-
-#### 🗺️ Real-Time GPS Session Tracking
-
-- **Dark CartoDB map** tiles (premium look)
-- **Live stats overlay**: elapsed time, distance (haversine), GPS point count, speed (km/h)
-- **Browser Geolocation API** — `watchPosition` with continuous updates
-- **Pulsing current-location marker** with heading arrow
-- **Orange route line** with glow effect + point dots
-- **Direct JS map updates** — no page reload needed
-- Logs to `session_location_logs` table via Livewire
-
-#### 📱 Responsive Navigation
-
-| Platform | Design |
-|----------|--------|
-| **Desktop** | Fixed left sidebar (70px): 5 main items + "⋯ เพิ่มเติม" popup with remaining items + Alpine.js profile dropdown with logout |
-| **Mobile** | Bottom tab bar: 4 items (Home, Works, Favorites, Chat) + "⋯ เพิ่มเติม" slide-up panel with all items |
+| Layer    | Technology                                               |
+| -------- | -------------------------------------------------------- |
+| Backend  | **Laravel 11** · PHP 8.2+ · MySQL 8                      |
+| Frontend | **Livewire 4.2** + Alpine.js · Tailwind **3** + Flowbite |
+| Auth     | Laravel Sanctum (API) · Livewire session (web)           |
+| Maps     | MapLibre GL + CartoDB Dark Tiles                         |
+| Charts   | ApexCharts                                               |
+| Docs     | Dedoc Scramble → `/docs/api`                             |
+| Dev      | **Laravel Sail** (Docker) · PHPUnit · Laravel Pint       |
 
 ---
 
-### 📡 REST API (`/api`)
+## 📚 เอกสารประกอบ
 
-| Group | Base Path | Auth |
-|-------|-----------|:----:|
-| Auth | `/api/auth` | Partial |
-| Me (Profile) | `/api/me` | ✅ |
-| Works | `/api/works` | Partial |
-| Work Bookings | `/api/work-bookings` | Partial |
-| Recruits | `/api/recruits` | Partial |
-| Recruit Bookings | `/api/recruit-bookings` | Partial |
-| Sessions | `/api/sessions` | ✅ |
-| Messenger | `/api/messenger` | Partial |
-| Notifications | `/api/notifications` | ❌ |
-| Banners | `/api/banners` | ✅ |
-| Issue Points | `/api/issue-points` | ❌ |
-| Barcode | `/api/barcode` | ❌ |
-| Provinces | `/api/provinces` | ❌ |
-| Uploads | `/api/upload` | ❌ |
-| User Logs | `/api/user-logs` | ✅ |
+> ทั้งหมดเขียนจาก **โค้ดจริง** ตรวจสอบ 2026-10-06 — ให้อ่านก่อนเริ่มงาน
 
-**Session API Endpoints:**
-- `POST /api/sessions/start` — Start a work session (auto-confirms worker)
-- `POST /api/sessions/{id}/location` — Log GPS coordinates
-- `GET /api/sessions/{id}/locations` — Get location history
-- `POST /api/sessions/{id}/stop` — Stop session
-- `POST /api/sessions/{id}/confirm` — Confirm completed session
+### 🔴 เริ่มตรงนี่
 
-API docs auto-generated via [Dedoc Scramble](https://scramble.dedoc.co/) at `http://localhost/docs/api`.
+| เอกสาร                                             | เนื้อหา                                                                                                              |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **[docs/SRS.md](docs/SRS.md)**                     | **ข้อกำหนดระบบ** — ขอบเขต · ฟีเจอร์ · architecture · สิทธิ์ · **ช่องว่างที่ยังขาด** · **บั๊จที่ทำให้ระบบพัง 11 จุด** |
+| **[docs/API-REFERENCE.md](docs/API-REFERENCE.md)** | **ทุก endpoint ของ `/api/*`** พร้อม auth · param · ตัวอย่าง request/response                                         |
+| **[docs/DATA-MODEL.md](docs/DATA-MODEL.md)**       | **63 ตาราง** พร้อม columns ทั้งหมด                                                                                   |
+
+### 🔧 สำหรับนักพัฒนา
+
+| เอกสาร                                                           | เนื้อหา                                          |
+| ---------------------------------------------------------------- | ------------------------------------------------ |
+| [docs/DEV-DOC.md](docs/DEV-DOC.md)                               | วิธีรัน Sail · seeder map · บัญชีทดสอบ           |
+| [docs/DEPLY_TO_VPS.md](docs/DEPLY_TO_VPS.md)                     | ขั้นตอน deploy ขึ้น VPS                          |
+| [docs/TODO.md](docs/TODO.md)                                     | งานค้าง                                          |
+| [SETUP.md](SETUP.md)                                             | ตั้งค่า AI assistant (Claude Code) บนเครื่องใหม่ |
+| [.agent/ai_workspace_context.md](.agent/ai_workspace_context.md) | บริบทสำหรับ AI                                   |
+
+> ⚠️ **ก่อนเขียน feature ใหม่ อ่าน [docs/SRS.md §9](docs/SRS.md#9-ข้อจำกัดและบั๊จที่ต้องรู้)**
+> มีบั๊จที่ทำให้ระบบพังจริง เช่น route ที่ชี้ไป method ที่ไม่มีอยู่จริง
 
 ---
 
-### 🔐 Authentication & Authorization
-- **Sanctum Token** API authentication (login, register, logout, token revoke)
-- **Livewire Frontend** auth (login, register, forgot-password, logout)
-- **Mobile Phone** quick-registration (no email required)
-- **Role-Based Access Control (RBAC)** — custom Roles & Permissions system
-- **Soft Deletes** on user accounts
-
-### 🛠️ Work Marketplace
-- Post service listings with title, description, images, price, and location
-- Filter by **WorkType**, **Province**, and status
-- Status flow: `stand-by` → `busy` → `close`
-- **Work Bookings** — customers book a worker; both sides confirm
-- **Work Likes** — social engagement on listings
-- **Reviews & Replies** with like support
-- **Work Sessions** with real-time GPS tracking
-- **Work Availability** scheduling
-- Category tagging & top-hits ranking
-
-### 📋 Recruit Marketplace
-- Post job/recruit listings with budget, description, and work type
-- **Recruit Bookings** — workers apply; mutual confirmation flow
-- Category tagging & province-based filtering
-
-### 🎯 Issue Points & Rewards
-- Configurable point-issuing missions
-- **One-time** and **repeating** point events (weekday/date-based)
-- Point transaction logs for full audit trail
-- User point balance tracking
-
-### 💬 Messenger
-- **Channel-based messaging** (authenticated users)
-- **Mobile Phone channels** (guest users, no login required)
-- Conversation history with pagination & `seen_at` tracking
-
-### 🔔 Notifications
-- In-app notification system with types: `announcement`, `work-booking`, `recruit-booking`, `work-like`, `work-review`, `review-reply`, `review-like`, `general`
-- `last-update` endpoint for polling
-
-### 🖼️ Banners & QR Generation
-- Admin-managed promotional banners with pinning
-- QR codes and Code128 (a/b/c) barcode generation via API
-
-### 🗺️ Thai Geographic Data
-- Full hierarchy: Geography → Province → District → Sub-District
-- 77 provinces pre-seeded for location filtering
-
-### 📊 Admin Backend
-
-| Module | Features |
-|--------|----------|
-| Users | List, create, edit, delete, manage roles & permissions |
-| Roles | Custom role management |
-| Works | Moderate all work listings |
-| Recruits | Moderate all recruit posts |
-| Notifications | Broadcast announcements |
-| Banners | Create and manage app banners |
-| Configurations | System-wide key-value config store |
-| Messenger Channels | Monitor and manage chat channels |
-| Issue Points | Define and schedule reward missions |
-| Reports | Point logs, issue point reports, status logs, activity logs, cron logs |
-
----
-
-## 🏛️ Architecture
-
-```
-chaothuk-laravel/
-├── app/
-│   ├── Console/          # Artisan commands & Kernel schedule
-│   ├── Enums/            # 20 typed PHP enums (Status, Roles, Types…)
-│   ├── Events/           # Domain events
-│   ├── Http/
-│   │   ├── Controllers/
-│   │   │   ├── Api/      # 19 API controllers (Sanctum-protected)
-│   │   │   ├── Backend/  # 13 Admin panel controllers
-│   │   │   └── Auth/     # Breeze auth scaffolding
-│   │   ├── Requests/     # 19 Form Request validators
-│   │   └── Resources/    # 36 API Resource transformers
-│   ├── Livewire/
-│   │   └── Frontend/     # 32 Livewire components
-│   │       ├── Auth/     # Login, Register, ForgotPassword
-│   │       ├── Home.php, WorkBrowse.php, WorkDetail.php, ...
-│   │       └── SessionDetail.php  # GPS tracking
-│   ├── Models/           # 35+ Eloquent models
-│   ├── Providers/        # Service providers
-│   └── Traits/           # Reusable Eloquent scopes
-├── database/
-│   ├── migrations/       # 50+ migration files
-│   ├── seeders/          # 13 seeders including geo & mock data
-│   └── factories/        # Model factories
-├── resources/
-│   └── views/
-│       ├── frontend/     # Frontend layout (dark theme)
-│       └── livewire/
-│           └── frontend/ # 32 Livewire blade views
-│               └── auth/ # Login, Register, ForgotPassword views
-├── routes/
-│   ├── api.php           # RESTful API routes
-│   ├── frontend.php      # Livewire frontend routes (31 routes)
-│   ├── web.php           # Admin web routes
-│   ├── auth.php          # Breeze auth routes
-│   └── ajax.php          # AJAX-only routes
-└── lang/                 # Multilingual strings (th/en)
-```
-
----
-
-## 🧱 Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Language | **PHP 8.2** |
-| Framework | **Laravel 11** |
-| Frontend Engine | **Livewire 3** + **Alpine.js** |
-| Database | **MySQL 8** (via Laravel Sail) |
-| Auth | **Laravel Sanctum** (API tokens) + **Livewire** (frontend sessions) |
-| Maps | **MapLibre GL JS** + **CartoDB Dark Tiles** |
-| CSS | **Tailwind CSS** |
-| Build | **Vite** |
-| Admin Frontend | **Blade** + Tailwind CSS |
-| API Docs | **Dedoc Scramble** (auto OpenAPI) |
-| Barcode | `milon/barcode` |
-| Image | `intervention/image-laravel` |
-| Dev Environment | **Laravel Sail** (Docker) |
-| Testing | **PHPUnit 10** |
-| Localization | Thai (`th`) · English (`en`) fallback |
-
----
-
-## ✅ Implementation Progress
-
-### Done ✔️
-
-- [x] **Authentication** — Login, Register, Logout (API + Frontend Livewire)
-- [x] **Frontend Auth Flow** — `/frontend/auth/login`, register, forgot-password with dark theme
-- [x] **User Profiles** — Full CRUD, avatar, cover image, bio, location, theme
-- [x] **Role & Permission system** — Custom RBAC with user/role-level permissions
-- [x] **Work listings** — Create, list, detail, edit, top-hits, status management
-- [x] **Work Bookings** — Create, worker-confirm, customer-confirm
-- [x] **Work Availability** — Scheduling management
-- [x] **Work Likes** — Toggle, count, list
-- [x] **Work Sessions** — Start, pause, resume, stop, confirm with GPS tracking
-- [x] **Real-time GPS Tracking** — Browser Geolocation + MapLibre dark map + live stats
-- [x] **Session Location Logs** — GPS data logging via Livewire & API
-- [x] **Recruit listings** — Create, list, detail, edit
-- [x] **Recruit Bookings** — Create, worker-confirm, customer-confirm
-- [x] **Issue Points** — Admin CRUD, scheduling (one-time & repeating), status workflow
-- [x] **User Points** — Balance tracking (received, available, redeemed)
-- [x] **Messenger** — Auth channels & guest/mobile phone channels
-- [x] **Notifications** — System notifications with typed events
-- [x] **Favorites** — Work favorites
-- [x] **Portfolios** — Create, list, edit
-- [x] **Categories** — Category browsing & tagging
-- [x] **Map Explore** — Interactive MapLibre map for works & recruits
-- [x] **Search** — Full search for works & recruits
-- [x] **Reputation Profiles** — View user reputation
-- [x] **Responsive Navigation** — Desktop sidebar (5+more) + mobile bottom tab (4+more)
-- [x] **Banners** — Pinned banners, admin CRUD
-- [x] **Barcode/QR** — QR, Code128 generation
-- [x] **File Uploads** — Image, avatar, document
-- [x] **Thai Geographic Data** — Province, District, Sub-District seeded
-- [x] **Admin Backend** — Full panel
-- [x] **Reports** — Point logs, activity logs, cron logs
-- [x] **API Documentation** — Auto-generated via Dedoc Scramble
-- [x] **Docker / Sail** — Containerized development
-
-### Pending ❌
-
-- [ ] **Payment Integration** — No payment gateway implemented
-- [ ] **Real-time WebSockets** — Broadcasting set to `log`
-- [ ] **Email Notifications** — Mailer set to `log`
-- [ ] **SMS/OTP Verification** — No OTP challenge
-- [ ] **Admin Analytics Dashboard** — No charts/stats
-- [ ] **Unit & Feature Tests** — Minimal test coverage
-- [ ] **CI/CD Pipeline** — No GitHub Actions
-- [ ] **Production Deployment Guide** — No deployment docs
-
----
-
-## 🚀 Getting Started
+## ⚡ Quick Start
 
 ### Prerequisites
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- PHP 8.2+ & Composer (for initial install only)
+- PHP 8.2+ & Composer (สำหรับติดตั้งครั้งแรกเท่านั้น)
 
 ### 1. Clone & Install
 
@@ -332,87 +99,100 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-### 3. Start Docker Containers
+### 3. Start Docker
 
 ```bash
 alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
 sail up -d
 ```
 
-Application: **http://localhost** · Frontend: **http://localhost/frontend**
+🌐 **http://localhost** · Frontend: **http://localhost/frontend** · API docs: **/docs/api**
 
-### 4. Database Setup
-
-```bash
-sail php artisan migrate
-sail php artisan db:seed
-```
-
-### 5. Frontend Assets
+### 4. Database + Assets
 
 ```bash
-sail yarn
-sail yarn dev
+sail php artisan migrate --seed
+sail yarn && sail yarn dev
+sail php artisan storage:link
 ```
 
-### 6. Storage Link
-
-```bash
-sail artisan storage:link
-```
+รายละเอียดทั้งหมด → [docs/DEV-DOC.md](docs/DEV-DOC.md)
 
 ---
 
 ## 🛠️ Development Commands
 
 ```bash
-# Fresh database with re-seeding
+# Database
 sail php artisan migrate:fresh --seed
+sail php artisan db:seed --class=MockSeeder    # ข้อมูลเยอะ (dev เท่านั้น)
 
-# Run scheduled tasks
-sail php artisan schedule:work
+# Assets
+sail yarn dev
 
-# Laravel Tinker (REPL)
-sail php artisan tinker
+# Cron
+sail php artisan schedule:run
+sail php artisan schedule:list
 
-# List all routes
-sail php artisan route:list --name=frontend
-sail php artisan route:list --path=api
+# Routes
+php artisan route:list --path=api
+php artisan route:list --json
+
+# Gate — ต้องรันก่อนบอกว่าเสร็จ
+./vendor/bin/pint --test     # code style
+./vendor/bin/phpunit         # tests
 ```
+
+> ⚠️ **อย่าลืม:** ทำงานบน branch `develop` เท่านั้น — `chaothuk` / `dev.chaothuk` เป็น deploy-trigger เท่านั้น
+
+---
+
+## 📊 ขนาดระบบ
+
+| สิ่ง                | จำนวน                                                  |
+| ------------------- | ------------------------------------------------------ |
+| Routes              | **228** (api 103 · backend 57 · frontend 39 · ajax 10) |
+| ตาราง               | **63**                                                 |
+| Models              | **54**                                                 |
+| Enums               | **26**                                                 |
+| Livewire components | **98**                                                 |
+| Blade views         | **177**                                                |
+| Seeders             | **16**                                                 |
 
 ---
 
 ## 📝 Commit Convention
 
-This project follows [Conventional Commits](https://www.conventionalcommits.org/):
+ใช้ [Conventional Commits](https://www.conventionalcommits.org/) — เนื้อความเป็น**อังกฤษ**
 
 ```
 <type>(<scope>): <subject>
 ```
 
-| Type | Description |
-|------|-------------|
-| `feat` | New feature |
-| `fix` | Bug fix |
-| `docs` | Documentation only |
-| `style` | Formatting, no logic change |
-| `refactor` | Code restructure |
-| `test` | Adding or fixing tests |
-| `chore` | Build, tooling, or config changes |
+| Type       | Description                       |
+| ---------- | --------------------------------- |
+| `feat`     | New feature                       |
+| `fix`      | Bug fix                           |
+| `docs`     | Documentation only                |
+| `style`    | Formatting, no logic change       |
+| `refactor` | Code restructure                  |
+| `test`     | Adding or fixing tests            |
+| `chore`    | Build, tooling, or config changes |
+
+**ทุกงานเกิดบน `develop`** · deploy ด้วย `git merge --ff-only develop` ไป `dev.chaothuk` / `chaothuk`
 
 ---
 
 ## 🌏 Localization
 
 - `APP_LOCALE=th` · `APP_FALLBACK_LOCALE=en`
-- Translation files in `lang/th/` and `lang/en/`
+- Translation files: `lang/th/` · `lang/en/`
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License**.
-See the [LICENSE](LICENSE) file for details.
+MIT License — ⚠️ ยังไม่มีไฟล์ `LICENSE` ในโปรเจค ต้องเพิ่มเมื่อพร้อมปล่อยจริง
 
 ---
 

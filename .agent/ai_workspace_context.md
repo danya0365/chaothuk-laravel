@@ -1,49 +1,87 @@
 # AI Workspace Context — Chaothuk Laravel
-> Last Updated: 2026-03-02
+
+> **⚠️ อัปเดต 2026-10-06 — ไฟล์นี้ถูกเขียนใหม่ทั้งหมด**
+>
+> เวอร์ชันก่อน (2026-03-02) ล้าสลัยไป 7 เดือนและคลาดเคลื่อนสูงมาก
+> (บอกว่า models 35 ตัว — จริงๆ มี 54 · บอกว่า payment "ยังไม่เริ่ม" — จริงๆ มีครบแล้ว)
+> → **สำเนาเดิมเก็บไว้ที่ `.agent/ai_workspace_context.BACKUP-2026-03-02.md`**
+>
+> 📌 **รายละเอียดเชิงลึกอยู่ใน 3 ไฟล์ที่ root แล้ว ให้อ่านตามความจำเป็น**
+>
+> | ไฟล์                                        | ใช้เมื่อ                                             |
+> | ------------------------------------------- | ---------------------------------------------------- |
+> | **[docs/README.md](../docs/README.md)** | ดัชนีเอกสารทั้งหมด — เริ่มที่นี่ |
+> | **[SRS.md](../docs/SRS.md)**                     | ต้องการภาพรวมระบบ · ฟีเจอร์ · สถาปัตยกรรม · ข้อจำกัด |
+> | **[API-REFERENCE.md](../docs/API-REFERENCE.md)** | ต้องการรายละเอียดทุก endpoint ของ `/api/*`           |
+> | **[DATA-MODEL.md](../docs/DATA-MODEL.md)**       | ต้องการ columns ของทุกตาราง (63 ตาราง)               |
+
+---
 
 ## Project Identity
 
-| Key | Value |
-|-----|-------|
-| **App Name** | Chaothuk — เช่าถูก |
-| **Type** | Thai Freelance & Hiring Marketplace (REST API Backend + Admin Panel) |
-| **Framework** | Laravel 11 |
-| **Language** | PHP 8.2 |
-| **Database** | MySQL 8 (via Laravel Sail / Docker) |
-| **Auth** | Laravel Sanctum (API Token) |
-| **Locale** | Thai (`th`) / English fallback (`en`) |
-| **Dev Env** | Laravel Sail (Docker Compose) |
-| **URL (local)** | http://localhost |
+| Key             | Value                                            |
+| --------------- | ------------------------------------------------ |
+| **App Name**    | Chaothuk — เช่าถูก                               |
+| **Type**        | ตลาดกลางหาฟรีแลนซ์ + ผู้ว่าจ้าง (Web + REST API) |
+| **Framework**   | Laravel 11                                       |
+| **Language**    | PHP 8.2+ (local 8.4)                             |
+| **Database**    | MySQL 8 (Laravel Sail / Docker)                  |
+| **Auth**        | Laravel Sanctum (API token)                      |
+| **Locale**      | Thai (`th`) / English fallback (`en`)            |
+| **Dev Env**     | Laravel Sail (Docker Compose) · `sail` alias     |
+| **URL (local)** | http://localhost                                 |
+
+---
+
+## ตัวเลขจริง (verified 2026-10-06)
+
+| สิ่ง                | จำนวน                                                            |
+| ------------------- | ---------------------------------------------------------------- |
+| Routes ทั้งหมด      | **228** (api 103 · backend 57 · frontend 39 · ajax 10 · อื่น 19) |
+| Migrations          | **70** ไฟล์ → 67 `create` → **63 ตารางจริง**                     |
+| Models              | **54**                                                           |
+| Enums               | **26**                                                           |
+| Livewire components | **98** (Backend 53 · Frontend 44 · Landing 1)                    |
+| Blade views         | **177**                                                          |
+| API controllers     | **24**                                                           |
+| Form Requests       | **19**                                                           |
+| API Resources       | **38**                                                           |
+| Seeders             | **16**                                                           |
+| Factories           | **7**                                                            |
+| บรรทัด PHP ทั้งหมด  | ~34,400                                                          |
 
 ---
 
 ## Core Concept
 
-**Chaothuk** เชื่อมต่อ **ฟรีแลนซ์** (Workers) กับ **ผู้ว่าจ้าง** (Employers) ในประเทศไทย:
-- Workers สร้าง **Work listings** (บริการที่รับทำ)
-- Employers สร้าง **Recruit listings** (งานที่ต้องการจ้าง)
-- ทั้งสองฝ่ายจอง → ยืนยัน → ขยับสถานะ
-- ระบบ **Issue Points** rewards ให้กับผู้ใช้
-- **Messenger** ทั้ง authenticated และ guest (mobile phone channel)
+**Chaothuk** เชื่อม **ผู้ให้บริการ (Workers)** กับ **ผู้ว่าจ้าง (Employers)** ในไทย
+
+- Workers ลงประกาศ **Works** — "ฉันทำงานนี้ได้" (รถรับจ้าง, ช่าง, งานบ้าน)
+- Employers ลงประกาศ **Recruits** — "ฉันต้องการคนมาทำ"
+- ทั้งสองฝ่าย **จอง → ต่อรอง → ยืนยัน → เริ่มงาน → GPS tracking → รีวิว**
+- **Issue Points** rewards + **Reputation** คะแนน 4 มิติ + **Wallet/Payment** (ยังไม่ต่อ gateway)
+- **Messenger** ทั้งแบบ login และ guest (เบอร์มือถือ)
 
 ---
 
 ## Tech Stack
 
 ```
-PHP 8.2
-Laravel 11
-MySQL 8
-Laravel Sanctum (API tokens)
-Laravel Breeze (auth scaffolding)
-Laravel Sail (Docker dev environment)
-Tailwind CSS + Vite (frontend build)
-dedoc/scramble (auto OpenAPI docs → /docs/api)
-intervention/image-laravel (image processing)
-milon/barcode (QR + barcode generation)
-ibex/crud-generator (dev tool)
+PHP 8.2+ · Laravel 11 · MySQL 8
+Laravel Sanctum 4      (API tokens)
+Livewire 4.2          ⚠️ ไม่ใช่ 3 + Alpine.js 3
+Tailwind CSS 3 + Flowbite 2   ⚠️ ไม่ใช่ 4 (darkMode: class)
+Laravel Sail          (Docker dev)
+dedoc/scramble        (auto OpenAPI → /docs/api)
+intervention/image-laravel 3
+milon/barcode 11      (QR + Code128)
 spatie/laravel-options
-tightenco/ziggy (JS route helper)
+tightenco/ziggy 2
+maplibre-gl 4         (แผนที่)
+apexcharts 5          (กราฟ)
+cropperjs 1.6         (crop รูปก่อนอัปโหลด)
+sweetalert2 11        (alert)
+Noto Sans Thai        (ฟอนต์หลัก)
 ```
 
 ---
@@ -52,368 +90,249 @@ tightenco/ziggy (JS route helper)
 
 ```
 chaothuk-laravel/
-├── .agent/
-│   └── ai_workspace_context.md   ← this file
+├── docs/                        ← เอกสารประกอบทั้งหมด
+│   ├── README.md               ← ดัชนี (หน้าประตู)
+│   ├── SRS.md · API-REFERENCE.md · DATA-MODEL.md
+│   └── DEV-DOC.md · DEPLY_TO_VPS.md · TODO.md
+├── .agent/                ไฟล์นี้ + backup + task.md
 ├── app/
-│   ├── Console/                  # Artisan commands + Kernel (cron schedule)
-│   ├── Enums/                    # 20 PHP 8.1+ backed enums
-│   ├── Events/                   # Domain events (4 files)
+│   ├── Livewire/
+│   │   ├── Backend/       53 component (ผู้ดูแลระบบ)
+│   │   ├── Frontend/      44 component (ผู้ใช้ — UI หลัก)
+│   │   └── Landing.php
 │   ├── Http/
-│   │   ├── Controllers/
-│   │   │   ├── Api/              # 18 API controllers
-│   │   │   ├── Backend/          # 13 Admin blade controllers
-│   │   │   └── Auth/             # 9 Breeze auth controllers
-│   │   ├── Requests/             # 19 Form Request validators
-│   │   └── Resources/            # 36 API Resource transformers
-│   ├── Listeners/                # 4 event listeners
-│   ├── Models/                   # 35 Eloquent models
-│   ├── Providers/
-│   ├── Traits/                   # Scopes trait (limitOffset etc.)
-│   └── View/
+│   │   ├── Controllers/Api/   24 controller
+│   │   ├── Controllers/       ⚠️ ไม่มี Backend/ และ Auth/ แล้ว
+│   │   ├── Middleware/        IsCanAccessBackend
+│   │   ├── Requests/          19
+│   │   └── Resources/         38
+│   ├── Models/            54
+│   ├── Enums/             26
+│   ├── Services/          (เช่น ReputationService, MockImageService)
+│   ├── Events/ Listeners/
+│   └── Traits/Scopes.php
 ├── database/
-│   ├── migrations/               # 46 migration files
-│   ├── seeders/                  # 13 seeders
-│   └── factories/
-├── lang/
-│   ├── th/                       # Thai translations
-│   └── en/                       # English translations
-├── resources/                    # Blade views + CSS + JS
+│   ├── migrations/        70
+│   ├── seeders/           16
+│   └── factories/         7
+├── resources/
+│   ├── views/
+│   │   ├── livewire/{backend,frontend}/   ← view ของ Livewire
+│   │   ├── layouts/                        7 (app · backend · frontend)
+│   │   ├── components/                     ⚠️ มี ⚡-prefixed ที่เป็น dead code
+│   │   └── frontend/layout.blade.php      ← dark premium shell
+│   └── js/ · css/
 ├── routes/
-│   ├── api.php                   # REST API routes
-│   ├── web.php                   # Admin web routes
-│   ├── auth.php                  # Breeze auth routes
-│   └── ajax.php                  # AJAX-only routes
-└── docker-compose.yml
+│   ├── api.php       103 routes
+│   ├── frontend.php   39 routes (Livewire)
+│   ├── web.php        57 backend + landing (Livewire)
+│   ├── ajax.php       10 routes
+│   └── console.php    cron schedule
+├── lang/th/ lang/en/
+└── tests/             9 test files (coverage ต่ำ)
 ```
-
----
-
-## Models (35 total)
-
-| Model | Table | Key Fields | Relations |
-|-------|-------|-----------|-----------|
-| `User` | `users` | name, email, password, first_name, last_name, mobile_phone, profile_image, cover_image, biography, theme, role_id | hasMany Works, Recruits, UserPoints, Notifications; BelongsToMany Roles, Permissions |
-| `Work` | `works` | code, title, description, details (JSON), images (JSON), price, avg_review_rating, display_priority, work_status, province_id, work_type_id, author_id | BelongsTo User, Province, WorkType; HasMany WorkBookings; BelongsToMany Categories |
-| `WorkBooking` | `work_bookings` | work_id, author_id, customer_message, mobile_phone, booking_date, booking_status, worker_confirm_at, customer_confirm_at | BelongsTo Work, User |
-| `WorkLike` | `work_likes` | work_id, author_id | — |
-| `WorkType` | `work_types` | name | — |
-| `Recruit` | `recruits` | title, description, images (JSON), budget, recruit_status, province_id, work_type_id, author_id | BelongsTo User, Province, WorkType; HasMany RecruitBookings; BelongsToMany Categories |
-| `RecruitBooking` | `recruit_bookings` | recruit_id, author_id, booking_status, worker_confirm_at, customer_confirm_at | BelongsTo Recruit, User |
-| `Role` | `roles` | name, slug | BelongsToMany Users, Permissions |
-| `Permission` | `permissions` | name, slug | BelongsToMany Roles, Users |
-| `RolePermission` | `role_permissions` | role_id, permission_id, data | pivot |
-| `UserPermission` | `user_permissions` | user_id, permission_id, data, desc | pivot |
-| `IssuePoint` | `issue_points` | slug, name, desc, points, type, status, cron_task, cron_info (JSON), start_at, end_at | BelongsTo User; morphMany PointTransactionLogs |
-| `IssuePointStatusLog` | `issue_point_status_logs` | issue_point_id, status, note | — |
-| `UserPoint` | `user_points` | user_id, point_received, point_available, expired_at | BelongsTo User |
-| `UserPointLog` | `user_point_logs` | user_id, issue_point_id, points, action | — |
-| `PointTransactionLog` | `point_transaction_logs` | user_id, transactionable (morph), points, note | morph |
-| `MessengerChannel` | `messenger_channels` | name, type, mobile_phone | HasMany Participants, Conversations |
-| `MessengerConversation` | `messenger_conversations` | channel_id, participant_id, message, type, seen_at | BelongsTo Channel |
-| `MessengerParticipant` | `messenger_participants` | channel_id, user_id | BelongsTo Channel, User |
-| `Notification` | `notifications` | title, body, type, is_pinned | — |
-| `UserNotification` | `user_notifications` | author_id, title, details (JSON), notification_type, is_read, notificationable (morph) | BelongsTo User; morph Works/Recruits |
-| `Banner` | `banners` | title, image, type, is_pinned, sort_order, start_at, end_at | — |
-| `Category` | `categories` | name, slug | BelongsToMany Works, Recruits |
-| `Configuration` | `configurations` | key, value, value_type, desc | — |
-| `Province` | `provinces` | name_th, name_en, geography_id | — |
-| `District` | `districts` | name_th, name_en, province_id | — |
-| `SubDistrict` | `sub_districts` | name_th, name_en, district_id | — |
-| `Geography` | `geographies` | name | — |
-| `Cron` | `crons` | name, command, status | — |
-| `CronLog` | `cron_logs` | cron_id, type, message, executed_at | — |
-| `UserActivityLog` | `user_activity_logs` | user_id, action, target, note | — |
-| `Review` | `reviews` | — | — |
-| `ReviewLike` | `review_likes` | — | — |
-| `Reply` | `replies` | — | — |
-| `ReplyLike` | `reply_likes` | — | — |
-
----
-
-## Enums (20 total)
-
-| Enum | Values |
-|------|--------|
-| `Role` | SUPERVISOR=1, BACKEND=2, MEMBER=3, MOBILE_PHONE=4 |
-| `Permission` | access_backend, manage_permission, manage_role, create_recruit, create_work, review_work, reply_review |
-| `WorkStatus` | stand-by, busy, close |
-| `RecruitStatus` | open, close |
-| `BookingStatus` | pending, confirm, cancel |
-| `ConfirmStatus` | pending, confirm, cancel |
-| `IssueType` | one_time, repeat |
-| `IssueStatus` | pending, approve |
-| `CronRepeatType` | at_weekday_in_week, at_date_in_month |
-| `CronLogType` | info, error, success |
-| `MessengerConversationType` | text, image, file |
-| `NotificationType` | announcement, work-booking-confirm, recruit-booking-confirm, work-like, work-review, review-reply, review-like, recruit-booking, work-booking, general |
-| `BannerType` | image, video |
-| `ConfigurationValueType` | string, integer, boolean, json |
-| `UserActivityType` | login, logout, register, update_profile |
-| `Gender` | male, female, other |
-| `PersonType` | individual, company |
-| `Theme` | light, dark |
-| `ThemeScheme` | default, custom |
-
----
-
-## API Routes (`/api`)
-
-### Auth (`/api/auth`)
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| POST | `/auth/login` | ❌ | Login, returns Sanctum token |
-| POST | `/auth/register` | ❌ | Register new user |
-| POST | `/auth/customer-register-login` | ❌ | Mobile phone auto-register/login |
-| GET | `/auth/user` | ✅ | Get authenticated user |
-| POST | `/auth/logout` | ✅ | Logout (revoke current token) |
-| POST | `/auth/revoke-token` | ✅ | Revoke specific token |
-
-### Me (`/api/me`) — all require auth
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/me` | Get own profile |
-| POST | `/me` | Update own profile |
-| POST | `/me/password` | Change password |
-| GET | `/me/notifications` | Get user notifications |
-| GET | `/me/works` | Get own works |
-| GET | `/me/work-likes` | Get liked works |
-| GET | `/me/work-likes/work/{workId}` | Check if liked a work |
-| GET | `/me/work-bookings` | Get own work bookings |
-| GET | `/me/recruits` | Get own recruits |
-| GET | `/me/recruit-bookings` | Get own recruit bookings |
-
-### Works (`/api/works`)
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| GET | `/works` | ❌ | List works (filter: keyword, province_id, date, limit, offset) |
-| GET | `/works/top-hits` | ❌ | Top-priority works |
-| GET | `/works/{id}` | ❌ | Work detail |
-| GET | `/works/{id}/likes` | ❌ | Work likes users list |
-| GET | `/works/{id}/likes/count` | ❌ | Like count |
-| GET | `/works/{id}/bookings` | ❌ | All bookings for work |
-| GET | `/works/{id}/confirm-bookings` | ❌ | Confirmed bookings (supports date_start/date_end filter) |
-| POST | `/works` | ✅ | Create work (requires `create_work` permission) |
-| POST | `/works/{id}/bookings` | ✅ | Book a work (requires: customer_message, mobile_phone, booking_date) |
-| POST | `/works/{id}/likes` | ✅ | Toggle like on a work |
-
-### Work Bookings (`/api/work-bookings`)
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| GET | `/{id}` | ❌ | Booking detail |
-| POST | `/{id}/worker-confirm` | ✅ | Worker confirms booking |
-| POST | `/{id}/customer-confirm` | ✅ | Customer confirms booking |
-
-### Recruits (`/api/recruits`)
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| GET | `/recruits` | ❌ | List recruits |
-| GET | `/recruits/{id}` | ❌ | Recruit detail |
-| GET | `/recruits/{id}/bookings` | ❌ | Bookings for recruit |
-| POST | `/recruits` | ✅ | Create recruit |
-| POST | `/recruits/{id}/bookings` | ✅ | Apply to recruit |
-
-### Recruit Bookings (`/api/recruit-bookings`)
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| GET | `/{id}` | ❌ | Booking detail |
-| POST | `/{id}/worker-confirm` | ✅ | Worker confirms |
-| POST | `/{id}/customer-confirm` | ✅ | Customer confirms |
-
-### Messenger (`/api/messenger`)
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| POST | `/mobile-phone-channel/new` | ❌ | Create guest phone channel |
-| GET | `/mobile-phone-channel/{id}/{phone}/conversations` | ❌ | Guest channel history |
-| GET | `/mobile-phone-channel/{id}/{phone}/conversations/last` | ❌ | Last guest message |
-| POST | `/mobile-phone-channel/{id}/{phone}/conversations` | ❌ | Send guest message |
-| POST | `/channel/{id}/conversations/{convId}/seen` | ❌ | Mark as seen |
-| GET | `/channel/me` | ✅ | My channel |
-| GET | `/channel/{id}/conversations` | ✅ | Auth channel history |
-| POST | `/channel/{id}/conversations` | ✅ | Send auth message |
-| GET | `/channel/{id}/conversations/last` | ✅ | Last auth message |
-
-### Other APIs
-| Group | Path | Auth | Description |
-|-------|------|------|-------------|
-| Notifications | `/notifications` `/notifications/last-update` `/notifications/{id}` | ❌ | Notification list + last-update polling |
-| Banners | `/banners` `/banners/pinned` `/banners/last-update` `/banners/{id}` | ✅ | Banner management |
-| Issue Points | `/issue-points/{id}` | ❌ | Issue point detail |
-| Provinces | `/provinces` | ❌ | All provinces list |
-| Work Types | `/work-types` | ❌ | All work types |
-| Configurations | `/configurations` | ❌ | App configurations |
-| Barcode | `/barcode/qr/{code}` `/barcode/code128{a/b/c}/{code}` | ❌ | Generate barcode/QR |
-| Barcode Preview | `/barcode-preview/qr/{code}` `/barcode-preview/code128{...}/{code}` | ❌ | Preview barcode |
-| Upload | `/upload/image` `/upload/avatar` `/upload/document` `/upload/original-image` | ❌ | File uploads |
-| User Logs | `/user-logs/point-logs` `/user-logs/point-transaction-logs` | ✅ | Point history |
-
----
-
-## Admin Backend Routes (`/backend`) — all require `auth` + `IsCanAccessBackend` middleware
-
-| Resource | URL | Controller |
-|----------|-----|-----------|
-| Dashboard | `/backend` | `BackendController@index` |
-| Users | `/backend/users` | `Backend\UserController` |
-| Roles | `/backend/roles` | `Backend\RoleController` |
-| Works | `/backend/works` | `Backend\WorkController` |
-| Recruits | `/backend/recruits` | `Backend\RecruitController` |
-| Banners | `/backend/banners` | `Backend\BannerController` |
-| Notifications | `/backend/notifications` | `Backend\NotificationController` |
-| Configurations | `/backend/configurations` | `Backend\ConfigurationController` |
-| Messenger Channels | `/backend/messenger-channels` | `Backend\MessengerChannelController` |
-| Issue Points | `/backend/issue-points` | `Backend\IssuePointController` |
-| Categories | `/backend/categories` | `Backend\CategoryController` |
-| Reports | `/backend/reports/point-logs` `/backend/reports/issue-points` `/backend/reports/user-activity-logs` `/backend/reports/cron-logs` etc. | `Backend\ReportController` |
 
 ---
 
 ## Key Patterns & Conventions
 
 ### API Response Format
+
 ```json
 { "status": true, "data": { ... } }
-{ "status": false, "message": "error description" }
+{ "status": false, "message": "no permission" }
 ```
 
-### Pagination / Filtering
-- `limitOffset(request()->all())` — custom Scopes trait method
-- Query params: `limit`, `offset`, `keyword`, `province_id`, `date`, `date_start`, `date_end`
+⚠️ **ข้อยกเว้น:** `/api/sessions/*` คืน `{ data, message }` (ไม่มี `status`)
 
-### Permission Check in Controller
+### Permission Check — ทำใน controller ไม่ใช้ Policy
+
 ```php
-$user = auth('sanctum')->user();
 if (!$user->isPermission(Permission::CREATE_WORK->value)) {
     return response()->json(['status' => false, 'message' => 'no permission'], 403);
 }
 ```
 
-### Soft Deletes
-All main models (`User`, `Work`, `Recruit`, `IssuePoint`) use `SoftDeletes`
+⚠️ **มีแค่ 2 จุด** ในทั้ง API — `createWork` และ `createRecruit` (endpoint อื่นไม่ตรวจ)
 
-### Notification (in-app)
+### Middleware
+
+- `auth:sanctum` — API
+- `auth` — session
+- `IsCanAccessBackend` — alias เดียวที่ custom → ต้องเป็น User + มีสิทธิ์ `access_backend`
+
+### Sanctum
+
+`auth('sanctum')->user()` ในทุก API controller
+
+### Pagination
+
+`limitOffset(request()->all())` จาก `App\Traits\Scopes` — **ไม่ใช้ `paginate()`**
+
+### SoftDeletes
+
+Main model ใช้ `SoftDeletes` — ต้อง `withTrashed()` เมื่อต้องการ
+⚠️ **ไม่มี** ใน: `permissions`, `user_reputations`, `user_badges`, `user_verifications`,
+`user_reputation_logs`, `favorites`, `work_availabilities`, `work_blocked_dates`,
+`session_location_logs`, `province_top_works`, `wallet_transactions`
+
+### Route Group Pattern
+
 ```php
-$notification = new UserNotification();
-$notification->title = "...";
-$notification->details = ['count' => 1];
-$notification->notification_type = NotificationType::WORK_LIKE->value;
-$notification->notificationable()->associate($work);
-$work->author->notifications()->save($notification);
+Route::group(['prefix' => 'x', 'as' => 'api.x.', 'middleware' => ['auth:sanctum']], function () {
+    // ...
+});
 ```
 
-### Seeder Order
-`GeographySeeder → ProvinceSeeder → DistrictSeeder → SubDistrictSeeder → RoleSeeder → PermissionSeeder → UserSeeder → WorkTypeSeeder → CategorySeeder → ConfigurationSeeder → NotificationSeeder → MockSeeder`
+### ภาษาไทย
+
+User-facing string เป็น **ภาษาไทย** (notifications, validation messages)
+
+### Backend = Livewire ไม่ใช่ Controller
+
+ทุกหน้า `/backend/*` เป็น **full-page Livewire component** ที่ `#[Layout('layouts.backend')]`
+ไม่มี `app/Http/Controllers/Backend/` — เอกสารเดิมบอกผิด
 
 ---
 
-## Implementation Progress
+## ระบบที่มี (ครบแล้ว — เอกสารเดิมบอกว่าไม่มี)
 
-### ✅ Fully Implemented
-- Auth (login, register, logout, token revoke, mobile-phone quicklogin)
-- User profile CRUD (avatar, cover, bio, location, theme)
-- RBAC — Roles, Permissions (user-level + role-level)
-- Work listings (CRUD, filter, top-hits, like toggle, review-rating field)
-- Work Bookings (create, worker-confirm, customer-confirm, confirmed-booking filter by date range)
-- Recruit listings (CRUD, filter)
-- Recruit Bookings (create, worker-confirm, customer-confirm)
-- Messenger — auth channels + guest mobile-phone channels + seen_at tracking
-- In-app Notifications with polymorphic relations + last-update polling
-- Banners (pinned, last-update)
-- Issue Points — admin CRUD, one-time & repeating (weekday/date), approve workflow
-- User Points — balance (received, available, redeemed)
-- Point transaction logs + user point logs
-- File upload (image, avatar, document, original-image)
-- Barcode & QR generation + preview
-- Thai geographic data (77 provinces, districts, sub-districts)
-- Categories (for Works & Recruits)
-- Admin Backend panel (Users, Roles, Works, Recruits, Banners, Config, Messenger, IssuePoints)
-- Reports (point logs, issue logs, status logs, activity logs, cron logs, transaction logs)
-- CronJob framework (Kernel scheduling + CronLog model)
-- User Activity Logs
-- App-wide Configuration key-value store
-- API documentation via Scramble (`/docs/api`)
-- Docker/Sail dev environment
+| ระบบ                   | ตาราง                                                                                                                                             |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Reputation**         | `user_reputations` (user_id เป็น PK) · `user_reputation_reviews` · `user_reputation_logs` · `user_badges` · `user_verifications` · `user_reports` |
+| **Wallet/Payment**     | `user_wallets` · `wallet_transactions` · `payments`                                                                                               |
+| **Dispute**            | `disputes` (morph bookingable)                                                                                                                    |
+| **Portfolio**          | `portfolios`                                                                                                                                      |
+| **Favorite**           | `favorites` (morph)                                                                                                                               |
+| **Work Session + GPS** | `work_sessions` (morph) · `session_location_logs`                                                                                                 |
+| **Availability**       | `work_availabilities` · `work_blocked_dates`                                                                                                      |
+| **Promotion**          | `featured_works` · `province_top_works`                                                                                                           |
+| **Moderation**         | `is_suspended` บน works/recruits/posts · `user_reports` (polymorphic)                                                                             |
 
-### 🔄 Partial / Migrations Exist but Not Wired Up
-- **Posts** — `posts` and `post_likes` tables exist (migration: 2024-10-25) but no Model, Controller, or API routes
-- **Works Reviews** — `works_reviews` and `recruits_reviews` tables exist but no dedicated API endpoints
-- **Reviews & Replies** — Models exist (`Review`, `Reply`, `ReviewLike`, `ReplyLike`) but no API routes
-- **Notification Broadcasting** — UserNotification model is in-app only; no push/FCM delivery implemented
+> 📖 รายละเอียดทุกตาราง → [DATA-MODEL.md](../docs/DATA-MODEL.md)
 
-### ❌ Not Started
-- Payment gateway (PromptPay / Omise / Stripe)
-- `avg_review_rating` auto-calculation (field exists, no aggregation job)
-- Full-text search (no Scout / Elasticsearch)
-- Real-time WebSockets (BROADCAST_CONNECTION=log; no Pusher/Reverb)
-- Email templates (MAIL_MAILER=log in dev)
-- SMS / OTP verification for mobile phone users
-- Admin analytics dashboard (charts/stats)
-- Feature & Unit Tests (PHPUnit configured but minimal coverage)
-- CI/CD pipeline (no GitHub Actions)
+---
+
+## สิ่งที่ยังไม่มี / ทำไม่ครบ
+
+| ฟีเจอร์                     | สถานะ                                                        |
+| --------------------------- | ------------------------------------------------------------ |
+| Payment gateway integration | ❌ มีตารางแต่ไม่ต่อ Omise/Stripe/PromptPay                   |
+| Withdraw flow               | ❌ มี type `withdrawal` แต่ไม่มี logic                       |
+| Email verification          | ❌                                                           |
+| Password reset (ขั้นตอนจบ)  | ❌ `ForgotPassword` ส่งลิงก์แล้วจบ ไม่มี reset-confirm route |
+| Email จริง                  | ❌ `MAIL_MAILER=log`                                         |
+| Real-time (WebSocket)       | ❌ `BROADCAST_CONNECTION=log`                                |
+| Push notification           | ❌ in-app เท่านั้น                                           |
+| Coupon / Promotion code     | ❌                                                           |
+| Service packages            | ❌                                                           |
+| Recruit counters            | ❌ ไม่มี like_count/reply_count/avg_review_rating (Works มี) |
+| Search endpoint             | ❌ มี `keyword` param แต่ไม่มี `/search` route               |
+| Update work/recruit API     | ❌ มี method แต่ไม่ได้ route                                 |
+
+---
+
+## ⚠️ บั๊จที่ทำให้ระบบพัง
+
+| ปัญหา                                                       | ผล                                            |
+| ----------------------------------------------------------- | --------------------------------------------- |
+| `GET /api/auth/customer-register-login` → method ไม่มี      | **500**                                       |
+| `GET /api/link-storage`                                     | unauth + รัน `Artisan::call('storage:link')`  |
+| `/api/upload/*` ไม่มี auth                                  | อัปโหลดไฟล์ได้โดยไม่ login                    |
+| `/ajax/upload/*` ไม่มี auth                                 | เหมือนกัน                                     |
+| `MessengerController::getChannelConversations($id)`         | อ่านแชทคนอื่นได้ (ไม่ตรวจ participant)        |
+| `SessionController` ทุก method                              | ใคร auth ก็เข้าถึง session คนอื่นได้          |
+| `NotificationController::list`                              | อ่าน notification ทั้งระบบ ไม่ scope ต่อ user |
+| `routes/web.php` — `settings.index` ซ้ำ 2 ครั้ง             | route name ชน                                 |
+| `IssuePoint::customer()` / `userMission()` → class ไม่มี    | **fatal**                                     |
+| `UserSeeder` import `UserBackend` → class ไม่มี             | seed พัง                                      |
+| `Cron` model → ไม่มีตาราง `crons`                           | query error                                   |
+| `SubDistrict` fillable `amphure_id` ≠ column `district_id`  | mass-assign ไม่ได้                            |
+| `layouts/app.blade.php` include `layouts.navigation`        | ไฟล์ไม่มี                                     |
+| `me-explorer.blade.php` เรียก `route('frontend.dashboard')` | route ไม่มี                                   |
+
+**รายละเอียดทั้งหมด** → [SRS.md §9](../docs/SRS.md#9-ข้อจำกัดและบั๊จที่ต้องรู้)
+
+---
+
+## โค้ดตายที่ยังอยู่
+
+| ประเภท      | รายการ                                                                                                                                   |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Controllers | `MessengerController` · `MessengerConversationController` · `MessengerParticipantController` · `UserActivityLogController` (ไม่มี route) |
+| Livewire    | `Frontend\{Dashboard, MeExplorer, WorkExplorer, RecruitExplorer}`                                                                        |
+| Blade       | `components/backend/⚡*` (~49) · `components/frontend/⚡*` (3)                                                                           |
+| Requests    | `WorkRequest` (ซ้ำ `Api/WorkRequest`) · `ProfileUpdateRequest` · `UserPointRequest` (ว่าง)                                               |
+| Models      | `Cron` (ไม่มีตาราง) · `Permission` (มี method ชี้ column ที่ไม่มี)                                                                       |
+| Resources   | `IssuePointResource` · `RoleResource` · `UserPointLogResource` (leak raw model)                                                          |
 
 ---
 
 ## Development Commands
 
 ```bash
-# Start Docker
-sail up -d
-sail stop
+# Docker
+sail up -d / sail stop
 
 # Database
 sail php artisan migrate
-sail php artisan db:seed
-sail php artisan migrate:fresh --seed
-sail php artisan db:seed --class=MockSeeder
+sail php artisan migrate:fresh --seed      # DatabaseSeeder เรียก 10 ตัว
+sail php artisan db:seed --class=MockSeeder # dev เท่านั้น (เรียก DemoSeeder อัตโนมัติ)
+sail php artisan db:seed --class=DemoSeeder
+sail php artisan db:seed --class=ReputationSeeder   # ไม่ถูก DatabaseSeeder เรียก
+sail php artisan db:seed --class=NotificationSeeder  # ไม่ถูก DatabaseSeeder เรียก
 
 # Assets
-sail yarn
-sail yarn dev
-
-# Storage
+sail yarn / sail yarn dev
 sail artisan storage:link
 
 # Cron
-sail php artisan schedule:work    # local only
-sail php artisan schedule:run     # force run once
-sail php artisan schedule:list    # show all scheduled tasks
+sail php artisan schedule:run
+sail php artisan schedule:list
 
-# Generate CRUD boilerplate
-sail php artisan make:migration create_xxx_table
-sail php artisan make:crud xxx
+# Gate (ก่อนบอกว่าเสร็จ)
+./vendor/bin/pint --test
+./vendor/bin/phpunit
 
-# Tinker
-sail php artisan tinker
+# เอกสาร
+php artisan route:list --json
 ```
+
+### ⚠️ Seeder ที่ DatabaseSeeder **ไม่เรียก**
+
+`StarterSeeder` · `NotificationSeeder` · `ReputationSeeder` · `MockSeeder` · `DemoSeeder`
+
+### ⚠️ `ProductionSeeder` ไม่มีจริง
+
+`DEV-DOC.md` อ้างถึง แต่ไม่มีไฟล์
 
 ---
 
-## Environment Config (key values)
+## บัญชีทดสอบ (จาก DemoSeeder / MockSeeder)
 
-```dotenv
-APP_NAME="Chaothuk - เช่าถูก"
-APP_LOCALE=th
-APP_FALLBACK_LOCALE=en
-DB_CONNECTION=mysql
-DB_HOST=mysql
-DB_PORT=3306
-DB_DATABASE=chaothuk
-QUEUE_CONNECTION=database
-CACHE_STORE=database
-SESSION_DRIVER=database
-FILESYSTEM_DISK=local
-BROADCAST_CONNECTION=log   # ← not real-time yet
-MAIL_MAILER=log             # ← no real emails yet
-```
+| ประเภท   | บัญชี                                                                                                     |
+| -------- | --------------------------------------------------------------------------------------------------------- |
+| Demo     | `worker1@chaothuk.test` · `worker2@chaothuk.test` · `employer1@chaothuk.test` · `employer2@chaothuk.test` |
+| Mock     | `user1..user50@mock.test` (1-30 = worker, 31-50 = employer)                                               |
+| Password | `password` (ทั้งหมด)                                                                                      |
 
 ---
 
 ## Notes for AI Assistant
 
-- **ภาษาไทย** ใช้ใน string notifications (เช่น `"มีคนชื่นชอบงานของคุณ"`) และ lang files → ควรรักษา pattern นี้ไว้
-- **Route prefix pattern**: API ใช้ `Route::group(['prefix' => 'x', 'as' => 'api.x.', 'middleware' => [...]])` เสมอ
-- **Permission gate** ทำ in-controller ไม่ใช้ middleware/policy — pattern นี้ใช้ทั้ง project
-- **Sanctum** ใช้ `auth('sanctum')->user()` ใน API controllers
-- **SoftDeletes** ใช้กับทุก main model — อย่าลืม `withTrashed()` หรือ `onlyTrashed()` เมื่อต้องการ
-- **Scopes Trait** — `limitOffset()` มาจาก `App\Traits\Scopes` ไม่ใช่ built-in Laravel
-- **API Docs** อยู่ที่ `http://localhost/docs/api` (Scramble auto-gen)
-- **CRUD Generator**: `sail php artisan make:crud {table}` สำหรับ boilerplate ใหม่
+- **ภาษาไทย** ใช้ใน string ที่ user เห็น (notifications, validation) — คง pattern นี้ไว้
+- **Permission gate ทำใน controller** ไม่ใช้ Policy — pattern ทั้งโปรเจค
+- **Sanctum** ใช้ `auth('sanctum')->user()`
+- **SoftDeletes** ใช้กับ main model — อย่าลืม `withTrashed()`
+- **Scopes Trait** — `limitOffset()` จาก `App\Traits\Scopes` ไม่ใช่ของ Laravel
+- **Route group** ใช้ prefix + `as` + middleware เสมอ
+- **Livewire 4.2** — ตรวจว่า syntax ที่ใช้เข้ากับเวอร์ชันนี้
+- **ห้าม commit** ถ้าพี่ไม่สั่ง · ทำงานบน `develop` เท่านั้น (ดู `.claude/memory/decisions/0002-develop-only-workflow.md`)
+- **API docs** ที่ `/docs/api` (Scramble auto-gen)
+- **CRUD generator**: `sail php artisan make:crud {table}`
+- เอกสารหลักอยู่ที่ `docs/` — เริ่มที่ `docs/README.md` แล้วเลือกเปิดตามความจำเป็น
+  (`SRS.md` 594 · `API-REFERENCE.md` 649 · `DATA-MODEL.md` 901 บรรทัด — อย่าจำทุกอย่างพร้อมกัน)
+
+---
+
+_อัปเดต 2026-10-06 โดย ซาน่า 🌈 · สำเนาเดิม: `.agent/ai_workspace_context.BACKUP-2026-03-02.md`_
