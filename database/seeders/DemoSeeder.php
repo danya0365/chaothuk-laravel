@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Role as EnumsRole;
 use App\Models\Category;
 use App\Models\Dispute;
 use App\Models\Favorite;
@@ -46,96 +47,102 @@ class DemoSeeder extends Seeder
         $worker1 = User::firstOrCreate(
             ['email' => 'worker1@chaothuk.test'],
             [
-                'name'              => 'สมชาย ขับรถดี',
+                'name' => 'สมชาย ขับรถดี',
                 'email_verified_at' => now(),
-                'password'          => Hash::make('password'),
-                'first_name'        => 'สมชาย',
-                'last_name'         => 'ขับรถดี',
-                'location'          => 'กรุงเทพมหานคร',
-                'profile_image'     => 'https://i.pravatar.cc/150?img=11',
+                'password' => Hash::make('password'),
+                'first_name' => 'สมชาย',
+                'last_name' => 'ขับรถดี',
+                'location' => 'กรุงเทพมหานคร',
+                'profile_image' => 'https://i.pravatar.cc/150?img=11',
             ]
         );
 
         $worker2 = User::firstOrCreate(
             ['email' => 'worker2@chaothuk.test'],
             [
-                'name'              => 'มานะ ทำงานดี',
+                'name' => 'มานะ ทำงานดี',
                 'email_verified_at' => now(),
-                'password'          => Hash::make('password'),
-                'first_name'        => 'มานะ',
-                'last_name'         => 'ทำงานดี',
-                'location'          => 'เชียงใหม่',
-                'profile_image'     => 'https://i.pravatar.cc/150?img=12',
+                'password' => Hash::make('password'),
+                'first_name' => 'มานะ',
+                'last_name' => 'ทำงานดี',
+                'location' => 'เชียงใหม่',
+                'profile_image' => 'https://i.pravatar.cc/150?img=12',
             ]
         );
 
         $employer1 = User::firstOrCreate(
             ['email' => 'employer1@chaothuk.test'],
             [
-                'name'              => 'บริษัท ขนส่งไทย จำกัด',
+                'name' => 'บริษัท ขนส่งไทย จำกัด',
                 'email_verified_at' => now(),
-                'password'          => Hash::make('password'),
-                'first_name'        => 'ขนส่งไทย',
-                'last_name'         => 'บริษัท',
-                'location'          => 'กรุงเทพมหานคร',
-                'profile_image'     => 'https://i.pravatar.cc/150?img=20',
+                'password' => Hash::make('password'),
+                'first_name' => 'ขนส่งไทย',
+                'last_name' => 'บริษัท',
+                'location' => 'กรุงเทพมหานคร',
+                'profile_image' => 'https://i.pravatar.cc/150?img=20',
             ]
         );
 
         $employer2 = User::firstOrCreate(
             ['email' => 'employer2@chaothuk.test'],
             [
-                'name'              => 'ห้างหุ้นส่วน โลจิสติกส์ดี',
+                'name' => 'ห้างหุ้นส่วน โลจิสติกส์ดี',
                 'email_verified_at' => now(),
-                'password'          => Hash::make('password'),
-                'first_name'        => 'โลจิสติกส์ดี',
-                'last_name'         => 'ห้างหุ้นส่วน',
-                'location'          => 'นนทบุรี',
-                'profile_image'     => 'https://i.pravatar.cc/150?img=21',
+                'password' => Hash::make('password'),
+                'first_name' => 'โลจิสติกส์ดี',
+                'last_name' => 'ห้างหุ้นส่วน',
+                'location' => 'นนทบุรี',
+                'profile_image' => 'https://i.pravatar.cc/150?img=21',
             ]
         );
+
+        // Demo accounts need a role or they cannot post anything: permissions live
+        // on the role, and the create endpoints gate on create_work / create_recruit.
+        foreach ([$worker1, $worker2, $employer1, $employer2] as $demoUser) {
+            $demoUser->roles()->sync([EnumsRole::MEMBER->value]);
+        }
 
         // ─── Demo Works ───────────────────────────────────────────────────────
         $workData = [
             [
-                'author_id'   => $worker1->id,
-                'title'       => 'รถกะบะรับจ้างขนส่ง กรุงเทพ-ปริมณฑล',
-                'work_type'   => 'รถกะบะ',
+                'author_id' => $worker1->id,
+                'title' => 'รถกะบะรับจ้างขนส่ง กรุงเทพ-ปริมณฑล',
+                'work_type' => 'รถกะบะ',
                 'description' => 'ให้บริการขนส่งสินค้าทุกประเภท รวดเร็ว ตรงเวลา ราคาสมเหตุสมผล',
-                'price'       => 1500,
-                'img_seed'    => 10,
-                'latitude'    => 13.7563,
-                'longitude'   => 100.5018,
+                'price' => 1500,
+                'img_seed' => 10,
+                'latitude' => 13.7563,
+                'longitude' => 100.5018,
             ],
             [
-                'author_id'   => $worker1->id,
-                'title'       => 'รับจ้างขนย้ายบ้าน ครบวงจร',
-                'work_type'   => 'รถกะบะ',
+                'author_id' => $worker1->id,
+                'title' => 'รับจ้างขนย้ายบ้าน ครบวงจร',
+                'work_type' => 'รถกะบะ',
                 'description' => 'ย้ายบ้านครบชุด มีทีมงาน 3 คน รถกะบะ 1 คัน บริการครบ',
-                'price'       => 3500,
-                'img_seed'    => 20,
-                'latitude'    => 13.8451,
-                'longitude'   => 100.5681,
+                'price' => 3500,
+                'img_seed' => 20,
+                'latitude' => 13.8451,
+                'longitude' => 100.5681,
             ],
             [
-                'author_id'   => $worker2->id,
-                'title'       => 'รถบรรทุก 6 ล้อ วิ่งต่างจังหวัด',
-                'work_type'   => 'รถบรรทุก',
+                'author_id' => $worker2->id,
+                'title' => 'รถบรรทุก 6 ล้อ วิ่งต่างจังหวัด',
+                'work_type' => 'รถบรรทุก',
                 'description' => 'รับงานขนส่งสินค้าต่างจังหวัด สินค้าปลอดภัย จัดส่งรวดเร็ว',
-                'price'       => 5000,
-                'img_seed'    => 30,
-                'latitude'    => 18.7883,
-                'longitude'   => 98.9853,
+                'price' => 5000,
+                'img_seed' => 30,
+                'latitude' => 18.7883,
+                'longitude' => 98.9853,
             ],
             [
-                'author_id'   => $worker2->id,
-                'title'       => 'มอเตอร์ไซค์รับส่งของด่วน ในกรุงเทพ',
-                'work_type'   => 'มอเตอร์ไซค์',
+                'author_id' => $worker2->id,
+                'title' => 'มอเตอร์ไซค์รับส่งของด่วน ในกรุงเทพ',
+                'work_type' => 'มอเตอร์ไซค์',
                 'description' => 'ส่งของด่วนในกรุงเทพ ระยะเวลา 1 ชั่วโมงถึงปลายทาง',
-                'price'       => 200,
-                'img_seed'    => 40,
-                'latitude'    => 13.7248,
-                'longitude'   => 100.5230,
+                'price' => 200,
+                'img_seed' => 40,
+                'latitude' => 13.7248,
+                'longitude' => 100.5230,
             ],
         ];
 
@@ -144,17 +151,17 @@ class DemoSeeder extends Seeder
             $work = Work::firstOrCreate(
                 ['title' => $data['title'], 'author_id' => $data['author_id']],
                 [
-                    'author_id'        => $data['author_id'],
-                    'title'            => $data['title'],
-                    'description'      => $data['description'],
-                    'price'            => $data['price'],
-                    'code'             => strtoupper(substr(md5($data['title']), 0, 8)),
-                    'province_id'      => 1,
-                    'work_type_id'     => WorkType::where('title', $data['work_type'])->value('id') ?? 1,
-                    'primary_image'    => \App\Services\MockImageService::publicRel('work', config("mock-images.work_type_slugs.{$data['work_type']}") . '-1'),
+                    'author_id' => $data['author_id'],
+                    'title' => $data['title'],
+                    'description' => $data['description'],
+                    'price' => $data['price'],
+                    'code' => strtoupper(substr(md5($data['title']), 0, 8)),
+                    'province_id' => 1,
+                    'work_type_id' => WorkType::where('title', $data['work_type'])->value('id') ?? 1,
+                    'primary_image' => \App\Services\MockImageService::publicRel('work', config("mock-images.work_type_slugs.{$data['work_type']}").'-1'),
                     'avg_review_rating' => 0,
-                    'latitude'         => $data['latitude'],
-                    'longitude'        => $data['longitude'],
+                    'latitude' => $data['latitude'],
+                    'longitude' => $data['longitude'],
                 ]
             );
             $work->categories()->sync(array_slice($categoryIds, 0, 2));
@@ -164,24 +171,24 @@ class DemoSeeder extends Seeder
         // ─── Demo Recruits ────────────────────────────────────────────────────
         $recruitData = [
             [
-                'author_id'   => $employer1->id,
-                'title'       => 'ต้องการคนขับรถบรรทุก มีประสบการณ์',
-                'work_type'   => 'รถบรรทุก',
+                'author_id' => $employer1->id,
+                'title' => 'ต้องการคนขับรถบรรทุก มีประสบการณ์',
+                'work_type' => 'รถบรรทุก',
                 'description' => 'รับสมัครคนขับรถบรรทุก 10 ล้อ มีใบขับขี่ประเภทที่ 2 สวัสดิการดี',
-                'budget'      => 25000,
-                'img_seed'    => 50,
-                'latitude'    => 13.6900,
-                'longitude'   => 100.7501,
+                'budget' => 25000,
+                'img_seed' => 50,
+                'latitude' => 13.6900,
+                'longitude' => 100.7501,
             ],
             [
-                'author_id'   => $employer2->id,
-                'title'       => 'หาพนักงานขับรถตู้ส่วนตัว ประจำ',
-                'work_type'   => 'รถกะบะ',
+                'author_id' => $employer2->id,
+                'title' => 'หาพนักงานขับรถตู้ส่วนตัว ประจำ',
+                'work_type' => 'รถกะบะ',
                 'description' => 'ต้องการพนักงานขับรถตู้ มีอาหาร สวัสดิการครบ',
-                'budget'      => 18000,
-                'img_seed'    => 60,
-                'latitude'    => 13.8621,
-                'longitude'   => 100.5144,
+                'budget' => 18000,
+                'img_seed' => 60,
+                'latitude' => 13.8621,
+                'longitude' => 100.5144,
             ],
         ];
 
@@ -190,16 +197,16 @@ class DemoSeeder extends Seeder
             $recruit = Recruit::firstOrCreate(
                 ['title' => $data['title'], 'author_id' => $data['author_id']],
                 [
-                    'author_id'      => $data['author_id'],
-                    'title'          => $data['title'],
-                    'description'    => $data['description'],
-                    'budget'         => $data['budget'],
-                    'province_id'    => 1,
-                    'work_type_id'   => WorkType::where('title', $data['work_type'])->value('id') ?? 1,
-                    'primary_image'  => \App\Services\MockImageService::publicRel('recruit', config("mock-images.work_type_slugs.{$data['work_type']}") . '-1'),
+                    'author_id' => $data['author_id'],
+                    'title' => $data['title'],
+                    'description' => $data['description'],
+                    'budget' => $data['budget'],
+                    'province_id' => 1,
+                    'work_type_id' => WorkType::where('title', $data['work_type'])->value('id') ?? 1,
+                    'primary_image' => \App\Services\MockImageService::publicRel('recruit', config("mock-images.work_type_slugs.{$data['work_type']}").'-1'),
                     'recruit_status' => 'stand-by',
-                    'latitude'       => $data['latitude'],
-                    'longitude'      => $data['longitude'],
+                    'latitude' => $data['latitude'],
+                    'longitude' => $data['longitude'],
                 ]
             );
             $recruit->categories()->sync(array_slice($categoryIds, 0, 2));
@@ -236,26 +243,26 @@ class DemoSeeder extends Seeder
         }
 
         // ─── Favorites (worker1 favorites some recruits + works) ──────────────
-        if (!empty($demoRecruitIds)) {
+        if (! empty($demoRecruitIds)) {
             Favorite::firstOrCreate([
-                'user_id'          => $worker1->id,
+                'user_id' => $worker1->id,
                 'favoritable_type' => Recruit::class,
-                'favoritable_id'   => $demoRecruitIds[0],
+                'favoritable_id' => $demoRecruitIds[0],
             ]);
         }
         if (count($demoWorkIds) >= 3) {
             Favorite::firstOrCreate([
-                'user_id'          => $worker1->id,
+                'user_id' => $worker1->id,
                 'favoritable_type' => Work::class,
-                'favoritable_id'   => $demoWorkIds[2], // worker2's work
+                'favoritable_id' => $demoWorkIds[2], // worker2's work
             ]);
         }
         // employer1 favorites worker1's work
-        if (!empty($demoWorkIds)) {
+        if (! empty($demoWorkIds)) {
             Favorite::firstOrCreate([
-                'user_id'          => $employer1->id,
+                'user_id' => $employer1->id,
                 'favoritable_type' => Work::class,
-                'favoritable_id'   => $demoWorkIds[0],
+                'favoritable_id' => $demoWorkIds[0],
             ]);
         }
 
@@ -271,8 +278,8 @@ class DemoSeeder extends Seeder
             Portfolio::firstOrCreate(
                 ['user_id' => $worker1->id, 'title' => $p['title']],
                 [
-                    'description'  => $p['desc'],
-                    'images'       => [
+                    'description' => $p['desc'],
+                    'images' => [
                         \App\Services\MockImageService::publicRel('portfolio', $portfolioSlugs[$i % count($portfolioSlugs)]),
                         \App\Services\MockImageService::publicRel('portfolio', $portfolioSlugs[($i + 1) % count($portfolioSlugs)]),
                         \App\Services\MockImageService::publicRel('portfolio', $portfolioSlugs[($i + 2) % count($portfolioSlugs)]),
@@ -287,16 +294,16 @@ class DemoSeeder extends Seeder
         $session1 = WorkSession::firstOrCreate(
             ['worker_id' => $worker1->id, 'customer_id' => $employer1->id, 'started_at' => now()->subDays(5)->setHour(9)],
             [
-                'sessionable_type'       => Work::class,
-                'sessionable_id'         => $demoWorkIds[0] ?? 1,
-                'started_at'             => now()->subDays(5)->setHour(9),
-                'ended_at'               => now()->subDays(5)->setHour(14),
-                'total_duration_minutes'  => 300,
-                'price_agreed'            => 2500,
-                'status'                  => 'completed',
-                'worker_confirm'          => 'confirmed',
-                'customer_confirm'        => 'confirmed',
-                'notes'                   => 'ขนส่งเฟอร์นิเจอร์ลาดพร้าว-นนทบุรี เสร็จเรียบร้อย',
+                'sessionable_type' => Work::class,
+                'sessionable_id' => $demoWorkIds[0] ?? 1,
+                'started_at' => now()->subDays(5)->setHour(9),
+                'ended_at' => now()->subDays(5)->setHour(14),
+                'total_duration_minutes' => 300,
+                'price_agreed' => 2500,
+                'status' => 'completed',
+                'worker_confirm' => 'confirmed',
+                'customer_confirm' => 'confirmed',
+                'notes' => 'ขนส่งเฟอร์นิเจอร์ลาดพร้าว-นนทบุรี เสร็จเรียบร้อย',
             ]
         );
 
@@ -308,15 +315,15 @@ class DemoSeeder extends Seeder
         ];
         foreach ($s1Route as $idx => $pt) {
             SessionLocationLog::firstOrCreate([
-                'session_id'  => $session1->id,
-                'user_id'     => $worker1->id,
+                'session_id' => $session1->id,
+                'user_id' => $worker1->id,
                 'recorded_at' => now()->subDays(5)->setHour(9)->addMinutes($idx * 35),
             ], [
-                'latitude'  => $pt[0],
+                'latitude' => $pt[0],
                 'longitude' => $pt[1],
-                'accuracy'  => rand(5, 20),
-                'speed'     => rand(20, 60) / 10,
-                'heading'   => rand(300, 360),
+                'accuracy' => rand(5, 20),
+                'speed' => rand(20, 60) / 10,
+                'heading' => rand(300, 360),
             ]);
         }
 
@@ -324,16 +331,16 @@ class DemoSeeder extends Seeder
         $session2 = WorkSession::firstOrCreate(
             ['worker_id' => $worker1->id, 'customer_id' => $employer2->id, 'started_at' => now()->subHours(2)],
             [
-                'sessionable_type'       => Work::class,
-                'sessionable_id'         => $demoWorkIds[1] ?? 1,
-                'started_at'             => now()->subHours(2),
-                'ended_at'               => null,
-                'total_duration_minutes'  => 0,
-                'price_agreed'            => 3500,
-                'status'                  => 'active',
-                'worker_confirm'          => 'confirmed',
-                'customer_confirm'        => 'pending',
-                'notes'                   => 'ขนย้ายบ้านจากบางนาไปรังสิต',
+                'sessionable_type' => Work::class,
+                'sessionable_id' => $demoWorkIds[1] ?? 1,
+                'started_at' => now()->subHours(2),
+                'ended_at' => null,
+                'total_duration_minutes' => 0,
+                'price_agreed' => 3500,
+                'status' => 'active',
+                'worker_confirm' => 'confirmed',
+                'customer_confirm' => 'pending',
+                'notes' => 'ขนย้ายบ้านจากบางนาไปรังสิต',
             ]
         );
 
@@ -344,15 +351,15 @@ class DemoSeeder extends Seeder
         ];
         foreach ($s2Route as $idx => $pt) {
             SessionLocationLog::firstOrCreate([
-                'session_id'  => $session2->id,
-                'user_id'     => $worker1->id,
+                'session_id' => $session2->id,
+                'user_id' => $worker1->id,
                 'recorded_at' => now()->subHours(2)->addMinutes($idx * 20),
             ], [
-                'latitude'  => $pt[0],
+                'latitude' => $pt[0],
                 'longitude' => $pt[1],
-                'accuracy'  => rand(5, 15),
-                'speed'     => rand(30, 70) / 10,
-                'heading'   => rand(330, 360),
+                'accuracy' => rand(5, 15),
+                'speed' => rand(30, 70) / 10,
+                'heading' => rand(330, 360),
             ]);
         }
 
@@ -360,16 +367,16 @@ class DemoSeeder extends Seeder
         WorkSession::firstOrCreate(
             ['worker_id' => $worker1->id, 'customer_id' => $employer1->id, 'started_at' => now()->subDays(10)->setHour(8)],
             [
-                'sessionable_type'       => Work::class,
-                'sessionable_id'         => $demoWorkIds[0] ?? 1,
-                'started_at'             => now()->subDays(10)->setHour(8),
-                'ended_at'               => now()->subDays(10)->setHour(9),
-                'total_duration_minutes'  => 60,
-                'price_agreed'            => 1500,
-                'status'                  => 'cancelled',
-                'worker_confirm'          => 'pending',
-                'customer_confirm'        => 'pending',
-                'cancel_reason'           => 'ลูกค้ายกเลิกเนื่องจากเปลี่ยนวัน',
+                'sessionable_type' => Work::class,
+                'sessionable_id' => $demoWorkIds[0] ?? 1,
+                'started_at' => now()->subDays(10)->setHour(8),
+                'ended_at' => now()->subDays(10)->setHour(9),
+                'total_duration_minutes' => 60,
+                'price_agreed' => 1500,
+                'status' => 'cancelled',
+                'worker_confirm' => 'pending',
+                'customer_confirm' => 'pending',
+                'cancel_reason' => 'ลูกค้ายกเลิกเนื่องจากเปลี่ยนวัน',
             ]
         );
 
@@ -378,16 +385,15 @@ class DemoSeeder extends Seeder
             ['reporter_id' => $employer1->id, 'respondent_id' => $worker1->id, 'reason' => 'มาถึงช้ากว่านัดหมาย 2 ชั่วโมง'],
             [
                 'bookingable_type' => WorkBooking::class,
-                'bookingable_id'   => WorkBooking::where('work_id', $demoWorkIds[0] ?? 0)->value('id'),
-                'description'      => 'นัดไว้ 08:00 แต่มาถึง 10:00 ทำให้งานล่าช้า',
-                'evidence'         => ['https://picsum.photos/seed/dispute-demo/400/300'],
-                'status'           => 'resolved',
-                'resolution'       => 'ตกลงลดราคาค่าบริการ 20%',
-                'admin_id'         => User::first()?->id,
+                'bookingable_id' => WorkBooking::where('work_id', $demoWorkIds[0] ?? 0)->value('id'),
+                'description' => 'นัดไว้ 08:00 แต่มาถึง 10:00 ทำให้งานล่าช้า',
+                'evidence' => ['https://picsum.photos/seed/dispute-demo/400/300'],
+                'status' => 'resolved',
+                'resolution' => 'ตกลงลดราคาค่าบริการ 20%',
+                'admin_id' => User::first()?->id,
             ]
         );
 
         $this->command->info('✅ DemoSeeder complete: 4 users, 4 works, 2 recruits + worker1 extras (availabilities, favorites, portfolios, sessions, dispute)');
     }
 }
-

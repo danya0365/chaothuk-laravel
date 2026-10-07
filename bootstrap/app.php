@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\IsCanAccessBackend;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -30,13 +31,11 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->group('api', [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            // throttleApi() only registers the named limiter — the middleware still
+            // has to be added, otherwise requests to /api are never throttled.
+            \Illuminate\Routing\Middleware\ThrottleRequests::class.':240,60',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
-
-        // The mobile client talks to these endpoints continuously (polling, GPS logs),
-        // so the limit is per-IP and set high enough for a shared NAT without letting
-        // a single client hammer the app.
-        $middleware->throttleApi('240,60');
 
         $middleware->alias([
             'IsCanAccessBackend' => IsCanAccessBackend::class,
@@ -47,6 +46,12 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->redirectGuestsTo(function ($request) {
+            // An unauthenticated API caller must get a 401 JSON body, not a 302 to
+            // an HTML login page — the mobile client cannot follow a web redirect.
+            if ($request->is('api') || $request->is('api/*')) {
+                return null;
+            }
+
             if ($request->is('backend') || $request->is('backend/*')) {
                 return route('backend.auth.login');
             }
@@ -57,5 +62,12 @@ return Application::configure(basePath: dirname(__DIR__))
         //$middleware->append(Cors::class); //
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        // Everything under /api is a machine client: answer with JSON, never HTML.
+        $exceptions->render(function (AuthenticationException $e, $request) {
+            if ($request->is('api') || $request->is('api/*')) {
+                return response()->json([
+                    'message' => 'กรุณาเข้าสู่ระบบ',
+                ], 401);
+            }
+        });
     })->create();
