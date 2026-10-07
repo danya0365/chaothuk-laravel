@@ -280,6 +280,13 @@ Post (รีวิว)  ──< works_reviews >──  Work
 
 ## 5. API สำหรับ Mobile
 
+> ⚠️ **หัวข้อนี้ล้าสมัย (2026-10-06)** — API เดิม 103 endpoint ที่ `/api/*` ถูกลบทั้งหมดแล้ว
+> แทนที่ด้วย **29 endpoint ที่ `/api/v1`** แบบ standard REST
+> → ดู **[API-REFERENCE.md](API-REFERENCE.md)** หรือ
+> [ADR-0003](../.claude/memory/decisions/0003-rebuild-mobile-api.md)
+>
+> เนื้อหาใต้บรรทัดนี้เป็นข้อมูลของ API เดิม — เก็บไว้เพื่อดูประวัติ อย่าใช้อ้างอิง
+
 **103 endpoint** ที่ `/api/*` · รายละเอียดทุกตัว → **[API-REFERENCE.md](API-REFERENCE.md)**
 
 ### 5.1 การยืนยันตัวตน

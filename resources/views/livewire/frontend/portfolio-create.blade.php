@@ -1,32 +1,4 @@
-<div class="max-w-2xl mx-auto px-3 sm:px-4 py-4 md:py-6"
-     x-data="{
-         uploading: false,
-         uploadError: '',
-         async uploadImage(file) {
-             this.uploading = true;
-             this.uploadError = '';
-             const formData = new FormData();
-             formData.append('image', file);
-             try {
-                 const res = await fetch('/api/upload/image', {
-                     method: 'POST',
-                     headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '' },
-                     body: formData,
-                 });
-                 const json = await res.json();
-                 if (json.status && json.data) {
-                     const url = json.data.resize || json.data.original;
-                     @this.set('images', [...@this.get('images'), url]);
-                 } else {
-                     this.uploadError = json.message || 'อัพโหลดไม่สำเร็จ';
-                 }
-             } catch (e) {
-                 this.uploadError = 'เกิดข้อผิดพลาดในการอัพโหลด';
-             }
-             this.uploading = false;
-         }
-     }">
-
+<div class="max-w-2xl mx-auto px-3 sm:px-4 py-4 md:py-6">
     <div class="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
         <a href="{{ route('frontend.portfolios') }}" class="text-xs md:text-sm text-gray-400 hover:text-white transition">← กลับ</a>
         <h1 class="text-xl md:text-2xl font-bold text-white">🎨 เพิ่มผลงานใหม่</h1>
@@ -83,18 +55,16 @@
                 </div>
                 @endif
 
-                <label class="flex flex-col items-center justify-center w-full h-24 md:h-28 bg-gray-800 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer hover:border-orange-500/50 transition"
-                       :class="uploading ? 'opacity-50 pointer-events-none' : ''">
+                <label class="flex flex-col items-center justify-center w-full h-24 md:h-28 bg-gray-800 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer hover:border-orange-500/50 transition">
                     <div class="text-center">
                         <div class="text-xl md:text-2xl mb-0.5">📷</div>
                         <p class="text-gray-400 text-xs md:text-sm">คลิกเพื่อเพิ่มรูปภาพ</p>
                         <p class="text-gray-600 text-[10px] md:text-xs">JPG, PNG, WebP (สูงสุด 10MB)</p>
                     </div>
-                    <input type="file" accept="image/*" class="hidden"
-                           @change="if ($event.target.files[0]) { uploadImage($event.target.files[0]); $event.target.value = '' }">
+                    <input type="file" accept="image/*" class="hidden" wire:model="imageFiles">
                 </label>
-                <template x-if="uploading"><p class="text-orange-400 text-[10px] md:text-xs mt-1 flex items-center gap-1">⏳ กำลังอัพโหลด...</p></template>
-                <template x-if="uploadError"><p class="text-red-400 text-[10px] md:text-xs mt-1" x-text="uploadError"></p></template>
+                <div wire:loading wire:target="imageFiles"><p class="text-orange-400 text-[10px] md:text-xs mt-1">⏳ กำลังอัพโหลด...</p></div>
+                @error('uploadError')<p class="text-red-400 text-[10px] md:text-xs mt-1">{{ $message }}</p>@enderror
                 @error('images')<p class="text-red-400 text-[10px] md:text-xs mt-1">{{ $message }}</p>@enderror
             </div>
         </div>

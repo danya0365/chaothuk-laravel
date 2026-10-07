@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Http\Resources\Api\V1;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+/**
+ * The public face of a user on works, recruits and bookings.
+ *
+ * Deliberately narrow: the mobile client never needs the email, phone or role on
+ * a card, and shipping them would leak PII into every list response.
+ */
+class AuthorResource extends JsonResource
+{
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'profile_image' => image_url($this->profile_image),
+        ];
+    }
+}

@@ -2,25 +2,35 @@
 
 namespace App\Livewire\Frontend;
 
+use App\Livewire\Frontend\Concerns\HandlesImageUploads;
 use App\Models\Province;
 use App\Models\Recruit;
 use App\Models\WorkType;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class RecruitEdit extends Component
 {
+    use HandlesImageUploads, WithFileUploads;
+
     public int $id;
+
     public ?Recruit $recruit = null;
 
     public string $title = '';
+
     public string $description = '';
+
     public float $budget = 0;
+
     public ?int $provinceId = null;
+
     public ?int $workTypeId = null;
-    public ?string $primaryImage = null;
-    public array $galleryImages = [];
+
     public ?float $latitude = null;
+
     public ?float $longitude = null;
+
     public string $recruitStatus = '';
 
     public ?string $successMessage = null;
@@ -30,7 +40,7 @@ class RecruitEdit extends Component
         $this->id = $id;
         $this->recruit = Recruit::findOrFail($id);
 
-        if (!auth()->check() || auth()->id() !== $this->recruit->author_id) {
+        if (! auth()->check() || auth()->id() !== $this->recruit->author_id) {
             abort(403);
         }
 
@@ -53,38 +63,26 @@ class RecruitEdit extends Component
         }
     }
 
-    public function removePrimaryImage(): void
-    {
-        $this->primaryImage = null;
-    }
-
-    public function removeGalleryImage(int $index): void
-    {
-        $images = $this->galleryImages;
-        array_splice($images, $index, 1);
-        $this->galleryImages = $images;
-    }
-
     public function save(): void
     {
         $this->validate([
-            'title'       => 'required|min:5|max:255',
+            'title' => 'required|min:5|max:255',
             'description' => 'required|min:10',
-            'budget'      => 'required|numeric|min:0',
-            'provinceId'  => 'required',
-            'workTypeId'  => 'required',
+            'budget' => 'required|numeric|min:0',
+            'provinceId' => 'required',
+            'workTypeId' => 'required',
         ]);
 
         $this->recruit->update([
-            'title'          => $this->title,
-            'description'    => $this->description,
-            'budget'         => $this->budget,
-            'province_id'    => $this->provinceId,
-            'work_type_id'   => $this->workTypeId,
-            'primary_image'  => $this->primaryImage,
-            'images'         => !empty($this->galleryImages) ? $this->galleryImages : null,
-            'latitude'       => $this->latitude,
-            'longitude'      => $this->longitude,
+            'title' => $this->title,
+            'description' => $this->description,
+            'budget' => $this->budget,
+            'province_id' => $this->provinceId,
+            'work_type_id' => $this->workTypeId,
+            'primary_image' => $this->primaryImage,
+            'images' => ! empty($this->galleryImages) ? $this->galleryImages : null,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
             'recruit_status' => $this->recruitStatus,
         ]);
 

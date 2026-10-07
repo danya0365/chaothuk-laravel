@@ -68,33 +68,18 @@
              this.uploadProgress = 0;
              this.uploadError = '';
 
-             const formData = new FormData();
-             formData.append('avatar', blob, 'avatar.webp');
-
              try {
-                 const xhr = new XMLHttpRequest();
-                 xhr.upload.addEventListener('progress', (e) => {
-                     if (e.lengthComputable) this.uploadProgress = Math.round((e.loaded / e.total) * 100);
+                 // The cropper produces a Blob; hand it to Livewire as a data URL
+                 // so the component can rebuild a real UploadedFile server-side.
+                 const dataUrl = await new Promise((resolve, reject) => {
+                     const reader = new FileReader();
+                     reader.onload = (e) => resolve(e.target.result);
+                     reader.onerror = () => reject(new Error('read failed'));
+                     reader.readAsDataURL(blob);
                  });
 
-                 const result = await new Promise((resolve, reject) => {
-                     xhr.onload = () => {
-                         try { resolve(JSON.parse(xhr.responseText)); }
-                         catch { reject(new Error('Invalid response')); }
-                     };
-                     xhr.onerror = () => reject(new Error('Network error'));
-                     xhr.open('POST', '/api/upload/avatar');
-                     xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name=csrf-token]')?.content || '');
-                     xhr.send(formData);
-                 });
-
-                 if (result.status && result.data && result.data.avatar) {
-                     const url = result.data.avatar;
-                     @this.set('profileImage', url);
-                     this.uploadProgress = 100;
-                 } else {
-                     this.uploadError = result.message || 'อัพโหลดไม่สำเร็จ';
-                 }
+                 @this.call('uploadAvatar', dataUrl);
+                 this.uploadProgress = 100;
              } catch (e) {
                  this.uploadError = 'เกิดข้อผิดพลาดในการอัพโหลด';
              }

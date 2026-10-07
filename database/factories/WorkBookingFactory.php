@@ -13,8 +13,8 @@ class WorkBookingFactory extends Factory
         $statuses = ['waiting-to-confirm', 'confirm', 'close', 'cancel'];
 
         return [
-            'work_id'          => Work::factory(),
-            'author_id'        => User::factory(),
+            'work_id' => Work::factory(),
+            'author_id' => User::factory(),
             'customer_message' => $this->faker->randomElement([
                 'ต้องการขนของย้ายบ้าน',
                 'รับสินค้าจากโกดัง ส่งลูกค้า',
@@ -22,19 +22,24 @@ class WorkBookingFactory extends Factory
                 'ส่งของด่วน',
                 'ขนเฟอร์นิเจอร์',
             ]),
-            'mobile_phone'     => '0' . $this->faker->numerify('########'),
-            'booking_date'     => $this->faker->dateTimeBetween('-3 months', '+1 month'),
-            'booking_status'   => $this->faker->randomElement($statuses),
+            'mobile_phone' => '0'.$this->faker->numerify('########'),
+            'booking_date' => $this->faker->dateTimeBetween('-3 months', '+1 month'),
+            'booking_status' => $this->faker->randomElement($statuses),
         ];
     }
 
-    public function pending(): static
+    public function waitingToConfirm(): static
     {
-        return $this->state(fn (array $attributes) => ['booking_status' => 'pending']);
+        return $this->state(fn () => ['booking_status' => 'waiting-to-confirm']);
     }
 
-    public function completed(): static
+    public function confirmed(): static
     {
-        return $this->state(fn (array $attributes) => ['booking_status' => 'completed']);
+        return $this->state(fn () => ['booking_status' => 'confirm']);
+    }
+
+    public function closed(): static
+    {
+        return $this->state(fn () => ['booking_status' => 'close']);
     }
 }

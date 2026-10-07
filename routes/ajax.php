@@ -1,17 +1,12 @@
 <?php
 
+use App\Http\Controllers\Frontend\MessengerController;
+use App\Http\Controllers\Frontend\ProfileController;
+use App\Http\Controllers\Frontend\UploadController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ProfileController;
-use App\Http\Controllers\Api\MessengerController;
-use App\Http\Controllers\Api\UploadController;
 
 Route::group(['prefix' => 'me', 'as' => 'ajax.me.', 'middleware' => ['auth']], function () {
     Route::post('/update-theme', [ProfileController::class, 'updateTheme'])->name('update-theme');
-});
-
-Route::group(['prefix' => 'messenger', 'as' => 'ajax.messenger.', 'middleware' => ['auth']], function () {
-    Route::get('/channel/{channelId}/conversations', [MessengerController::class, 'getChannelConversations'])->name('channel.conversations');
-    Route::post('/channel/{channelId}/conversations', [MessengerController::class, 'storeChannelConversations'])->name('channel.conversations.store');
 });
 
 Route::group(['prefix' => 'messenger', 'as' => 'ajax.messenger.'], function () {
@@ -21,7 +16,7 @@ Route::group(['prefix' => 'messenger', 'as' => 'ajax.messenger.'], function () {
     Route::post('/channel/{id}/conversations/{conversationId}/seen', [MessengerController::class, 'updateSeenAtInConversations'])->name('channel.conversations.seen');
 });
 
-Route::group(['prefix' => 'upload', 'as' => 'ajax.upload.'], function () {
+Route::group(['prefix' => 'upload', 'as' => 'ajax.upload.', 'middleware' => ['auth']], function () {
     Route::post('/document', [UploadController::class, 'doUploadDocument'])->name('document');
     Route::post('/image', [UploadController::class, 'doUploadImage'])->name('image');
     Route::post('/avatar', [UploadController::class, 'doUploadAvatar'])->name('avatar');

@@ -4,8 +4,8 @@ namespace App\Models;
 
 use App\Traits\Scopes;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class UserNotification
@@ -20,17 +20,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property $updated_at
  * @property $deleted_at
  *
- * @package App
  * @mixin \Illuminate\Database\Eloquent\Builder
  */
 class UserNotification extends Model
 {
-    use SoftDeletes;
     use Scopes;
+    use SoftDeletes;
 
     public static $rules = [
-      'notification_type' => 'required',
-      'author_id' => 'required',
+        'notification_type' => 'required',
+        'author_id' => 'required',
     ];
 
     protected $perPage = 20;
@@ -38,9 +37,21 @@ class UserNotification extends Model
     /**
      * Attributes that should be mass-assignable.
      *
+     * The morph columns are included because every caller sets them from trusted
+     * server-side code — leaving them out meant notifications were created with a
+     * null notificationable_type, which the column does not allow.
+     *
      * @var array
      */
-    protected $fillable = ['title', 'details', 'notification_type', 'is_read', 'author_id'];
+    protected $fillable = [
+        'title',
+        'details',
+        'notification_type',
+        'is_read',
+        'author_id',
+        'notificationable_type',
+        'notificationable_id',
+    ];
 
     /**
      * The attributes that should be cast.
@@ -48,8 +59,8 @@ class UserNotification extends Model
      * @var array<string, string>
      */
     protected $casts = [
-      'details' => 'array',
-      'is_read' => 'boolean',
+        'details' => 'array',
+        'is_read' => 'boolean',
     ];
 
     public function author(): BelongsTo

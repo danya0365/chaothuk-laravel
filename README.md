@@ -33,7 +33,7 @@
 | หน้าจอ                  | เทคโนโลยี                      | ใครใช้                 |
 | ------------------------ | ------------------------------ | ---------------------- |
 | **Frontend** `/frontend` | Livewire 4.2 (44 component)    | ผู้ใช้ทั่วไป · UI หลัก |
-| **REST API** `/api`      | Laravel Sanctum (103 endpoint) | **Mobile app**         |
+| **REST API** `/api/v1`    | Laravel Sanctum (29 endpoint)  | **Mobile app** (Expo)  |
 | **Admin** `/backend`     | Livewire 4.2 (53 component)    | ผู้ดูแลระบบ            |
 
 ### Tech Stack
@@ -59,7 +59,7 @@
 | เอกสาร                                             | เนื้อหา                                                                                                              |
 | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | **[docs/SRS.md](docs/SRS.md)**                     | **ข้อกำหนดระบบ** — ขอบเขต · ฟีเจอร์ · architecture · สิทธิ์ · **ช่องว่างที่ยังขาด** · **บั๊จที่ทำให้ระบบพัง 11 จุด** |
-| **[docs/API-REFERENCE.md](docs/API-REFERENCE.md)** | **ทุก endpoint ของ `/api/*`** พร้อม auth · param · ตัวอย่าง request/response                                         |
+| **[docs/API-REFERENCE.md](docs/API-REFERENCE.md)** | **ทุก endpoint ของ `/api/v1`** พร้อม auth · param · ตัวอย่าง request/response                                        |
 | **[docs/DATA-MODEL.md](docs/DATA-MODEL.md)**       | **63 ตาราง** พร้อม columns ทั้งหมด                                                                                   |
 
 ### 🔧 สำหรับนักพัฒนา
@@ -151,7 +151,7 @@ php artisan route:list --json
 
 | สิ่ง                | จำนวน                                                  |
 | ------------------- | ------------------------------------------------------ |
-| Routes              | **228** (api 103 · backend 57 · frontend 39 · ajax 10) |
+| Routes              | **152** (api/v1 29 · backend 57 · frontend 39 · ajax 8 · อื่น 19) |
 | ตาราง               | **63**                                                 |
 | Models              | **54**                                                 |
 | Enums               | **26**                                                 |
