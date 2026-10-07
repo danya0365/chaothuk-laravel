@@ -5,7 +5,6 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Enums\Permission as PermissionEnum;
-use App\Enums\Role as RoleEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,11 +12,9 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\Scopes;
 use Carbon\Carbon;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -131,26 +128,6 @@ class User extends Authenticatable
             return 0;
         }
         return $redeemPoints;
-    }
-
-    public static function getOrCreateMobilePhoneUser($mobilePhone): User
-    {
-        $user = self::where('name', $mobilePhone)->first();
-        if ($user) {
-            return $user;
-        }
-
-        $user = User::create([
-            'name' => $mobilePhone,
-            'email' => $mobilePhone,
-            'password' => Hash::make($mobilePhone),
-        ]);
-
-        $user->roles()->sync(['role_id' => RoleEnum::MOBILE_PHONE->value]);
-
-        event(new Registered($user));
-
-        return $user;
     }
 
     public function getRolesValue(): array
