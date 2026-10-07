@@ -8,13 +8,14 @@
 - [Project Overview](core/project-overview.md) — ตลาดกลางหาฟรีแลนซ์ + ผู้ว่าจ้าง · architecture, stack, roadmap
 - [ซาน่า Persona](core/persona.md) — ตัวตน ซาน่า: เลขาผู้หญิง เร้าร้อน พูดตรง · ภรรยา+เลขาของพี่ · ลงท้าย "ค่ะ"
 - [Conventions](core/conventions.md) — มาตรฐานโค้ด Laravel/PHP + naming + git
-- [🔒 Develop-Only Rule](core/feedback-develop-only-workflow.md) — **ทุกงานเกิดบน `develop`** · chaothuk/dev.chaothuk เป็น deploy-trigger เท่านั้น
+- [🔒 Git Flow Rule](core/feedback-develop-only-workflow.md) — **ทุกงานเกิดบน `feature/*`** · ห้าม commit ตรงลง develop/chaothuk/dev.chaothuk
 - [🗄️ ดัชนีเอกสาร](reference/system-docs.md) — SRS · API-Reference · Data-Model (อ่านก่อนแตะโค้ด)
 
 ## Decisions (ADR)
 
 - [0001 AI Agent Toolkit](decisions/0001-agent-toolkit.md) — ชุดเครื่องมือ Claude ในโปรเจค (persona/memory/hooks/rules/commands)
-- [0002 Develop-Only Workflow](decisions/0002-develop-only-workflow.md) — ทำงานทั้งหมดบน `develop`; deploy ด้วย ff-merge
+- [0002 Develop-Only Workflow](decisions/0002-develop-only-workflow.md) — ⚠️ ถูกแทนที่บางส่วนโดย 0004
+- [0004 Strict Git Flow](decisions/0004-strict-git-flow.md) — **กฎปัจจุบัน**: `feature/* → develop → main` · ห้าม commit ตรง
 - [0003 Rebuild Mobile API](decisions/0003-rebuild-mobile-api.md) — ทิ้ง API เดิม → `/api/v1` standard REST + แอป Expo ที่ `../chaothuk-app`
 
 ## Modules

@@ -1,16 +1,26 @@
 ---
 name: 0002-develop-only-workflow
-description: ADR — ทุกงานเกิดบน develop; chaothuk/dev.chaothuk เป็น deploy-trigger branch เท่านั้น (อ่านก่อนสร้าง branch, commit, หรือ deploy)
+description: 'ADR — [ถูกแทนที่บางส่วนโดย ADR-0004] chaothuk/dev.chaothuk เป็น deploy-trigger เท่านั้น; ส่วน "ทุกงานเกิดบน develop" เปลี่ยนเป็น feature branch'
 metadata:
+    node_type: memory
     type: decision
-    status: active
+    status: superseded
     scope: git-workflow
-    updated: 2026-10-06
+    updated: 2026-10-07
+    originSessionId: de1d3a9e-21ff-44d4-b239-d948cfac61bb
+    modified: 2026-10-07T07:31:55.058Z
 ---
 
 # ADR-0002: Develop-Only Workflow
 
-**สถานะ:** accepted · **วันที่:** 2026-08-05 · **ผู้เสนอ:** พี่ (กฎที่ตั้งไว้เอง)
+> ⚠️ **ถูกแทนที่บางส่วนโดย [ADR-0004](0004-strict-git-flow.md) (2026-10-07)**
+>
+> - ❌ **ข้อ 1** "ทุกงานเกิดบน `develop`" → **ยกเลิก** · งานเกิดบน `feature/*` แล้ว merge เข้า `develop`
+> - ✅ **ข้อ 2–5** (deploy-trigger · เลื่อนด้วย `--ff-only` · เช็ค branch ก่อนทำงาน · ห้าม force-push) — **ยังใช้**
+>
+> อ่านกฎปัจจุบันได้ที่ [ADR-0004](0004-strict-git-flow.md) — ไฟล์นี้เก็บไว้เป็นประวัติ
+
+**สถานะ:** superseded (บางส่วน) · **วันที่:** 2026-08-05 · **ผู้เสนอ:** พี่ (กฎที่ตั้งไว้เอง)
 
 ## บริบท
 
