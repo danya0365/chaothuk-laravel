@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\RecruitBookingController;
 use App\Http\Controllers\Api\V1\RecruitController;
 use App\Http\Controllers\Api\V1\UploadController;
@@ -58,6 +59,15 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::prefix('uploads')->name('uploads.')->group(function () {
             Route::post('/image', [UploadController::class, 'image'])->name('image');
             Route::post('/avatar', [UploadController::class, 'avatar'])->name('avatar');
+        });
+
+        // What the system told this user about — the booking endpoints already
+        // write these, they just had nowhere for the mobile client to read them.
+        Route::prefix('notifications')->name('notifications.')->group(function () {
+            Route::get('/', [NotificationController::class, 'index'])->name('index');
+            Route::get('/unread-count', [NotificationController::class, 'unreadCount'])->name('unread-count');
+            Route::post('/read-all', [NotificationController::class, 'markAllRead'])->name('read-all');
+            Route::post('/{notification}/read', [NotificationController::class, 'markRead'])->name('read');
         });
 
         Route::prefix('works')->name('works.')->group(function () {
