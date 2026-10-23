@@ -136,7 +136,9 @@ class NotificationTest extends TestCase
 
         $this->actingAs($customer, 'sanctum')
             ->postJson("/api/v1/works/{$work->id}/bookings", [
-                'booking_date' => '2026-10-20',
+                // Bookings refuse past dates, so the fixture has to be relative
+                // to "now" — a hardcoded day goes stale as the calendar moves.
+                'booking_date' => now()->addDays(7)->toDateString(),
                 'customer_message' => 'อยากจองงานนี้ครับ',
                 'mobile_phone' => '0812345678',
             ])
