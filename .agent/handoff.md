@@ -202,3 +202,20 @@ branch: develop (ahead of origin2/develop by 6 commits — ยังไม่ pu
 ## 6. ถ้าจะอัปเดตไฟล์นี้
 
 เพิ่มหัวข้อที่ทำเสร็จลงข้อ 1 · เลื่อนตัวเลือกที่เลือกไปเป็น "เสร็จแล้ว" ในข้อ 3 · อัปเดตข้อ 2 ถ้า verify บั๊จเพิ่ม
+
+---
+
+## 7. อัปเดต 2026-10-24 — messenger `/api/v1` เสริมให้สมบูรณ์ (ยังไม่ commit)
+
+งาน messenger สำหรับแอปมือถือ (ข้อ 3-B/C เดิม) เขียนไว้ใน working tree เป็นจำนวนมากแล้ว
+วันนี้เสริมให้ครบ **สมมาตรทั้งสองฝั่งของ marketplace** — เทสต์ใหม่รวม **73 ผ่าน (402 assertions)** · Pint ✅
+
+| สิ่งที่เพิ่ม/แก้ | ไฟล์ |
+| --- | --- |
+| `POST /api/v1/messenger/recruit-bookings/{id}/channel` — เปิดห้องจากการสมัครงาน (mirror ฝั่ง work; ใช้ `ensureForRecruitBooking` ที่มีอยู่แล้ว) | `MessengerController.php` · `routes/api/v1.php` |
+| เทสต์ 3 ตัว: applicant เปิดห้อง (+ is_customer กลับข้าง) · เปิดซ้ำได้ห้องเดิม · stranger 403 | `tests/Feature/Api/V1/MessengerTest.php` |
+| pin รายชื่อ messenger route อัปเดตบวก route ใหม่ | `tests/Feature/MessengerAccessTest.php` |
+| **แก้บั๊จ time-bomb**: `NotificationTest` hardcode `booking_date '2026-10-20'` → หมดอายุเป็น 422 วันที่ย้อนหลัง → `now()->addDays(7)` | `tests/Feature/Api/V1/NotificationTest.php` |
+
+ฝั่งแอป (`../chaothuk-app`) ปรับหน้าแชท/หน้า booking ให้ใช้ endpoint ครบทั้งสองฝั่ง + แก้บั๊ก id ประกาศในปุ่มดูประกาศ —
+สถานะเต็มอยู่ที่ **chaothuk-app/.agent/handoff.md** (ยังไม่ commit ทั้งสอง repo — รอคำสั่ง)
