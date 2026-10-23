@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\MessengerController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\RecruitBookingController;
 use App\Http\Controllers\Api\V1\RecruitController;
@@ -68,6 +69,25 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             Route::get('/unread-count', [NotificationController::class, 'unreadCount'])->name('unread-count');
             Route::post('/read-all', [NotificationController::class, 'markAllRead'])->name('read-all');
             Route::post('/{notification}/read', [NotificationController::class, 'markRead'])->name('read');
+        });
+
+        // Direct messages. Every route resolves the caller against the channel's
+        // participants before reading or writing — the channel id comes from the
+        // client and ids are small sequential integers.
+        Route::prefix('messenger')->name('messenger.')->group(function () {
+            Route::get('/channels', [MessengerController::class, 'index'])->name('channels.index');
+            Route::post(
+                '/work-bookings/{workBooking}/channel',
+                [MessengerController::class, 'openForWorkBooking'],
+            )->name('work-bookings.channel');
+            Route::post(
+                '/recruit-bookings/{recruitBooking}/channel',
+                [MessengerController::class, 'openForRecruitBooking'],
+            )->name('recruit-bookings.channel');
+            Route::get('/channels/{channel}', [MessengerController::class, 'show'])->name('channels.show');
+            Route::get('/channels/{channel}/messages', [MessengerController::class, 'messages'])->name('channels.messages');
+            Route::post('/channels/{channel}/messages', [MessengerController::class, 'storeMessage'])->name('channels.messages.store');
+            Route::post('/channels/{channel}/seen', [MessengerController::class, 'markSeen'])->name('channels.seen');
         });
 
         Route::prefix('works')->name('works.')->group(function () {

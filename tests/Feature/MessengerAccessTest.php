@@ -94,15 +94,48 @@ class MessengerAccessTest extends TestCase
     {
         // The guest flow took the phone number in the URL and had no auth at all.
         // It was unreachable dead code, so it was removed rather than locked down.
+        // Every messenger route is listed so a new one has to be added here
+        // deliberately — the point is to notice an unlisted addition, not to
+        // assert an exact count.
         $routes = collect(app('router')->getRoutes()->getRoutes())
             ->filter(fn ($route) => str_contains($route->uri(), 'messenger'))
             ->map(fn ($route) => $route->uri())
             ->values();
 
         $this->assertSame(
-            ['backend/messenger', 'backend/messenger/{channel}', 'frontend/messenger'],
+            [
+                'api/v1/messenger/channels',
+                'api/v1/messenger/channels/{channel}',
+                'api/v1/messenger/channels/{channel}/messages',
+                'api/v1/messenger/channels/{channel}/messages',
+                'api/v1/messenger/channels/{channel}/seen',
+                'api/v1/messenger/recruit-bookings/{recruitBooking}/channel',
+                'api/v1/messenger/work-bookings/{workBooking}/channel',
+                'backend/messenger',
+                'backend/messenger/{channel}',
+                'frontend/messenger',
+            ],
             $routes->sort()->values()->all()
         );
+    }
+
+    public function test_every_messenger_api_route_requires_authentication(): void
+    {
+        // The API messenger surface did not exist when the guest flow was
+        // removed; its authorization is pinned per-endpoint in MessengerTest,
+        // but this guards the middleware itself from being dropped later.
+        $routes = collect(app('router')->getRoutes()->getRoutes())
+            ->filter(fn ($route) => str_starts_with($route->uri(), 'api/v1/messenger'));
+
+        $this->assertGreaterThan(0, $routes->count());
+
+        foreach ($routes as $route) {
+            $this->assertContains(
+                'auth:sanctum',
+                $route->gatherMiddleware(),
+                "Route [{$route->uri()}] is reachable without authentication."
+            );
+        }
     }
 
     public function test_no_route_ever_puts_a_phone_number_in_the_url(): void
