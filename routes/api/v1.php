@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\FavoriteController;
 use App\Http\Controllers\Api\V1\MessengerController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\RecruitBookingController;
 use App\Http\Controllers\Api\V1\RecruitController;
+use App\Http\Controllers\Api\V1\ReviewController;
+use App\Http\Controllers\Api\V1\SessionController;
 use App\Http\Controllers\Api\V1\UploadController;
 use App\Http\Controllers\Api\V1\WorkBookingController;
 use App\Http\Controllers\Api\V1\WorkController;
@@ -48,11 +51,13 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     // Browsing stays public so a signed-out visitor can look around the marketplace.
     Route::prefix('works')->name('works.')->group(function () {
         Route::get('/', [WorkController::class, 'index'])->name('index');
+        Route::get('/{work}/reviews', [ReviewController::class, 'workReviews'])->name('reviews.index');
         Route::get('/{work}', [WorkController::class, 'show'])->name('show');
     });
 
     Route::prefix('recruits')->name('recruits.')->group(function () {
         Route::get('/', [RecruitController::class, 'index'])->name('index');
+        Route::get('/{recruit}/reviews', [ReviewController::class, 'recruitReviews'])->name('reviews.index');
         Route::get('/{recruit}', [RecruitController::class, 'show'])->name('show');
     });
 
@@ -60,6 +65,16 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::prefix('uploads')->name('uploads.')->group(function () {
             Route::post('/image', [UploadController::class, 'image'])->name('image');
             Route::post('/avatar', [UploadController::class, 'avatar'])->name('avatar');
+        });
+
+        // Bookmarks the client saves from the marketplace. Everything is scoped
+        // to the caller's token — listing ids come from the body, favorite ids
+        // from the path, so a guessed id matches nothing.
+        Route::prefix('favorites')->name('favorites.')->group(function () {
+            Route::get('/', [FavoriteController::class, 'index'])->name('index');
+            Route::get('/check', [FavoriteController::class, 'check'])->name('check');
+            Route::post('/', [FavoriteController::class, 'store'])->name('store');
+            Route::delete('/{favorite}', [FavoriteController::class, 'destroy'])->name('destroy');
         });
 
         // What the system told this user about — the booking endpoints already
@@ -93,11 +108,30 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::prefix('works')->name('works.')->group(function () {
             Route::post('/', [WorkController::class, 'store'])->name('store');
             Route::post('/{work}/bookings', [WorkBookingController::class, 'store'])->name('bookings.store');
+            Route::post('/{work}/reviews', [ReviewController::class, 'storeWorkReview'])->name('reviews.store');
         });
 
         Route::prefix('recruits')->name('recruits.')->group(function () {
             Route::post('/', [RecruitController::class, 'store'])->name('store');
             Route::post('/{recruit}/bookings', [RecruitBookingController::class, 'store'])->name('bookings.store');
+            Route::post('/{recruit}/reviews', [ReviewController::class, 'storeRecruitReview'])->name('reviews.store');
+        });
+
+        // Answers a review has drawn — the notification walks the thread back to
+        // the listing underneath, so the recipient can be routed there.
+        Route::post('/reviews/{post}/replies', [ReviewController::class, 'storeReply'])->name('reviews.reply');
+
+        // Live work sessions for confirmed bookings — the worker starts from a
+        // booking the path names, and only the two participants touch it after.
+        Route::prefix('sessions')->name('sessions.')->group(function () {
+            Route::get('/', [SessionController::class, 'index'])->name('index');
+            Route::post('/work-bookings/{workBooking}/start', [SessionController::class, 'start'])->name('start');
+            Route::get('/{session}', [SessionController::class, 'show'])->name('show');
+            Route::post('/{session}/pause', [SessionController::class, 'pause'])->name('pause');
+            Route::post('/{session}/resume', [SessionController::class, 'resume'])->name('resume');
+            Route::post('/{session}/stop', [SessionController::class, 'stop'])->name('stop');
+            Route::post('/{session}/confirm', [SessionController::class, 'confirm'])->name('confirm');
+            Route::post('/{session}/locations', [SessionController::class, 'logLocation'])->name('locations');
         });
 
         Route::prefix('work-bookings')->name('work-bookings.')->group(function () {

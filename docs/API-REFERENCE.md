@@ -230,6 +230,44 @@ Token ได้จาก `POST /api/v1/auth/login` หรือ `POST /api/v1/au
 
 > 🔒 **ปิด auth แล้ว** — ของเดิมเปิดให้ใครก็อัปโหลดได้ และไม่จำกัด mime
 
+### Favorites (บุ๊คมาร์ค) — `/api/v1/favorites`
+
+| Method | Path                    | Auth | รายละเอียด                                                              |
+| ------ | ----------------------- | ---- | ----------------------------------------------------------------------- |
+| `GET`  | `/`                     | ✅   | รายการโปรดของผู้ใช้ (ใหม่สุดก่อน) · `?type=work\|recruit` · `?per_page=` · `favoritable` เป็น card เต็มแบบ marketplace |
+| `GET`  | `/check`                | ✅   | `?type=work&favoritable_id=1` → `{ data: { favorited: true } }` สำหรับหัวใจบนหน้า detail |
+| `POST` | `/`                     | ✅   | body `{ type: "work"\|"recruit", id }` → 201 · บันทึกซ้ำ = no-op (ไม่ error) |
+| `DELETE` | `/{favorite}`          | ✅   | ลบรายการโปรดของตัวเอง · ลบซ้ำได้ (ไม่ 404) · ลบของคนอื่น = 403            |
+
+> ❤️ ตอนก่อนอยู่แค่หน้าเว็บ (Livewire) — model `Favorite` ใช้ morph `favoritable` อยู่แล้ว
+
+---
+
+### Reviews + ตอบรีวิว
+
+| Method | Path                       | Auth | รายละเอียด                                                                                |
+| ------ | -------------------------- | ---- | ----------------------------------------------------------------------------------------- |
+| `GET`  | `/works/{work}/reviews`    | ❌   | รีวิวของหนึ่งประกาศ (ใหม่สุดก่อน) · reply ซ้อนใต้ตัวใน `replies` ลึกเท่าที่มี · for public |
+| `GET`  | `/recruits/{recruit}/reviews` | ❌ | เหมือน works — shape เดียวกัน                                                             |
+| `POST` | `/works/{work}/reviews`    | ✅   | body `{ title?, rating 1–5, content ≥5 }` → 201 · ต้องมีสิทธิ์ `review_work`              |
+| `POST` | `/recruits/{recruit}/reviews` | ✅ | เหมือน works                                                                             |
+| `POST` | `/reviews/{post}/replies`  | ✅   | body `{ content ≥2 }` · ตอบได้เฉพาะ**รีวิวหลัก** · ต้องมีสิทธิ์ `reply_review`            |
+
+> ⭐ รีวิว/reply เป็น `posts` หนึ่งต้นไม้ (`parent_id`) ผูกประกาศผ่าน `works_reviews`/`recruits_reviews` — เจ้าของประกาศได้ notification `work-review` · ผู้รีวิวได้ `review-reply` (ไม่แจ้งตัวเอง) พร้อม notificationable ชี้ที่ประกาศเพื่อ route ไปหน้าจริง
+
+### Sessions (เซสชันการทำงาน + GPS) — `/api/v1/sessions`
+
+| Method | Path                                | Auth | รายละเอียด                                                                              |
+| ------ | ----------------------------------- | ---- | ---------------------------------------------------------------------------------------- |
+| `GET`  | `/`                                 | ✅   | เซสชันของผู้เรียก (worker หรือ customer) · `?status=active\|paused\|completed\|cancelled` |
+| `POST` | `/work-bookings/{workBooking}/start` | ✅   | เจ้าของประกาศเริ่มเซสชันจากการจองที่**ยืนยันแล้ว** · body `{ price_agreed? }` · ห้ามซ้ำระหว่าง active |
+| `GET`  | `/{session}`                        | ✅   | เฉพาะสองฝั่งในเซสชัน · รวม trail พิกัด (200 จุดล่าสุด · เก่า→ใหม่)                        |
+| `POST` | `/{session}/pause` · `/resume` · `/stop` | ✅ | transition ตามเว็บ (pause จาก active · resume จาก paused · stop คำนวณระยะเวลา)          |
+| `POST` | `/{session}/confirm`                | ✅   | ยืนยันฝั่งที่เรียก (`worker_confirm`/`customer_confirm`)                                 |
+| `POST` | `/{session}/locations`              | ✅   | drop GPS ping — body `{ latitude, longitude, accuracy?, speed?, heading?, recorded_at? }` · เฉพาะ status active |
+
+> 📍 เว็บเริ่มเซสชันได้จาก work booking เท่านั้น (worker = เจ้าของงาน, customer = คนจอง) — recruiter ยังไม่มี flow ผู้เริ่ม (ผู้เริ่มได้ `worker_confirm = confirmed`)
+
 ---
 
 ## สิ่งที่ยังไม่มีใน v1
@@ -238,9 +276,7 @@ Token ได้จาก `POST /api/v1/auth/login` หรือ `POST /api/v1/au
 
 - 💬 Messenger / แชท
 - 🔔 Notifications (แบบราย user)
-- 📍 Work sessions + GPS tracking
-- ⭐ Reviews / Posts
-- ❤️ Favorites · 💼 Portfolio · 📅 Availability · 💰 Wallet · ⚖️ Dispute
+- 💼 Portfolio · 📅 Availability · 💰 Wallet · ⚖️ Dispute
 - 🗺 Map search · 🔍 Search endpoint แยก · 🏆 Featured works · 📊 Province top
 - 🎫 Barcode / QR · 🖼 Banner · 🎯 IssuePoints · 📝 Activity log
 
