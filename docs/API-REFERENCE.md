@@ -270,13 +270,27 @@ Token ได้จาก `POST /api/v1/auth/login` หรือ `POST /api/v1/au
 
 ---
 
+### Portfolio (ผลงานของผู้ให้บริการ) — `/api/v1/portfolios`
+
+| Method | Path | Auth | รายละเอียด |
+| ------ | ---- | ---- | ----------- |
+| `GET` | `/` | ✅ | ผลงานของผู้เรียกเอง (latest first · รวม work_type) |
+| `POST` | `/` | ✅ | เพิ่มผลงาน — body `{ title, description, work_type_id, images: [url…] }` · validate เหมือนเว็บ (ชื่อ ≥3 · รายละเอียด ≥5 · images ≥1) |
+| `GET` | `/{portfolio}` | ❌ public | ดูผลงานของใครก็ได้ — รวม owner รูปจาก path → URL |
+| `PUT` | `/{portfolio}` | ✅ | แก้ไข **ของตัวเองเท่านั้น** |
+| `DELETE` | `/{portfolio}` | ✅ | ลบของตัวเอง (ลบซ้ำ no-op · ของคนอื่น 403) |
+
+> 📘 รูปใน `images` คือ path/URL ที่ได้จาก `POST /uploads/image` แหล่งเดียวกับประกาศ ผู้ใช้งานไม่ต้องแก้ URL ด้วยเอง
+
+---
+
 ## สิ่งที่ยังไม่มีใน v1
 
 เพราะแอปรอบนี้ยังไม่เรียกใช้ — รอบถัดไปค่อยเพิ่ม:
 
 - 💬 Messenger / แชท
 - 🔔 Notifications (แบบราย user)
-- 💼 Portfolio · 📅 Availability · 💰 Wallet · ⚖️ Dispute
+- 💼 Portfolio (มีแล้ว — `/portfolios`) · 📅 Availability · 💰 Wallet · ⚖️ Dispute
 - 🗺 Map search · 🔍 Search endpoint แยก · 🏆 Featured works · 📊 Province top
 - 🎫 Barcode / QR · 🖼 Banner · 🎯 IssuePoints · 📝 Activity log
 
