@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\FavoriteController;
 use App\Http\Controllers\Api\V1\MessengerController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\PortfolioController;
+use App\Http\Controllers\Api\V1\PushTokenController;
 use App\Http\Controllers\Api\V1\RecruitBookingController;
 use App\Http\Controllers\Api\V1\RecruitController;
 use App\Http\Controllers\Api\V1\ReviewController;
@@ -75,6 +76,11 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             Route::put('/{portfolio}', [PortfolioController::class, 'update'])->name('update');
             Route::delete('/{portfolio}', [PortfolioController::class, 'destroy'])->name('destroy');
         });
+        // Push tokens register the caller's own device — the token comes from
+        // the app, the user comes from the token itself.
+        Route::prefix('push-tokens')->name('push-tokens.')->group(function () {
+            Route::post('/', [PushTokenController::class, 'store'])->name('store');
+        });
         Route::prefix('uploads')->name('uploads.')->group(function () {
             Route::post('/image', [UploadController::class, 'image'])->name('image');
             Route::post('/avatar', [UploadController::class, 'avatar'])->name('avatar');
@@ -104,6 +110,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         // client and ids are small sequential integers.
         Route::prefix('messenger')->name('messenger.')->group(function () {
             Route::get('/channels', [MessengerController::class, 'index'])->name('channels.index');
+            Route::get('/unread', [MessengerController::class, 'unread'])->name('unread');
             Route::post(
                 '/work-bookings/{workBooking}/channel',
                 [MessengerController::class, 'openForWorkBooking'],

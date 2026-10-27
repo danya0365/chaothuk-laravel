@@ -110,6 +110,7 @@ class MessengerAccessTest extends TestCase
                 'api/v1/messenger/channels/{channel}/messages',
                 'api/v1/messenger/channels/{channel}/seen',
                 'api/v1/messenger/recruit-bookings/{recruitBooking}/channel',
+                'api/v1/messenger/unread',
                 'api/v1/messenger/work-bookings/{workBooking}/channel',
                 'backend/messenger',
                 'backend/messenger/{channel}',

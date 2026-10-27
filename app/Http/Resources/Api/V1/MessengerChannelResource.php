@@ -42,6 +42,7 @@ class MessengerChannelResource extends JsonResource
                 'content' => $lastMessage->content,
                 'created_at' => $lastMessage->created_at?->toIso8601String(),
             ] : null,
+            'unread_count' => (int) ($this->unread_count ?? 0),
             'booking_type' => $this->resource->booking_type,
             'booking_id' => $this->resource->booking_id,
             'updated_at' => $this->updated_at?->toIso8601String(),

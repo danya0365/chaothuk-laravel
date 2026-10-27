@@ -11,8 +11,11 @@ use App\Http\Resources\Api\V1\MessengerConversationResource;
 use App\Models\MessengerChannel;
 use App\Models\MessengerConversation;
 use App\Models\MessengerParticipant;
+use App\Models\PushToken;
+use App\Services\ExpoPushService;
 use App\Services\MessengerChannelService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
@@ -37,12 +40,36 @@ class MessengerController extends Controller
 
         $channels = MessengerChannel::query()
             ->whereIn('id', $channelIds)
+            ->withCount(['conversations as unread_count' => fn ($query) => $query
+                ->where('user_id', '!=', $request->user()->id)
+                ->whereNull('seen_at')])
             ->with(['participants.author', 'latestConversations' => fn ($query) => $query->limit(1)])
             ->orderByDesc('updated_at')
             ->paginate(min(max($request->integer('per_page', 20), 1), 50))
             ->withQueryString();
 
         return MessengerChannelCollection::make($channels);
+    }
+
+    /**
+     * How many messages the caller has not seen, across every room they are in.
+     *
+     * The companion of the per-channel counts on the list: the app polls this
+     * one cheaply for the bottom-tab badge instead of re-reading every room.
+     */
+    public function unread(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $channelIds = MessengerParticipant::query()
+            ->where('user_id', $request->user()->id)
+            ->pluck('channel_id');
+
+        $count = MessengerConversation::query()
+            ->whereIn('channel_id', $channelIds)
+            ->where('user_id', '!=', $request->user()->id)
+            ->whereNull('seen_at')
+            ->count();
+
+        return response()->json(['data' => ['unread_count' => $count]]);
     }
 
     /**
@@ -101,7 +128,10 @@ class MessengerController extends Controller
     {
         $this->assertParticipant($request, $channel);
 
-        $channel->load(['participants.author', 'latestConversations' => fn ($query) => $query->limit(1)]);
+        $channel->loadCount(['conversations as unread_count' => fn ($query) => $query
+            ->where('user_id', '!=', $request->user()->id)
+            ->whereNull('seen_at')])
+            ->load(['participants.author', 'latestConversations' => fn ($query) => $query->limit(1)]);
 
         return new MessengerChannelResource($channel);
     }
@@ -156,6 +186,8 @@ class MessengerController extends Controller
         ]);
 
         $channel->touch();
+
+        $this->announceMessage($request, $channel, $message);
 
         return new MessengerConversationResource($message->load('author'));
     }
@@ -217,5 +249,36 @@ class MessengerController extends Controller
         if (! $exists) {
             throw new AccessDeniedHttpException($message);
         }
+    }
+
+    /**
+     * Push the message to the other participants' registered devices.
+     *
+     * Best effort: no notification row and no queue — a device without a
+     * registered token simply hears nothing, and a push outage leaves the
+     * message itself untouched.
+     */
+    private function announceMessage(Request $request, MessengerChannel $channel, MessengerConversation $message): void
+    {
+        $recipients = MessengerParticipant::query()
+            ->where('channel_id', $channel->id)
+            ->where('user_id', '!=', $request->user()->id)
+            ->pluck('user_id');
+
+        $tokens = PushToken::query()->whereIn('user_id', $recipients)->pluck('token');
+
+        if ($tokens->isEmpty()) {
+            return;
+        }
+
+        app(ExpoPushService::class)->sendToMany(
+            $tokens,
+            '💬 '.$request->user()->name,
+            Str::of((string) $message->content)->limit(120),
+            [
+                'type' => 'chat-message',
+                'channel_id' => $channel->id,
+            ],
+        );
     }
 }
