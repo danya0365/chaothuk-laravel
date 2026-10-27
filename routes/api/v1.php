@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\FavoriteController;
 use App\Http\Controllers\Api\V1\MessengerController;
 use App\Http\Controllers\Api\V1\NotificationController;
+use App\Http\Controllers\Api\V1\PortfolioController;
 use App\Http\Controllers\Api\V1\RecruitBookingController;
 use App\Http\Controllers\Api\V1\RecruitController;
 use App\Http\Controllers\Api\V1\ReviewController;
@@ -61,7 +62,19 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::get('/{recruit}', [RecruitController::class, 'show'])->name('show');
     });
 
+    // A provider's portfolio detail is public — a customer may look at a
+    // finished work from anywhere, like on the web.
+    Route::get('/portfolios/{portfolio}', [PortfolioController::class, 'show'])->name('portfolios.show');
+
     Route::middleware('auth:sanctum')->group(function () {
+        // The portfolio management half sits behind the token — only the owner
+        // lists, adds, edits, or removes their finished works.
+        Route::prefix('portfolios')->name('portfolios.')->group(function () {
+            Route::get('/', [PortfolioController::class, 'index'])->name('index');
+            Route::post('/', [PortfolioController::class, 'store'])->name('store');
+            Route::put('/{portfolio}', [PortfolioController::class, 'update'])->name('update');
+            Route::delete('/{portfolio}', [PortfolioController::class, 'destroy'])->name('destroy');
+        });
         Route::prefix('uploads')->name('uploads.')->group(function () {
             Route::post('/image', [UploadController::class, 'image'])->name('image');
             Route::post('/avatar', [UploadController::class, 'avatar'])->name('avatar');
