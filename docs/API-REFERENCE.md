@@ -284,12 +284,37 @@ Token ได้จาก `POST /api/v1/auth/login` หรือ `POST /api/v1/au
 
 ---
 
+### Messenger (แชทจากการจอง) — `/api/v1/messenger`
+
+| Method | Path | Auth | รายละเอียด |
+| ------ | ---- | ---- | ----------- |
+| `GET` | `/channels` | ✅ | ห้องของผู้เรียก (latest first · `?per_page=`) — แต่ละห้องมี `counterpart` · `last_message` · **`unread_count`** (ข้อความคู่สนทนาที่ยังไม่ seen) |
+| `GET` | `/unread` | ✅ | **ยอดรวม unread ทุกห้อง** — `{ data: { unread_count } }` สำหรับ poll ทำ badge tab แชท |
+| `POST` | `/work-bookings/{workBooking}/channel` | ✅ | เปิด/ดึงห้องของการจองงาน (ผู้จอง/เจ้าของงาน) |
+| `POST` | `/recruit-bookings/{recruitBooking}/channel` | ✅ | เปิด/ดึงห้องของการสมัคร (ผู้สมัคร/ผู้ประกาศ) |
+| `GET` | `/channels/{channel}` | ✅ | รายละเอียดห้อง (participant-only · รวม `unread_count`) |
+| `GET` | `/channels/{channel}/messages` | ✅ | ข้อความเรียงเก่า→ใหม่ (`?after_id=` สำหรับ poll · `?per_page=` ≤200) |
+| `POST` | `/channels/{channel}/messages` | ✅ | ส่งข้อความ `{ content, type?, local_code_id? }` — จะ push หาอุปกรณ์คู่สนทนาที่ลงทะเบียนไว้ |
+| `POST` | `/channels/{channel}/seen` | ✅ | mark seen ข้อความของคู่สนทนาในห้อง |
+
+> 🔒 ทุกเส้นตรวจผู้เรียกต่อ participants ของห้องก่อนอ่าน/เขียน — เดา id ไม่ได้
+
+### Push notifications (อุปกรณ์ + Expo push) — `/api/v1/push-tokens`
+
+| Method | Path | Auth | รายละเอียด |
+| ------ | ---- | ---- | ----------- |
+| `POST` | `/` | ✅ | ลงทะเบียน push token ของอุปกรณ์ตัวเอง — body `{ token, platform?: android|ios|web }` · token เดิม = update ไม่ซ้ำ |
+
+> 📲 ตอนนี้ระบบ push ข้อความแชท (Expo push) — อุปกรณ์ที่ไม่มี token ก็ใช้แอปได้ตามปกติ (นับเป็น opt-in) · การส่งล้มเหลวไม่กระทบการส่งข้อความ
+
+---
+
 ## สิ่งที่ยังไม่มีใน v1
 
 เพราะแอปรอบนี้ยังไม่เรียกใช้ — รอบถัดไปค่อยเพิ่ม:
 
-- 💬 Messenger / แชท
-- 🔔 Notifications (แบบราย user)
+- 💬 Messenger / แชท (มีแล้ว — `/messenger` + unread badge)
+- 🔔 Notifications (แบบราย user) (มีแล้ว — `/notifications` + push token สำหรับแชท)
 - 💼 Portfolio (มีแล้ว — `/portfolios`) · 📅 Availability · 💰 Wallet · ⚖️ Dispute
 - 🗺 Map search · 🔍 Search endpoint แยก · 🏆 Featured works · 📊 Province top
 - 🎫 Barcode / QR · 🖼 Banner · 🎯 IssuePoints · 📝 Activity log
