@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\AvailabilityController;
 use App\Http\Controllers\Api\V1\FavoriteController;
 use App\Http\Controllers\Api\V1\MessengerController;
 use App\Http\Controllers\Api\V1\NotificationController;
@@ -127,6 +128,17 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
 
         Route::prefix('works')->name('works.')->group(function () {
             Route::post('/', [WorkController::class, 'store'])->name('store');
+
+            // The weekly availability schedule plus one-off blocked dates —
+            // owner management only, mirroring the web form at
+            // /works/{id}/availability.
+            Route::prefix('{work}/availability')->name('availability.')->group(function () {
+                Route::get('/', [AvailabilityController::class, 'show'])->name('show');
+                Route::put('/', [AvailabilityController::class, 'update'])->name('update');
+                Route::post('/blocked-dates', [AvailabilityController::class, 'storeBlockedDate'])->name('blocked-dates.store');
+                Route::delete('/blocked-dates/{blockedDate}', [AvailabilityController::class, 'destroyBlockedDate'])->name('blocked-dates.destroy');
+            });
+
             Route::post('/{work}/bookings', [WorkBookingController::class, 'store'])->name('bookings.store');
             Route::post('/{work}/reviews', [ReviewController::class, 'storeWorkReview'])->name('reviews.store');
         });
