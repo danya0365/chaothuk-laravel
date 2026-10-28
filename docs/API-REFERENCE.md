@@ -299,6 +299,17 @@ Token ได้จาก `POST /api/v1/auth/login` หรือ `POST /api/v1/au
 
 > 🔒 ทุกเส้นตรวจผู้เรียกต่อ participants ของห้องก่อนอ่าน/เขียน — เดา id ไม่ได้
 
+### Availability (ตารางว่างของผู้ให้บริการ) — `/api/v1/works/{work}/availability`
+
+| Method | Path | Auth | รายละเอียด |
+| ------ | ---- | ---- | ----------- |
+| `GET` | `/` | ✅ | ตารางเต็ม 7 วัน (0=อาทิตย์…6=เสาร์) + blocked dates ตั้งแต่วันนี้ — วันที่ไม่เคยตั้งค่าจะคืนเป็น inactive default 08:00–17:00 (เหมือนฟอร์มเว็บ) |
+| `PUT` | `/` | ✅ | **แทน schedule ทั้งสัปดาห์ทีเดียว** — body `{ schedule: [{ day_of_week 0-6, start_time 'H:i', end_time 'H:i', is_available }] }` · วันที่ไม่ส่งมา = ลบ row |
+| `POST` | `/blocked-dates` | ✅ | เพิ่มวันหยุด — body `{ blocked_date (>= วันนี้), reason? }` · วันซ้ำ = ใช้ row เดิม (ครั้งแรก 201 · ซ้ำ 200) |
+| `DELETE` | `/blocked-dates/{id}` | ✅ | ลบวันหยุดของประกาศนี้ (ของ work อื่น = ไม่มีผล) |
+
+> 🔒 ทุกเส้นต้องเป็น **เจ้าของประกาศ** (`work.author_id` มาจาก token) — mirror ฟอร์ม Livewire `WorkAvailabilityManage` ของเว็บ
+
 ### Push notifications (อุปกรณ์ + Expo push) — `/api/v1/push-tokens`
 
 | Method | Path | Auth | รายละเอียด |
@@ -315,7 +326,7 @@ Token ได้จาก `POST /api/v1/auth/login` หรือ `POST /api/v1/au
 
 - 💬 Messenger / แชท (มีแล้ว — `/messenger` + unread badge)
 - 🔔 Notifications (แบบราย user) (มีแล้ว — `/notifications` + push token สำหรับแชท)
-- 💼 Portfolio (มีแล้ว — `/portfolios`) · 📅 Availability · 💰 Wallet · ⚖️ Dispute
+- 💼 Portfolio (มีแล้ว — `/portfolios`) · 📅 Availability (มีแล้ว — `/works/{id}/availability`) · 💰 Wallet · ⚖️ Dispute
 - 🗺 Map search · 🔍 Search endpoint แยก · 🏆 Featured works · 📊 Province top
 - 🎫 Barcode / QR · 🖼 Banner · 🎯 IssuePoints · 📝 Activity log
 
