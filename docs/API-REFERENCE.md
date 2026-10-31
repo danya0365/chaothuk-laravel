@@ -335,6 +335,14 @@ Token ได้จาก `POST /api/v1/auth/login` หรือ `POST /api/v1/au
 
 > 📣 mirror strip หน้าแรกเว็บ (Home Livewire) — แอปอ่านอย่างเดียว ป้ายที่มี `external_url` เปิดเบราว์เซอร์ภายนอก · admin จัดการคลังป้ายบนเว็บ
 
+### งานเด่นประจำจังหวัด (Province top works) — `/api/v1/top-works`
+
+| Method | Path | Auth | รายละเอียด |
+| ------ | ---- | ---- | ----------- |
+| `GET` | `/` | ❌ public | อันดับ 1 ของแต่ละจังหวัด เดือนปัจจุบัน (`period = Y-m` + `rank = 1`) เรียง `total_score` — card `{ work_id, title, price, image, province, type, rating, score, bookings, author_name, author_avatar }` |
+
+> 🏆 mirror section "งานเด่นประจำจังหวัด" หน้าแรกเว็บ — คะแนนคำนวณรายเดือนโดย scheduler (`CalculateProvinceTopWorks`) แอป/เว็บอ่านอย่างเดียว
+
 ### Push notifications (อุปกรณ์ + Expo push) — `/api/v1/push-tokens`
 
 | Method | Path | Auth | รายละเอียด |
