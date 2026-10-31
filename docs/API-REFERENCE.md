@@ -319,6 +319,14 @@ Token ได้จาก `POST /api/v1/auth/login` หรือ `POST /api/v1/au
 
 > 💰 **อ่านอย่างเดียว** — เงินเดินตาม flow งานจริง (โปรโมท, คืนเงิน, ปรับปรุงโดย admin) และทุกการเคลื่อนไหวมี ledger row อยู่แล้ว · ไม่มี endpoint เติมเงิน
 
+### แผนที่ (Map pins) — `/api/v1/map`
+
+| Method | Path | Auth | รายละเอียด |
+| ------ | ---- | ---- | ----------- |
+| `GET` | `/` | ❌ public | หมุดทั้งสองฝั่งที่มีพิกัด ครั้งเดียว (`?kind=work\|recruit` กรอง) — works เฉพาะ `stand-by` + recruits เฉพาะ `stand-by` จำกัด 500 ต่อฝั่ง เรียง id ใหม่ → เก่า — pin `{ id, title, price, image, lat, lng, province, type, rating }` · tap หมุดแล้วแอปเดินไปหน้าประกาศ |
+
+> 🗺 mirror หน้า `/map` ของเว็บ (MapExplore) — การปิด/จอง/แก้สถานะทำให้หมุดหายอัตโนมัติเพราะ query ผ่านสถานะปัจจุบันทุกครั้ง
+
 ### Push notifications (อุปกรณ์ + Expo push) — `/api/v1/push-tokens`
 
 | Method | Path | Auth | รายละเอียด |
@@ -335,8 +343,8 @@ Token ได้จาก `POST /api/v1/auth/login` หรือ `POST /api/v1/au
 
 - 💬 Messenger / แชท (มีแล้ว — `/messenger` + unread badge)
 - 🔔 Notifications (แบบราย user) (มีแล้ว — `/notifications` + push token สำหรับแชท)
-- 💼 Portfolio (มีแล้ว — `/portfolios`) · 📅 Availability (มีแล้ว — `/works/{id}/availability`) · 💰 Wallet (อ่านอย่างเดียว — `/wallet`) · ⚖️ Dispute
-- 🗺 Map search · 🔍 Search endpoint แยก · 🏆 Featured works · 📊 Province top
+- 💼 Portfolio (มีแล้ว — `/portfolios`) · 📅 Availability (มีแล้ว — `/works/{id}/availability`) · 💰 Wallet (อ่านอย่างเดียว — `/wallet`) · ⚖️ Dispute (admin-only บนเว็บ — ไม่มี user-facing flow)
+- 🗺 Map search (มีแล้ว — `/map`) · 🔍 Search endpoint แยก · 🏆 Featured works · 📊 Province top
 - 🎫 Barcode / QR · 🖼 Banner · 🎯 IssuePoints · 📝 Activity log
 
 > ทั้งหมดยัง**มีอยู่ในเว็บ** — ดู [SRS.md](SRS.md) ภาคผนวก ก
