@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\V1\RecruitController;
 use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\SessionController;
 use App\Http\Controllers\Api\V1\UploadController;
+use App\Http\Controllers\Api\V1\WalletController;
 use App\Http\Controllers\Api\V1\WorkBookingController;
 use App\Http\Controllers\Api\V1\WorkController;
 use App\Models\Category;
@@ -76,6 +77,13 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             Route::post('/', [PortfolioController::class, 'store'])->name('store');
             Route::put('/{portfolio}', [PortfolioController::class, 'update'])->name('update');
             Route::delete('/{portfolio}', [PortfolioController::class, 'destroy'])->name('destroy');
+        });
+        // The caller's own wallet — a read of its balance and ledger. Money
+        // only moves through the flows that earn or spend it (promotions,
+        // refunds, admin adjustments), so this API has no write endpoint.
+        Route::prefix('wallet')->name('wallet.')->group(function () {
+            Route::get('/', [WalletController::class, 'show'])->name('show');
+            Route::get('/transactions', [WalletController::class, 'transactions'])->name('transactions');
         });
         // Push tokens register the caller's own device — the token comes from
         // the app, the user comes from the token itself.
