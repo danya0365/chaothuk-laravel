@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\AvailabilityController;
+use App\Http\Controllers\Api\V1\BannerController;
 use App\Http\Controllers\Api\V1\FavoriteController;
 use App\Http\Controllers\Api\V1\MapController;
 use App\Http\Controllers\Api\V1\MessengerController;
@@ -56,6 +57,10 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     // The map screen's pins — one shot like the web's /map page, public with
     // the marketplace above.
     Route::get('/map', [MapController::class, 'index'])->name('map.index');
+
+    // The home screen's banner strip — the same five cards the web front
+    // page rotates, public.
+    Route::get('/banners', [BannerController::class, 'index'])->name('banners.index');
 
     // Browsing stays public so a signed-out visitor can look around the marketplace.
     Route::prefix('works')->name('works.')->group(function () {
