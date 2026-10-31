@@ -230,19 +230,139 @@ Token ได้จาก `POST /api/v1/auth/login` หรือ `POST /api/v1/au
 
 > 🔒 **ปิด auth แล้ว** — ของเดิมเปิดให้ใครก็อัปโหลดได้ และไม่จำกัด mime
 
+### Favorites (บุ๊คมาร์ค) — `/api/v1/favorites`
+
+| Method | Path                    | Auth | รายละเอียด                                                              |
+| ------ | ----------------------- | ---- | ----------------------------------------------------------------------- |
+| `GET`  | `/`                     | ✅   | รายการโปรดของผู้ใช้ (ใหม่สุดก่อน) · `?type=work\|recruit` · `?per_page=` · `favoritable` เป็น card เต็มแบบ marketplace |
+| `GET`  | `/check`                | ✅   | `?type=work&favoritable_id=1` → `{ data: { favorited: true } }` สำหรับหัวใจบนหน้า detail |
+| `POST` | `/`                     | ✅   | body `{ type: "work"\|"recruit", id }` → 201 · บันทึกซ้ำ = no-op (ไม่ error) |
+| `DELETE` | `/{favorite}`          | ✅   | ลบรายการโปรดของตัวเอง · ลบซ้ำได้ (ไม่ 404) · ลบของคนอื่น = 403            |
+
+> ❤️ ตอนก่อนอยู่แค่หน้าเว็บ (Livewire) — model `Favorite` ใช้ morph `favoritable` อยู่แล้ว
+
+---
+
+### Reviews + ตอบรีวิว
+
+| Method | Path                       | Auth | รายละเอียด                                                                                |
+| ------ | -------------------------- | ---- | ----------------------------------------------------------------------------------------- |
+| `GET`  | `/works/{work}/reviews`    | ❌   | รีวิวของหนึ่งประกาศ (ใหม่สุดก่อน) · reply ซ้อนใต้ตัวใน `replies` ลึกเท่าที่มี · for public |
+| `GET`  | `/recruits/{recruit}/reviews` | ❌ | เหมือน works — shape เดียวกัน                                                             |
+| `POST` | `/works/{work}/reviews`    | ✅   | body `{ title?, rating 1–5, content ≥5 }` → 201 · ต้องมีสิทธิ์ `review_work`              |
+| `POST` | `/recruits/{recruit}/reviews` | ✅ | เหมือน works                                                                             |
+| `POST` | `/reviews/{post}/replies`  | ✅   | body `{ content ≥2 }` · ตอบได้เฉพาะ**รีวิวหลัก** · ต้องมีสิทธิ์ `reply_review`            |
+
+> ⭐ รีวิว/reply เป็น `posts` หนึ่งต้นไม้ (`parent_id`) ผูกประกาศผ่าน `works_reviews`/`recruits_reviews` — เจ้าของประกาศได้ notification `work-review` · ผู้รีวิวได้ `review-reply` (ไม่แจ้งตัวเอง) พร้อม notificationable ชี้ที่ประกาศเพื่อ route ไปหน้าจริง
+
+### Sessions (เซสชันการทำงาน + GPS) — `/api/v1/sessions`
+
+| Method | Path                                | Auth | รายละเอียด                                                                              |
+| ------ | ----------------------------------- | ---- | ---------------------------------------------------------------------------------------- |
+| `GET`  | `/`                                 | ✅   | เซสชันของผู้เรียก (worker หรือ customer) · `?status=active\|paused\|completed\|cancelled` |
+| `POST` | `/work-bookings/{workBooking}/start` | ✅   | เจ้าของประกาศเริ่มเซสชันจากการจองที่**ยืนยันแล้ว** · body `{ price_agreed? }` · ห้ามซ้ำระหว่าง active |
+| `GET`  | `/{session}`                        | ✅   | เฉพาะสองฝั่งในเซสชัน · รวม trail พิกัด (200 จุดล่าสุด · เก่า→ใหม่)                        |
+| `POST` | `/{session}/pause` · `/resume` · `/stop` | ✅ | transition ตามเว็บ (pause จาก active · resume จาก paused · stop คำนวณระยะเวลา)          |
+| `POST` | `/{session}/confirm`                | ✅   | ยืนยันฝั่งที่เรียก (`worker_confirm`/`customer_confirm`)                                 |
+| `POST` | `/{session}/locations`              | ✅   | drop GPS ping — body `{ latitude, longitude, accuracy?, speed?, heading?, recorded_at? }` · เฉพาะ status active |
+
+> 📍 เว็บเริ่มเซสชันได้จาก work booking เท่านั้น (worker = เจ้าของงาน, customer = คนจอง) — recruiter ยังไม่มี flow ผู้เริ่ม (ผู้เริ่มได้ `worker_confirm = confirmed`)
+
+---
+
+### Portfolio (ผลงานของผู้ให้บริการ) — `/api/v1/portfolios`
+
+| Method | Path | Auth | รายละเอียด |
+| ------ | ---- | ---- | ----------- |
+| `GET` | `/` | ✅ | ผลงานของผู้เรียกเอง (latest first · รวม work_type) |
+| `POST` | `/` | ✅ | เพิ่มผลงาน — body `{ title, description, work_type_id, images: [url…] }` · validate เหมือนเว็บ (ชื่อ ≥3 · รายละเอียด ≥5 · images ≥1) |
+| `GET` | `/{portfolio}` | ❌ public | ดูผลงานของใครก็ได้ — รวม owner รูปจาก path → URL |
+| `PUT` | `/{portfolio}` | ✅ | แก้ไข **ของตัวเองเท่านั้น** |
+| `DELETE` | `/{portfolio}` | ✅ | ลบของตัวเอง (ลบซ้ำ no-op · ของคนอื่น 403) |
+
+> 📘 รูปใน `images` คือ path/URL ที่ได้จาก `POST /uploads/image` แหล่งเดียวกับประกาศ ผู้ใช้งานไม่ต้องแก้ URL ด้วยเอง
+
+---
+
+### Messenger (แชทจากการจอง) — `/api/v1/messenger`
+
+| Method | Path | Auth | รายละเอียด |
+| ------ | ---- | ---- | ----------- |
+| `GET` | `/channels` | ✅ | ห้องของผู้เรียก (latest first · `?per_page=`) — แต่ละห้องมี `counterpart` · `last_message` · **`unread_count`** (ข้อความคู่สนทนาที่ยังไม่ seen) |
+| `GET` | `/unread` | ✅ | **ยอดรวม unread ทุกห้อง** — `{ data: { unread_count } }` สำหรับ poll ทำ badge tab แชท |
+| `POST` | `/work-bookings/{workBooking}/channel` | ✅ | เปิด/ดึงห้องของการจองงาน (ผู้จอง/เจ้าของงาน) |
+| `POST` | `/recruit-bookings/{recruitBooking}/channel` | ✅ | เปิด/ดึงห้องของการสมัคร (ผู้สมัคร/ผู้ประกาศ) |
+| `GET` | `/channels/{channel}` | ✅ | รายละเอียดห้อง (participant-only · รวม `unread_count`) |
+| `GET` | `/channels/{channel}/messages` | ✅ | ข้อความเรียงเก่า→ใหม่ (`?after_id=` สำหรับ poll · `?per_page=` ≤200) |
+| `POST` | `/channels/{channel}/messages` | ✅ | ส่งข้อความ `{ content, type?, local_code_id? }` — จะ push หาอุปกรณ์คู่สนทนาที่ลงทะเบียนไว้ |
+| `POST` | `/channels/{channel}/seen` | ✅ | mark seen ข้อความของคู่สนทนาในห้อง |
+
+> 🔒 ทุกเส้นตรวจผู้เรียกต่อ participants ของห้องก่อนอ่าน/เขียน — เดา id ไม่ได้
+
+### Availability (ตารางว่างของผู้ให้บริการ) — `/api/v1/works/{work}/availability`
+
+| Method | Path | Auth | รายละเอียด |
+| ------ | ---- | ---- | ----------- |
+| `GET` | `/` | ✅ | ตารางเต็ม 7 วัน (0=อาทิตย์…6=เสาร์) + blocked dates ตั้งแต่วันนี้ — วันที่ไม่เคยตั้งค่าจะคืนเป็น inactive default 08:00–17:00 (เหมือนฟอร์มเว็บ) |
+| `PUT` | `/` | ✅ | **แทน schedule ทั้งสัปดาห์ทีเดียว** — body `{ schedule: [{ day_of_week 0-6, start_time 'H:i', end_time 'H:i', is_available }] }` · วันที่ไม่ส่งมา = ลบ row |
+| `POST` | `/blocked-dates` | ✅ | เพิ่มวันหยุด — body `{ blocked_date (>= วันนี้), reason? }` · วันซ้ำ = ใช้ row เดิม (ครั้งแรก 201 · ซ้ำ 200) |
+| `DELETE` | `/blocked-dates/{id}` | ✅ | ลบวันหยุดของประกาศนี้ (ของ work อื่น = ไม่มีผล) |
+
+> 🔒 ทุกเส้นต้องเป็น **เจ้าของประกาศ** (`work.author_id` มาจาก token) — mirror ฟอร์ม Livewire `WorkAvailabilityManage` ของเว็บ
+
+### Wallet (กระเป๋าเงินของฉัน) — `/api/v1/wallet`
+
+| Method | Path | Auth | รายละเอียด |
+| ------ | ---- | ---- | ----------- |
+| `GET` | `/` | ✅ | ยอดเงินของผู้เรียก — `{ data: { balance, status } }` (ไม่มี wallet = 0.00 · status active/suspended) |
+| `GET` | `/transactions` | ✅ | รายการเดินบัญชีของผู้เรียก newest first (`?per_page=` ≤50 · paginated) — `{ type: deposit\|payment\|refund\|withdrawal\|adjustment, amount (ลบ = เงินออก), balance_after, description, created_at }` |
+
+> 💰 **อ่านอย่างเดียว** — เงินเดินตาม flow งานจริง (โปรโมท, คืนเงิน, ปรับปรุงโดย admin) และทุกการเคลื่อนไหวมี ledger row อยู่แล้ว · ไม่มี endpoint เติมเงิน
+
+### แผนที่ (Map pins) — `/api/v1/map`
+
+| Method | Path | Auth | รายละเอียด |
+| ------ | ---- | ---- | ----------- |
+| `GET` | `/` | ❌ public | หมุดทั้งสองฝั่งที่มีพิกัด ครั้งเดียว (`?kind=work\|recruit` กรอง) — works เฉพาะ `stand-by` + recruits เฉพาะ `stand-by` จำกัด 500 ต่อฝั่ง เรียง id ใหม่ → เก่า — pin `{ id, title, price, image, lat, lng, province, type, rating }` · tap หมุดแล้วแอปเดินไปหน้าประกาศ |
+
+> 🗺 mirror หน้า `/map` ของเว็บ (MapExplore) — การปิด/จอง/แก้สถานะทำให้หมุดหายอัตโนมัติเพราะ query ผ่านสถานะปัจจุบันทุกครั้ง
+
+### Banner (ป้ายหน้าแรก) — `/api/v1/banners`
+
+| Method | Path | Auth | รายละเอียด |
+| ------ | ---- | ---- | ----------- |
+| `GET` | `/` | ❌ public | 5 ป้ายของหน้าแรก — `is_public` + ไม่หมดอายุ (`expired_at` มากกว่า now หรือ null) เรียง `is_pinned` → `created_at` · card `{ id, name, image, external_url, is_pinned }` |
+
+> 📣 mirror strip หน้าแรกเว็บ (Home Livewire) — แอปอ่านอย่างเดียว ป้ายที่มี `external_url` เปิดเบราว์เซอร์ภายนอก · admin จัดการคลังป้ายบนเว็บ
+
+### งานเด่นประจำจังหวัด (Province top works) — `/api/v1/top-works`
+
+| Method | Path | Auth | รายละเอียด |
+| ------ | ---- | ---- | ----------- |
+| `GET` | `/` | ❌ public | อันดับ 1 ของแต่ละจังหวัด เดือนปัจจุบัน (`period = Y-m` + `rank = 1`) เรียง `total_score` — card `{ work_id, title, price, image, province, type, rating, score, bookings, author_name, author_avatar }` |
+
+> 🏆 mirror section "งานเด่นประจำจังหวัด" หน้าแรกเว็บ — คะแนนคำนวณรายเดือนโดย scheduler (`CalculateProvinceTopWorks`) แอป/เว็บอ่านอย่างเดียว
+
+### Push notifications (อุปกรณ์ + Expo push) — `/api/v1/push-tokens`
+
+| Method | Path | Auth | รายละเอียด |
+| ------ | ---- | ---- | ----------- |
+| `POST` | `/` | ✅ | ลงทะเบียน push token ของอุปกรณ์ตัวเอง — body `{ token, platform?: android|ios|web }` · token เดิม = update ไม่ซ้ำ |
+
+> 📲 ตอนนี้ระบบ push ข้อความแชท (Expo push) — อุปกรณ์ที่ไม่มี token ก็ใช้แอปได้ตามปกติ (นับเป็น opt-in) · การส่งล้มเหลวไม่กระทบการส่งข้อความ
+
 ---
 
 ## สิ่งที่ยังไม่มีใน v1
 
-เพราะแอปรอบนี้ยังไม่เรียกใช้ — รอบถัดไปค่อยเพิ่ม:
+> 🔎 ณ 2026-10-31 แอปครอบคลุมฟีเจอร์ user-facing ของเว็บ **ครบแล้ว** — ตัวที่เหลือเป็นตัวตัดสินแล้วว่าไม่ทำ (ADR-0003) หรือใช้จาก admin เท่านั้น:
 
-- 💬 Messenger / แชท
-- 🔔 Notifications (แบบราย user)
-- 📍 Work sessions + GPS tracking
-- ⭐ Reviews / Posts
-- ❤️ Favorites · 💼 Portfolio · 📅 Availability · 💰 Wallet · ⚖️ Dispute
-- 🗺 Map search · 🔍 Search endpoint แยก · 🏆 Featured works · 📊 Province top
-- 🎫 Barcode / QR · 🖼 Banner · 🎯 IssuePoints · 📝 Activity log
+- 💬 Messenger / แชท (มีแล้ว — `/messenger` + unread badge)
+- 🔔 Notifications (แบบราย user) (มีแล้ว — `/notifications` + push token สำหรับแชท)
+- 💼 Portfolio (มีแล้ว — `/portfolios`) · 📅 Availability (มีแล้ว — `/works/{id}/availability`) · 💰 Wallet (อ่านอย่างเดียว — `/wallet`)
+- 🗺 Map (มีแล้ว — `/map`) · 🖼 Banner (มีแล้ว — `/banners`) · 🏆 Province top (มีแล้ว — `/top-works`) · 🔍 Search (แอปใช้ keyword บน works/recruits = เท่าหน้า `/search` เว็บ จึงไม่มี endpoint แยก)
+- ⚖️ Dispute (admin-only บนเว็บ — ไม่มี user-facing flow) · 🎫 Barcode / QR (route มีอยู่แต่ไม่มี view บนเว็บเรียกใช้เลย — เฟเจอร์ตาย)
+- 🎯 IssuePoints (มีแล้วผ่าน `/auth/me` — การออกแต้มอยู่ที่ admin/cron) · 📝 Activity log (admin-only บนเว็บ)
 
 > ทั้งหมดยัง**มีอยู่ในเว็บ** — ดู [SRS.md](SRS.md) ภาคผนวก ก
 
