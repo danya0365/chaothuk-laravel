@@ -355,13 +355,14 @@ Token ได้จาก `POST /api/v1/auth/login` หรือ `POST /api/v1/au
 
 ## สิ่งที่ยังไม่มีใน v1
 
-เพราะแอปรอบนี้ยังไม่เรียกใช้ — รอบถัดไปค่อยเพิ่ม:
+> 🔎 ณ 2026-10-31 แอปครอบคลุมฟีเจอร์ user-facing ของเว็บ **ครบแล้ว** — ตัวที่เหลือเป็นตัวตัดสินแล้วว่าไม่ทำ (ADR-0003) หรือใช้จาก admin เท่านั้น:
 
 - 💬 Messenger / แชท (มีแล้ว — `/messenger` + unread badge)
 - 🔔 Notifications (แบบราย user) (มีแล้ว — `/notifications` + push token สำหรับแชท)
-- 💼 Portfolio (มีแล้ว — `/portfolios`) · 📅 Availability (มีแล้ว — `/works/{id}/availability`) · 💰 Wallet (อ่านอย่างเดียว — `/wallet`) · ⚖️ Dispute (admin-only บนเว็บ — ไม่มี user-facing flow)
-- 🗺 Map search (มีแล้ว — `/map`) · 🔍 Search endpoint แยก · 🏆 Featured works · 📊 Province top
-- 🎫 Barcode / QR · 🖼 Banner · 🎯 IssuePoints · 📝 Activity log
+- 💼 Portfolio (มีแล้ว — `/portfolios`) · 📅 Availability (มีแล้ว — `/works/{id}/availability`) · 💰 Wallet (อ่านอย่างเดียว — `/wallet`)
+- 🗺 Map (มีแล้ว — `/map`) · 🖼 Banner (มีแล้ว — `/banners`) · 🏆 Province top (มีแล้ว — `/top-works`) · 🔍 Search (แอปใช้ keyword บน works/recruits = เท่าหน้า `/search` เว็บ จึงไม่มี endpoint แยก)
+- ⚖️ Dispute (admin-only บนเว็บ — ไม่มี user-facing flow) · 🎫 Barcode / QR (route มีอยู่แต่ไม่มี view บนเว็บเรียกใช้เลย — เฟเจอร์ตาย)
+- 🎯 IssuePoints (มีแล้วผ่าน `/auth/me` — การออกแต้มอยู่ที่ admin/cron) · 📝 Activity log (admin-only บนเว็บ)
 
 > ทั้งหมดยัง**มีอยู่ในเว็บ** — ดู [SRS.md](SRS.md) ภาคผนวก ก
 
