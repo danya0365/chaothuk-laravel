@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\AvailabilityController;
 use App\Http\Controllers\Api\V1\FavoriteController;
+use App\Http\Controllers\Api\V1\MapController;
 use App\Http\Controllers\Api\V1\MessengerController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\PortfolioController;
@@ -51,6 +52,10 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
 
     Route::get('/categories', fn () => Category::orderBy('name')->get(['id', 'name', 'image_url']))
         ->name('categories.index');
+
+    // The map screen's pins — one shot like the web's /map page, public with
+    // the marketplace above.
+    Route::get('/map', [MapController::class, 'index'])->name('map.index');
 
     // Browsing stays public so a signed-out visitor can look around the marketplace.
     Route::prefix('works')->name('works.')->group(function () {
