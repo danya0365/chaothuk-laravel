@@ -327,6 +327,14 @@ Token ได้จาก `POST /api/v1/auth/login` หรือ `POST /api/v1/au
 
 > 🗺 mirror หน้า `/map` ของเว็บ (MapExplore) — การปิด/จอง/แก้สถานะทำให้หมุดหายอัตโนมัติเพราะ query ผ่านสถานะปัจจุบันทุกครั้ง
 
+### Banner (ป้ายหน้าแรก) — `/api/v1/banners`
+
+| Method | Path | Auth | รายละเอียด |
+| ------ | ---- | ---- | ----------- |
+| `GET` | `/` | ❌ public | 5 ป้ายของหน้าแรก — `is_public` + ไม่หมดอายุ (`expired_at` มากกว่า now หรือ null) เรียง `is_pinned` → `created_at` · card `{ id, name, image, external_url, is_pinned }` |
+
+> 📣 mirror strip หน้าแรกเว็บ (Home Livewire) — แอปอ่านอย่างเดียว ป้ายที่มี `external_url` เปิดเบราว์เซอร์ภายนอก · admin จัดการคลังป้ายบนเว็บ
+
 ### Push notifications (อุปกรณ์ + Expo push) — `/api/v1/push-tokens`
 
 | Method | Path | Auth | รายละเอียด |
