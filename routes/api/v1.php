@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\MapController;
 use App\Http\Controllers\Api\V1\MessengerController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\PortfolioController;
+use App\Http\Controllers\Api\V1\ProvinceTopWorkController;
 use App\Http\Controllers\Api\V1\PushTokenController;
 use App\Http\Controllers\Api\V1\RecruitBookingController;
 use App\Http\Controllers\Api\V1\RecruitController;
@@ -61,6 +62,10 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     // The home screen's banner strip — the same five cards the web front
     // page rotates, public.
     Route::get('/banners', [BannerController::class, 'index'])->name('banners.index');
+
+    // The home screen's provincial top-works strip — the monthly rank-1 rows
+    // the scheduler recalculated, read-only, public.
+    Route::get('/top-works', [ProvinceTopWorkController::class, 'index'])->name('top-works.index');
 
     // Browsing stays public so a signed-out visitor can look around the marketplace.
     Route::prefix('works')->name('works.')->group(function () {
