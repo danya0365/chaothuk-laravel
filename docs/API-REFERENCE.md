@@ -310,6 +310,15 @@ Token ได้จาก `POST /api/v1/auth/login` หรือ `POST /api/v1/au
 
 > 🔒 ทุกเส้นต้องเป็น **เจ้าของประกาศ** (`work.author_id` มาจาก token) — mirror ฟอร์ม Livewire `WorkAvailabilityManage` ของเว็บ
 
+### Wallet (กระเป๋าเงินของฉัน) — `/api/v1/wallet`
+
+| Method | Path | Auth | รายละเอียด |
+| ------ | ---- | ---- | ----------- |
+| `GET` | `/` | ✅ | ยอดเงินของผู้เรียก — `{ data: { balance, status } }` (ไม่มี wallet = 0.00 · status active/suspended) |
+| `GET` | `/transactions` | ✅ | รายการเดินบัญชีของผู้เรียก newest first (`?per_page=` ≤50 · paginated) — `{ type: deposit\|payment\|refund\|withdrawal\|adjustment, amount (ลบ = เงินออก), balance_after, description, created_at }` |
+
+> 💰 **อ่านอย่างเดียว** — เงินเดินตาม flow งานจริง (โปรโมท, คืนเงิน, ปรับปรุงโดย admin) และทุกการเคลื่อนไหวมี ledger row อยู่แล้ว · ไม่มี endpoint เติมเงิน
+
 ### Push notifications (อุปกรณ์ + Expo push) — `/api/v1/push-tokens`
 
 | Method | Path | Auth | รายละเอียด |
@@ -326,7 +335,7 @@ Token ได้จาก `POST /api/v1/auth/login` หรือ `POST /api/v1/au
 
 - 💬 Messenger / แชท (มีแล้ว — `/messenger` + unread badge)
 - 🔔 Notifications (แบบราย user) (มีแล้ว — `/notifications` + push token สำหรับแชท)
-- 💼 Portfolio (มีแล้ว — `/portfolios`) · 📅 Availability (มีแล้ว — `/works/{id}/availability`) · 💰 Wallet · ⚖️ Dispute
+- 💼 Portfolio (มีแล้ว — `/portfolios`) · 📅 Availability (มีแล้ว — `/works/{id}/availability`) · 💰 Wallet (อ่านอย่างเดียว — `/wallet`) · ⚖️ Dispute
 - 🗺 Map search · 🔍 Search endpoint แยก · 🏆 Featured works · 📊 Province top
 - 🎫 Barcode / QR · 🖼 Banner · 🎯 IssuePoints · 📝 Activity log
 
